@@ -10,8 +10,9 @@ running = True
 dt = 0
 
 player = Player.create_player(position=Position(x=screen.get_width() / 2, y=screen.get_width() / 2), width=10, height=10, degrees=90, suction_height=10, suction_width=10)
-left_wall = Wall(position=Position(), screen.get_width() * 0.01, screen.get_height() * 0.9)
+# left_wall = Wall(position=Position(), screen.get_width() * 0.01, screen.get_height() * 0.9)
 
+pygame.Surface((50,50), pygame.SRCALPHA)
 
 while running:
     # poll for events
@@ -19,6 +20,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    pygame.draw()
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
