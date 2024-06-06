@@ -9,11 +9,8 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-starting_position = Position(x=screen.get_width() / 2, y=screen.get_width() / 2)
-player = Player.create_player(position=starting_position, width=5, height=5, degrees=90, suction_multiplier=1)
-player_pos = pygame.Vector2(player.position.x, player.position.y)
-wall_width = 20
-
+player = Player.create_player(position=Position(x=screen.get_width() / 2, y=screen.get_width() / 2), width=10, height=10, degrees=90, suction_height=10, suction_width=10)
+left_wall = Wall(position=Position(), screen.get_width() * 0.01, screen.get_height() * 0.9)
 
 
 while running:
@@ -35,9 +32,8 @@ while running:
     pygame.draw.rect(screen, "red", Rect(*left_wall)) # Bottom wall
     pygame.draw.rect(screen, "red", Rect(*right_wall)) # Bottom wall
 
-    player = []
-
-    pygame.draw.rect(screen, "red", Rect())
+    trect = Rect(0, 0, player.width, player.height)
+    pygame.draw.rect(screen, "red", trect)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
