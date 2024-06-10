@@ -4,7 +4,8 @@ from dto import Player, Position, SquareObject, CircleObject, Input, RewardValue
 from time import sleep
 from enum import Enum
 from typing import List
-from path_correction import face_checkpoint, move_towards_checkpoint, shortest_distance_to_line_with_direction
+from path_correction import move_towards_checkpoint, shortest_distance_to_line_with_direction
+from controller import send_command
 
 # pygame setup
 pygame.init()
@@ -137,20 +138,15 @@ def init_game():
 
     # direction = face_checkpoint(player)
     forwards = move_towards_checkpoint(player)
-    print(f"Checkpoint len: {len(player.checkpoints)}")
     direction = shortest_distance_to_line_with_direction(player.line.start_pos, player.line.end_pos, player.checkpoints[0])
     if direction != 0:
         inputs.extend(direction)
     inputs.extend(forwards)
-    # inputs.append(forwards_v2)
-    
-    #keys = pygame.key.get_pressed()
-    #inputs = create_inputs(keys)
-    print(inputs)
     game(inputs)
+    send_command(inputs)
 
-
-    dt = clock.tick(60) / 1000
+    #change back to 60
+    dt = clock.tick(2) / 1000
 
 if __name__ == '__main__':
     
