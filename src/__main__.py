@@ -1,7 +1,10 @@
 import pygame
 from pygame import Rect
-from dto import Player, Position, SquareObject
+from dto import Player, Position, SquareObject, CircleObject, Input, RewardValues
 from time import sleep
+from enum import Enum
+from typing import List
+
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
@@ -10,8 +13,7 @@ running = True
 dt = 0
 
 player = Player.create_player(position=Position(x=screen.get_width() / 2, y=screen.get_width() / 2), 
-                width=15, height=15, radians=0, suction_height=10, suction_width=10, suction_offset_y=15)
-# left_wall = Wall(position=Position(), screen.get_width() * 0.01, screen.get_height() * 0.9)
+                width=30, height=30, radians=0, suction_height=20, suction_width=20, suction_offset_y=25)
 left_wall = SquareObject.create_square(position=Position(x=40, y=screen.get_height() / 2), 
                     width=20, height=700, radians=0)
 right_wall = SquareObject.create_square(position=Position(x=screen.get_width() - 40, y=screen.get_height() / 2), 
@@ -21,37 +23,123 @@ top_wall = SquareObject.create_square(position=Position(x=screen.get_width() - s
 bot_wall = SquareObject.create_square(position=Position(x=screen.get_width() - screen.get_width() / 2, y=screen.get_height() - 20), 
                     width=1200, height=20, radians=0)
 
-obstacles = [left_wall, right_wall, top_wall, bot_wall]
+cross_1 = SquareObject.create_square(position=Position(x=screen.get_width() - screen.get_width() / 2, y=screen.get_height() / 2), 
+                    width=160, height=20, radians=0.785398)
+cross_2 = SquareObject.create_square(position=Position(x=screen.get_width() - screen.get_width() / 2, y=screen.get_height() / 2), 
+                    width=160, height=20, radians=2.35619)
 
+obstacles = [left_wall, right_wall, top_wall, bot_wall, cross_1, cross_2]
 
-pygame.Surface((50,50), pygame.SRCALPHA)
+balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
+         CircleObject(radius=5, position=Position(x=872, y=231)),
+         CircleObject(radius=5, position=Position(x=512, y=333)),
+         CircleObject(radius=5, position=Position(x=432, y=90)),
+         CircleObject(radius=5, position=Position(x=144, y=666)),
+         CircleObject(radius=5, position=Position(x=963, y=155)),
+         CircleObject(radius=5, position=Position(x=1111, y=514)),
+         CircleObject(radius=5, position=Position(x=893, y=633)),
+         CircleObject(radius=5, position=Position(x=231, y=403)),
+         CircleObject(radius=5, position=Position(x=player.suction.position.x + player.suction.offset_x, y=player.suction.position.y + player.suction.offset_y)),]
 
-while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
+def game(inputs: List[Input]):
+    d_forward = 0
+    d_radians = 0
+    suck = False
+    for input in inputs:
+        if input == Input.FORWARD:
+            d_forward += 2
+            player.rewards.points_for_moving_forward = player.rewards.points_for_moving_forward + RewardValues.MOVING_FORWARD.value
+        elif input == Input.BACKWARD:
+            d_forward -= 2
+            player.rewards.points_for_moving_forward = player.rewards.points_for_moving_forward + RewardValues.MOVING_FORWARD.value
+        elif input == Input.LEFT:
+            d_radians += 0.1
+            player.rewards.points_for_moving_sideways = player.rewards.points_for_moving_sideways + RewardValues.MOVING_SIDEWAYS.value
+        elif input == Input.RIGHT:
+            d_radians -= 0.1
+            player.rewards.points_for_moving_sideways = player.rewards.points_for_moving_sideways + RewardValues.MOVING_SIDEWAYS.value
+        elif input == Input.SUCK:
+            suck = True
+            player.rewards.points_for_suck = player.rewards.points_for_suck + RewardValues.SUCK.value
+            
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            return False
 
-
-    # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
 
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "red", obstacle.vertices)
+
+    for ball in balls:
+        pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), ball.radius)
+    
     pygame.draw.polygon(screen, "green", player.player.vertices)
     pygame.draw.polygon(screen, "yellow", player.suction.vertices)
-    #print("hi")
-    print(player.player.position.y)
-    sleep(0.1)
-    player.move(-1,0.025, obstacles)
 
-    # flip() the display to put your work on screen
+    def create_trail(paths: List[Position], color: str):
+        for i, position in enumerate(paths):
+            if i % 6 == 0:
+                if i % 4 == 0:
+                    prev_pos = position
+
+                current_pos_x = position.x
+                current_pos_y = position.y
+                prev_pos_x = prev_pos.x
+                prev_pos_y = prev_pos.y
+                pygame.draw.line(screen, color, (prev_pos_x, prev_pos_y), (current_pos_x, current_pos_y))
+    
+    create_trail(player.previous_path, color="white")
+
+
+        
+    player.move(d_forward, d_radians, obstacles, balls, suck)
+    for ball in balls:
+        if ball in player.collected_balls:
+            balls.remove(ball)
+
     pygame.display.flip()
+    return player.rewards
 
-    # limits FPS to 60
-    # dt is delta time in seconds since last frame, used for framerate-
-    # independent physics.
-    dt = clock.tick(60) / 1000
 
-pygame.quit()
+def create_inputs(keys):
+    """
+        args:
+            keys: Takes in a pygame command or a regular string
+    """
+    inputs = []
+    if keys[pygame.K_w] or "W" in keys:
+        inputs.append(Input.FORWARD)
+    if keys[pygame.K_s] or "S" in keys:
+        inputs.append(Input.BACKWARD)
+    if keys[pygame.K_a] or "A" in keys:
+        inputs.append(Input.LEFT)
+    if keys[pygame.K_d] or "D" in keys:
+        inputs.append(Input.RIGHT)
+    if keys[pygame.K_SPACE] or "SPACE" in keys:
+        inputs.append(Input.SUCK)
+    return inputs
+
+
+if __name__ == '__main__':
+    while running:
+        radians = 0
+        d_forward = 0
+        suck = False
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        
+
+        keys = pygame.key.get_pressed()
+        inputs = create_inputs(keys)
+        
+
+        game(inputs)
+                
+        dt = clock.tick(60) / 1000
+            
+
+    pygame.quit()
+

@@ -2,8 +2,29 @@ from pydantic import BaseModel, confloat
 from typing import Optional, List, Tuple
 import math
 import numpy as np
+import logging
+from enum import Enum
 
+class Input(Enum):
+    FORWARD = 2
+    BACKWARD = -2
+    LEFT = 0.1
+    RIGHT = -0.1
+    SUCK = True
 
+class RewardValues(Enum):
+    BALL_COLLECT = 10
+    WALL_HIT = 10
+    MOVING_FORWARD = 0.01
+    MOVING_SIDEWAYS = -0.05
+    SUCK = -0.01
+
+class Reward(BaseModel):
+    balls_collected: float = 0
+    walls_hit: float = 0
+    points_for_moving_forward: float = 0
+    points_for_moving_sideways: float = 0
+    points_for_suck: float = 0
 
 class Position(BaseModel):
     x: float
@@ -20,7 +41,7 @@ class SquareObject(BaseModel):
 
     
 
-    def update_square(self, position: Position, radians: float):
+    def update_square(self, position: Position, radians: float = 0):
         # Apply offset to the position
         position_with_offset = Position(x=position.x + self.offset_x, y=position.y + self.offset_y)
         self.position = position_with_offset
@@ -35,8 +56,7 @@ class SquareObject(BaseModel):
             (position_with_offset.x + half_width, position_with_offset.y - half_height)
         ]
 
-        if radians:
-            self.vertices = rotate_square(vertices=self.vertices, center=position, radians=radians)
+        self.vertices = rotate_square(vertices=self.vertices, center=position, radians=radians)
             
 
     
@@ -52,6 +72,8 @@ class SquareObject(BaseModel):
             (position_with_offset.x + half_width, position_with_offset.y + half_height),
             (position_with_offset.x + half_width, position_with_offset.y - half_height)
         ]
+        vertices = rotate_square(vertices=vertices, center=position, radians=radians)
+            
         return cls(position=position, 
                    width=width, 
                    height=height, 
@@ -73,39 +95,62 @@ class Player(BaseModel):
     suction: SquareObject
     collected_balls: List[CircleObject]
     obstacles_hit_list: List[SquareObject]
-    obstacles_hit: int
     previous_path: List[Position]
+    start_position: Position
+    rewards: Reward
 
-    # TODO: Make move work correctly, such the player moves forward in a given direction. Currently player just moves forward.
-    def move(self, distance, ddirection: float, obstacles: List[SquareObject]=[]):
+    def suck(self, balls: List[CircleObject]) -> bool:
+        ball_touched = False
+        for ball in balls:
+            if circle_square_touch(ball, self.suction):
+                self.collected_balls.append(ball)
+                ball_touched = True
+        return ball_touched
+
+    def obstacle_detection(self, obstacles) -> bool:
+        obstacle_touched = False
         for obstacle in obstacles:
-            if square_intersection(obstacle, self.player):
+            if square_touching(obstacle, self.player):
                 self.obstacles_hit_list.append(obstacle)
-                self.obstacles_hit += 1
-                return
+                obstacle_touched = True
+        return obstacle_touched
+                
 
-        dx = math.sin(ddirection) * distance
-        dy = math.cos(ddirection) * distance
+    def move(self, distance, radians: float, obstacles: List[SquareObject]=[], balls: List[CircleObject]=[], suck=False):
+        """
+            Args:
+                distance: Distance from the players current position in pixels
+                radians: Delta in radians from the players current direction
+                obstacles: Objects the player can't collide with
+        """
 
-        self.previous_path.append(self.player.position)
+        radians += self.player.radians
+        dy = math.cos(radians) * distance
+        dx = math.sin(radians) * distance
+
+        if self.obstacle_detection(obstacles=obstacles):
+            radians = 0
+            # NOTE: This is pretty jank.....
+            dx = self.start_position.x - self.player.position.x
+            dy = self.start_position.y - self.player.position.y
+            logging.warning('Player touched a wall - resetting position')
+
         player_dx = self.player.position.x + dx
         player_dy = self.player.position.y + dy
-        ddirection += self.player.radians
-        print(ddirection)
-        self.player.update_square(Position(x=player_dx, y=player_dy), ddirection)
-        self.suction.update_square(Position(x=player_dx, y=player_dy), ddirection)
-
+        self.previous_path.append(self.player.position)
+        self.player.update_square(Position(x=player_dx, y=player_dy), radians)
+        self.suction.update_square(Position(x=player_dx, y=player_dy), radians)
+        if suck:
+            self.suck(balls=balls)
+        self.rewards.balls_collected = len(self.collected_balls)
+        self.rewards.walls_hit = len(self.obstacles_hit_list)
 
         
-    def suck(self, balls: List[CircleObject]):
-        for ball in balls:
-            if circle_square_intersection(ball, self.suction):
-                self.collected_balls.append(ball)
+
 
     @classmethod
     def create_player(cls, position: Position, width: int, height: int, radians: float, 
                 suction_width: int, suction_height: int, suction_offset_x: int=0, suction_offset_y: int=0):
-
         if not 0 <= radians <= 2 * math.pi:
             raise Exception("Number must be within range 0 to 2 * pi")
 
@@ -124,8 +169,9 @@ class Player(BaseModel):
         obstacles_hit_list = []
         obstacles_hit = 0
         previous_path = []
+        rewards = Reward(balls_collected=0, walls_hit=0, points_for_moving_forward=0, points_for_moving_sideways=0, points_for_suck=0)
         return cls(player=player, suction=suction, collected_balls=collected_balls, 
-                   obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, previous_path=previous_path)
+                   obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, previous_path=previous_path, start_position=player.position, rewards=rewards)
 
 
 def rotate_square(vertices: List[Tuple[float, float]], center: Position, radians: float) -> List[Tuple[float, float]]:
@@ -145,13 +191,14 @@ def rotate_square(vertices: List[Tuple[float, float]], center: Position, radians
 
     return rotated_vertices
 
-def square_intersection(square1: SquareObject, square2: SquareObject) -> bool:
+def square_touching(square1: SquareObject, square2: SquareObject) -> bool:
     def project(vertices, axis):
         dots = [np.dot(vertex, axis) for vertex in vertices]
         return [min(dots), max(dots)]
 
     def overlap(proj1, proj2):
-        return proj1[0] <= proj2[1] and proj2[0] <= proj1[1]
+        # Adjust to check for exact touching or minimal overlap
+        return proj1[1] >= proj2[0] and proj2[1] >= proj1[0]
 
     def separating_axis_theorem(vertices1, vertices2):
         axes = []
@@ -174,33 +221,20 @@ def square_intersection(square1: SquareObject, square2: SquareObject) -> bool:
             if not overlap(proj1, proj2):
                 return False
         return True
+    
     return separating_axis_theorem(square1.vertices, square2.vertices)
         
 
-def circle_intersection(circle1: CircleObject, circle2: CircleObject) -> bool:
+def circle_touch(circle1: CircleObject, circle2: CircleObject) -> bool:
     distance = math.hypot(circle1.position.x - circle2.position.x, circle1.position.y - circle2.position.y)
-    return distance <= (circle1.radius + circle2.radius)
+    radius_sum = circle1.radius + circle2.radius
+    tolerance = 0.0001  # Small tolerance to handle floating-point precision issues
+    return abs(distance - radius_sum) <= tolerance
 
 
-def circle_square_intersection(circle: CircleObject, square: SquareObject) -> bool:
-    def point_in_polygon(point: Position, vertices: List[Tuple[float, float]]) -> bool:
-        x, y = point.x, point.y
-        n = len(vertices)
-        inside = False
-        px, py = vertices[0]
-        for i in range(1, n + 1):
-            vx, vy = vertices[i % n]
-            if y > min(py, vy):
-                if y <= max(py, vy):
-                    if x <= max(px, vx):
-                        if py != vy:
-                            xinters = (y - py) * (vx - px) / (vy - py) + px
-                        if px == vx or x <= xinters:
-                            inside = not inside
-            px, py = vx, vy
-        return inside
-
-    def circle_line_segment_intersection(circle: CircleObject, p1: Position, p2: Position) -> bool:
+def circle_square_touch(circle: CircleObject, square: SquareObject) -> bool:
+    def circle_line_segment_touch(circle: CircleObject, p1: Position, p2: Position) -> bool:
+        # Adjusted for exact touch
         cx, cy, r = circle.position.x, circle.position.y, circle.radius
         x1, y1 = p1.x, p1.y
         x2, y2 = p2.x, p2.y
@@ -223,20 +257,11 @@ def circle_square_intersection(circle: CircleObject, square: SquareObject) -> bo
 
         return False
 
-    # Check if circle's center is inside the square
-    if point_in_polygon(circle.position, square.vertices):
-        return True
-
-    # Check if any of the square's vertices are inside the circle
-    for vertex in square.vertices:
-        if circle.contains_point(Position(x=vertex[0], y=vertex[1])):
-            return True
-
-    # Check if the circle intersects with any of the square's edges
+    # Check if any of the square's edges touch the circle
     for i in range(len(square.vertices)):
-        p1 = square.vertices[i]
-        p2 = square.vertices[(i + 1) % len(square.vertices)]
-        if circle_line_segment_intersection(circle, Position(x=p1[0], y=p1[1]), Position(x=p2[0], y=p2[1])):
+        p1 = Position(x=square.vertices[i][0], y=square.vertices[i][1])
+        p2 = Position(x=square.vertices[(i + 1) % len(square.vertices)][0], y=square.vertices[(i + 1) % len(square.vertices)][1])
+        if circle_line_segment_touch(circle, p1, p2):
             return True
 
     return False
