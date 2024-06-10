@@ -8,8 +8,8 @@ from enum import Enum
 class Input(Enum):
     FORWARD = 2
     BACKWARD = -2
-    LEFT = 0.1
-    RIGHT = -0.1
+    LEFT = 0.01
+    RIGHT = -0.01
     SUCK = True
 
 class RewardValues(Enum):
@@ -29,6 +29,16 @@ class Reward(BaseModel):
 class Position(BaseModel):
     x: float
     y: float
+
+class Paths(BaseModel):
+    paths: List[Position]
+
+class Checkpoint(Position):
+    is_ball: bool
+
+class LineObject(BaseModel):
+    start_pos: Position
+    end_pos: Position
 
 class SquareObject(BaseModel):
     position: Position
@@ -96,8 +106,10 @@ class Player(BaseModel):
     collected_balls: List[CircleObject]
     obstacles_hit_list: List[SquareObject]
     previous_path: List[Position]
+    checkpoints: List[Checkpoint]
     start_position: Position
     rewards: Reward
+    line: LineObject
 
     def suck(self, balls: List[CircleObject]) -> bool:
         ball_touched = False
@@ -144,13 +156,22 @@ class Player(BaseModel):
             self.suck(balls=balls)
         self.rewards.balls_collected = len(self.collected_balls)
         self.rewards.walls_hit = len(self.obstacles_hit_list)
+        self.line = calculate_coordinates_for_line(
+            radians, self.player.position.x, self.player.position.y
+        )
 
+    def set_player(self, position: Position, radians: float):
+        self.player.position = position
+        self.player.radians = radians
+
+    
         
 
 
     @classmethod
     def create_player(cls, position: Position, width: int, height: int, radians: float, 
-                suction_width: int, suction_height: int, suction_offset_x: int=0, suction_offset_y: int=0):
+                suction_width: int, suction_height: int, suction_offset_x: int=0, 
+                suction_offset_y: int=0, checkpoints=[], line=LineObject(start_pos=Position(x=0, y=0), end_pos=Position(x=0, y=0))):
         if not 0 <= radians <= 2 * math.pi:
             raise Exception("Number must be within range 0 to 2 * pi")
 
@@ -171,7 +192,8 @@ class Player(BaseModel):
         previous_path = []
         rewards = Reward(balls_collected=0, walls_hit=0, points_for_moving_forward=0, points_for_moving_sideways=0, points_for_suck=0)
         return cls(player=player, suction=suction, collected_balls=collected_balls, 
-                   obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, previous_path=previous_path, start_position=player.position, rewards=rewards)
+                   obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, 
+                   previous_path=previous_path, start_position=player.position, rewards=rewards, checkpoints=checkpoints, line=line)
 
 
 def rotate_square(vertices: List[Tuple[float, float]], center: Position, radians: float) -> List[Tuple[float, float]]:
@@ -266,3 +288,10 @@ def circle_square_touch(circle: CircleObject, square: SquareObject) -> bool:
 
     return False
 
+def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
+    # Calculate the ending coordinates
+    end_x = start_x + length * math.sin(direction)
+    end_y = start_y + length * math.cos(direction)
+    
+    # Return the beginning and ending coordinates as tuples
+    return LineObject(start_pos=Position(x=start_x, y=start_y), end_pos=Position(x=end_x, y=end_y))
