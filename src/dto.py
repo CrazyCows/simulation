@@ -49,8 +49,6 @@ class SquareObject(BaseModel):
     offset_x: int
     offset_y: int
 
-    
-
     def update_square(self, position: Position, radians: float = 0):
         # Apply offset to the position
         position_with_offset = Position(x=position.x + self.offset_x, y=position.y + self.offset_y)
@@ -67,8 +65,6 @@ class SquareObject(BaseModel):
         ]
 
         self.vertices = rotate_square(vertices=self.vertices, center=position, radians=radians)
-            
-
     
     @classmethod
     def create_square(cls, position: Position, width: int, height: int, radians: float, offset_x=0, offset_y=0):

@@ -43,13 +43,14 @@ class RoboVision:
         mask = cv2.dilate(mask, None, iterations=2)
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnts = imutils.grab_contours(cnts)
-        whiteBalls = []
+        balls = []
 
         for cnt in cnts:
             ((x, y), radius) = cv2.minEnclosingCircle(cnt)
             if lowerSize < radius < upperSize:
-                whiteBalls.append(CircleObject(radius=int(radius), position=Position(x=x, y=y)))
-        return whiteBalls
+                balls.append(CircleObject(radius=int(radius), position=Position(x=x, y=y)))
+        return balls
+    
     def getCross(self):
         self.commonSetup()
         redLowerMask = cv2.inRange(self._hsv, self._red1lower_limit, self._red1upper_limit)
