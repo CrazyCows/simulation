@@ -212,7 +212,7 @@ class Player(BaseModel):
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, 
                    previous_path=previous_path, start_position=player.position, rewards=rewards, checkpoints=checkpoints, line=line)
 
-
+# TODO: Move everything below this line into more suitable locations if time allows.
 def rotate_square(vertices: List[Tuple[float, float]], center: Position, radians: float) -> List[Tuple[float, float]]:
     cx = center.x
     cy = center.y
