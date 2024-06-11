@@ -1,27 +1,17 @@
 from typing import List, ForwardRef
-from src.dto import CircleObject, SquareObject, Position
+from dto import CircleObject, SquareObject, Position, Player
 from pydantic import BaseModel
 
+def find_closest_ball(balls: List[CircleObject], player: Player) -> List[CircleObject]:
+    balls.sort(key=lambda ball: player.calculate_distance_to_ball(ball))
+
+def check_for_obstacles():
+    ""
 
 
-cross_1 = SquareObject.create_square(position=Position(x=240, y=550),
-                    width=160, height=20, radians=0.785398)
-cross_2 = SquareObject.create_square(position=Position(x=240, y=550),
-                    width=160, height=20, radians=2.35619)
-
-obstacles = [cross_1, cross_2]
-
-balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
-         CircleObject(radius=5, position=Position(x=872, y=231)),
-         CircleObject(radius=5, position=Position(x=512, y=333)),
-         CircleObject(radius=5, position=Position(x=432, y=90)),
-         CircleObject(radius=5, position=Position(x=144, y=666)),
-         CircleObject(radius=5, position=Position(x=963, y=155)),
-         CircleObject(radius=5, position=Position(x=1111, y=514)),
-         CircleObject(radius=5, position=Position(x=893, y=625)),
-         CircleObject(radius=5, position=Position(x=231, y=403)),]
 
 
+"""
 Vertex = ForwardRef('Vertex')
 class Vertex(BaseModel):
     position: Position
@@ -48,7 +38,7 @@ def navAlgorithm(white_balls: List[CircleObject],
 
 def point_to_point_nav(position1: Position, position2: Position, obstacles: List[SquareObject]):
     pass
-
+"""
 
 
 """

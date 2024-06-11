@@ -1,6 +1,7 @@
 import simulation
 import transmission
-from dto import Inputs, Player
+import path_creation
+from dto import Inputs, Player, Checkpoint
 import path_follow
 import pygame
 import __init__
@@ -19,9 +20,11 @@ def app(connect_to_robot: bool = False):
         transmission.connect
 
     while running:
+        path_creation.find_closest_ball(balls, player)
+        checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
+        player.checkpoints = checkpoints
         inputs: Inputs = path_follow.create_inputs(player)
         path_follow.move_player(inputs, player, obstacles, balls)
-
         if connect_to_robot:
             transmission.send_command(inputs)
 
@@ -36,6 +39,7 @@ def app(connect_to_robot: bool = False):
                 running = False
 
 if __name__ == '__main__':
+    pygame.init()
     app()
     pygame.quit()
 

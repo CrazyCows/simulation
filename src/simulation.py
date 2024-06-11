@@ -3,7 +3,7 @@ from dto import Position, Input, Player, SquareObject, CircleObject
 from typing import List
 
 
-def game(screen: pygame, player: Player, obstacles: List[SquareObject], balls: List[CircleObject]):
+def game(screen: pygame.Surface, player: Player, obstacles: List[SquareObject], balls: List[CircleObject]):
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

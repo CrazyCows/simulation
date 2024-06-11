@@ -18,7 +18,6 @@ def prepare_command(inputs: Inputs):
     degress = 0
     for command in commands:
         if(command == Input.LEFT or command ==Input.RIGHT):
-            print(degress)
             if command.value < 0:
                 degress += command.value - 2
             else:

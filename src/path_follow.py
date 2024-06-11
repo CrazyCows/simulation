@@ -50,14 +50,17 @@ def shortest_distance_to_line_with_direction(start_pos: Position, end_pos: Posit
     # We can use the cross product of the line vector and point vector to determine the direction
     cross_product = np.cross(line_vector, point_vector)
     direction = []
-
+    print(f'Crossproduct is: {cross_product}')
+    print(f'Distance is: {distance}')
     if cross_product < 0:
+        print("LEFT")
         direction.append(Input.LEFT)
-        for i in range (round(distance / 100)):
+        for i in range (round(distance / 150)):
             direction.append(Input.LEFT)
     elif cross_product > 0:
+        print("RIGHT")
         direction.append(Input.RIGHT)
-        for i in range (round(distance / 100)):
+        for i in range (round(distance / 150)):
             direction.append(Input.RIGHT)
     else:
         direction = 0  # This happens when the point is directly on the line

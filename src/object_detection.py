@@ -94,5 +94,3 @@ if __name__ == '__main__':
     #orangeBalls = robo.getOrangeBall()
     cross = robo.getCross()
 
-    for item in whiteBalls:
-        print(item)

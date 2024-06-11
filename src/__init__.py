@@ -1,8 +1,6 @@
 import pygame
 from dto import Position, SquareObject, CircleObject, Checkpoint, Player
 
-# pygame setup
-pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
@@ -35,6 +33,5 @@ balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
          CircleObject(radius=5, position=Position(x=231, y=403)),]
          #CircleObject(radius=5, position=Position(x=player.suction.position.x + player.suction.offset_x, y=player.suction.position.y + player.suction.offset_y)),]
 
-checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
 player = Player.create_player(position=Position(x=screen.get_width() / 2, y=625), 
-                width=30, height=30, radians=0, suction_height=20, suction_width=20, suction_offset_y=25, checkpoints=checkpoints)
+                width=30, height=30, radians=0, suction_height=20, suction_width=20, suction_offset_y=25)

@@ -8,8 +8,8 @@ from enum import Enum
 class Input(Enum):
     FORWARD = 2
     BACKWARD = -2
-    LEFT = 0.01
-    RIGHT = -0.01
+    LEFT = 0.025
+    RIGHT = -0.025
     SUCK = True
 
 
@@ -25,11 +25,11 @@ class Inputs(BaseModel):
             if input == Input.FORWARD:
                 d_forward += Input.FORWARD.value
             elif input == Input.BACKWARD:
-                d_forward -= Input.BACKWARD.value
+                d_forward += Input.BACKWARD.value
             elif input == Input.LEFT:
                 d_radians += Input.LEFT.value
             elif input == Input.RIGHT:
-                d_radians -= Input.RIGHT.value
+                d_radians += Input.RIGHT.value
             elif input == Input.SUCK:
                 suck = True
         return d_forward, d_radians, suck
@@ -75,7 +75,6 @@ class SquareObject(BaseModel):
         # Apply offset to the position
         position_with_offset = Position(x=position.x + self.offset_x, y=position.y + self.offset_y)
         self.position = position_with_offset
-        print(f'new pso: {position.y}')
         half_width = self.width / 2
         half_height = self.height / 2
         self.radians = radians
@@ -181,7 +180,10 @@ class Player(BaseModel):
         self.player.position = position
         self.player.radians = radians
 
-    
+    def calculate_distance_to_ball(self, ball: CircleObject):
+        return math.dist((self.player.position.x, self.player.position.y), (ball.position.x, ball.position.y))
+
+        
         
 
 
