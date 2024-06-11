@@ -1,15 +1,18 @@
 import socket
 from typing import List
-from dto import Input
+from dto import Inputs, Input
 import math
 
 server_ip = '192.168.52.77'  # Erstat med IP-adressen til din EV3
 port = 5000
+client_socket = socket.socket # Modified to not crash program on launch... Can't instantiate if no robot.
 
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((server_ip, port))
+def connect():
+    client_socket = client_socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((server_ip, port))
 
-def prepare_command(commands: List[Input]):
+def prepare_command(inputs: Inputs):
+    commands = inputs.inputs
     suck = False
     speed = 0
     degress = 0

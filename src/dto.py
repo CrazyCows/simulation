@@ -12,6 +12,28 @@ class Input(Enum):
     RIGHT = -0.01
     SUCK = True
 
+
+class Inputs(BaseModel):
+    inputs: List[Input]
+    
+    def read_inputs(self):
+        d_forward = 0
+        d_radians = 0
+        suck = False
+
+        for input in self.inputs:
+            if input == Input.FORWARD:
+                d_forward += Input.FORWARD.value
+            elif input == Input.BACKWARD:
+                d_forward -= Input.BACKWARD.value
+            elif input == Input.LEFT:
+                d_radians += Input.LEFT.value
+            elif input == Input.RIGHT:
+                d_radians -= Input.RIGHT.value
+            elif input == Input.SUCK:
+                suck = True
+        return d_forward, d_radians, suck
+
 class RewardValues(Enum):
     BALL_COLLECT = 10
     WALL_HIT = 10
@@ -107,13 +129,10 @@ class Player(BaseModel):
     rewards: Reward
     line: LineObject
 
-    def suck(self, balls: List[CircleObject]) -> bool:
-        ball_touched = False
+    def suck(self, balls: List[CircleObject]):
         for ball in balls:
             if circle_square_touch(ball, self.suction):
                 self.collected_balls.append(ball)
-                ball_touched = True
-        return ball_touched
 
     def obstacle_detection(self, obstacles) -> bool:
         obstacle_touched = False
@@ -124,13 +143,15 @@ class Player(BaseModel):
         return obstacle_touched
                 
 
-    def move(self, distance, radians: float, obstacles: List[SquareObject]=[], balls: List[CircleObject]=[], suck=False):
+    def move(self, inputs: Inputs, obstacles: List[SquareObject]=[], balls: List[CircleObject]=[]):
         """
             Args:
                 distance: Distance from the players current position in pixels
                 radians: Delta in radians from the players current direction
                 obstacles: Objects the player can't collide with
         """
+
+        distance, radians, suck = inputs.read_inputs()
 
         radians += self.player.radians
         dy = math.cos(radians) * distance

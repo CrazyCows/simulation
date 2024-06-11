@@ -1,7 +1,23 @@
-from dto import Player, Input, Position
+from dto import Player, Input, Position, Inputs, SquareObject, CircleObject
+from typing import List
 import math
 import numpy as np
 
+# TODO: Move this somewhere else. Idk where, but somewhere!
+def create_inputs(player: Player) -> Inputs:
+    inputs = Inputs(inputs=[])
+    
+    forwards = move_towards_checkpoint(player)
+    direction = shortest_distance_to_line_with_direction(player.line.start_pos, player.line.end_pos, player.checkpoints[0])
+    if direction != 0:
+        inputs.inputs.extend(direction)
+    inputs.inputs.extend(forwards)
+    return inputs
+
+# TODO: Move this somewhere else. Idk where, but somewhere!
+def move_player(inputs: Inputs, player: Player, obstacles: List[SquareObject], balls: List[CircleObject]):
+    player.move(inputs, obstacles, balls)
+    [balls.remove(ball) for ball in balls if ball in player.collected_balls]
 
 def shortest_distance_to_line_with_direction(start_pos: Position, end_pos: Position, ball_pos: Position):
     # Convert the inputs to numpy arrays for easier manipulation
@@ -65,3 +81,4 @@ def move_towards_checkpoint(player: Player):
 
     inputs.append(Input.FORWARD)
     return inputs
+

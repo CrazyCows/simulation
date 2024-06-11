@@ -1,38 +1,10 @@
 import pygame
-from pygame import Rect
-from dto import Position, Input, RewardValues
-from time import sleep
+from dto import Position, Input, Player, SquareObject, CircleObject
 from typing import List
-from path_correction import move_towards_checkpoint, shortest_distance_to_line_with_direction
-import __init__
 
-screen = __init__.screen
-player = __init__.player
-obstacles = __init__.obstacles
-balls = __init__.balls
-clock = __init__.clock
 
-def game(inputs: List[Input]):
-    d_forward = 0
-    d_radians = 0
-    suck = False
-    for input in inputs:
-        if input == Input.FORWARD:
-            d_forward += Input.FORWARD.value
-            player.rewards.points_for_moving_forward = player.rewards.points_for_moving_forward + RewardValues.MOVING_FORWARD.value
-        elif input == Input.BACKWARD:
-            d_forward -= Input.BACKWARD.value
-            player.rewards.points_for_moving_forward = player.rewards.points_for_moving_forward + RewardValues.MOVING_FORWARD.value
-        elif input == Input.LEFT:
-            d_radians += Input.LEFT.value
-            player.rewards.points_for_moving_sideways = player.rewards.points_for_moving_sideways + RewardValues.MOVING_SIDEWAYS.value
-        elif input == Input.RIGHT:
-            d_radians -= Input.RIGHT.value
-            player.rewards.points_for_moving_sideways = player.rewards.points_for_moving_sideways + RewardValues.MOVING_SIDEWAYS.value
-        elif input == Input.SUCK:
-            suck = True
-            player.rewards.points_for_suck = player.rewards.points_for_suck + RewardValues.SUCK.value
-            
+def game(screen: pygame, player: Player, obstacles: List[SquareObject], balls: List[CircleObject]):
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
@@ -63,22 +35,11 @@ def game(inputs: List[Input]):
     
     create_trail(player.previous_path, color="white")
 
-
-        
-    player.move(d_forward, d_radians, obstacles, balls, suck)
-    for ball in balls:
-        if ball in player.collected_balls:
-            balls.remove(ball)
-
     pygame.display.flip()
-    
-    # Frames/sec
-    clock.tick(60) / 1000
-    return player.rewards
 
 
-
-def create_inputs(keys):
+# NOTE: Function is just for testing. Is not used. Can be ignored.
+def create_manual_inputs(keys):
     """
         This function is in case we want to control the robot manually.
     """
@@ -94,31 +55,3 @@ def create_inputs(keys):
     if keys[pygame.K_SPACE] or "SPACE" in keys:
         inputs.append(Input.SUCK)
     return inputs
-
-
-
-def init():
-    inputs = []
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    
-    forwards = move_towards_checkpoint(player)
-    direction = shortest_distance_to_line_with_direction(player.line.start_pos, player.line.end_pos, player.checkpoints[0])
-    if direction != 0:
-        inputs.extend(direction)
-    inputs.extend(forwards)
-    game(inputs)
-    # send_command(inputs)
-    
-
-if __name__ == '__main__':
-
-    #init()
-    #player = sim.player
-    running = True
-    while running:
-        init()
-
-    pygame.quit()
-
