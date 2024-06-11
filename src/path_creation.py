@@ -1,9 +1,16 @@
 from typing import List, ForwardRef
 from dto import CircleObject, SquareObject, Position, Player
 from pydantic import BaseModel
+import math
 
 def find_closest_ball(balls: List[CircleObject], player: Player) -> List[CircleObject]:
     balls.sort(key=lambda ball: player.calculate_distance_to_ball(ball))
+    temp_path = []
+    for i, ball in enumerate(balls):
+        if i == 0:
+            continue
+        temp_path.append(SquareObject.create_square(position=ball.position, width=30, height=round(math.dist((ball.position.x, ball.position.y), (balls[i - 1].position.x, balls[i - 1].position.y))), radians=0))
+    return temp_path
 
 def check_for_obstacles():
     ""

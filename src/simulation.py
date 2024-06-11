@@ -3,7 +3,7 @@ from dto import Position, Input, Player, SquareObject, CircleObject
 from typing import List
 
 
-def game(screen: pygame.Surface, player: Player, obstacles: List[SquareObject], balls: List[CircleObject]):
+def game(screen: pygame.Surface, player: Player, obstacles: List[SquareObject], balls: List[CircleObject], calculated_path: List[SquareObject]):
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -17,6 +17,9 @@ def game(screen: pygame.Surface, player: Player, obstacles: List[SquareObject], 
     for ball in balls:
         pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), ball.radius)
     
+    for path in calculated_path:
+        pygame.draw.polygon(screen, "grey", path.vertices)
+
     pygame.draw.polygon(screen, "green", player.player.vertices)
     pygame.draw.polygon(screen, "yellow", player.suction.vertices)
     pygame.draw.line(screen, "white", (player.line.start_pos.x, player.line.start_pos.y), (player.line.end_pos.x, player.line.end_pos.y))

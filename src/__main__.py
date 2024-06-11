@@ -20,7 +20,7 @@ def app(connect_to_robot: bool = False):
         transmission.connect
 
     while running:
-        path_creation.find_closest_ball(balls, player)
+        temp_paths = path_creation.find_closest_ball(balls, player)
         checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
         player.checkpoints = checkpoints
         inputs: Inputs = path_follow.create_inputs(player)
@@ -29,7 +29,7 @@ def app(connect_to_robot: bool = False):
             transmission.send_command(inputs)
 
         # NOTE: Updates the visual representation
-        simulation.game(screen, player, obstacles, balls)
+        simulation.game(screen, player, obstacles, balls, temp_paths)
         
         # Tickrate, frames/sec.
         clock.tick(60) / 1000
