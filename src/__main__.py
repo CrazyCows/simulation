@@ -1,9 +1,8 @@
 import gui.visualization as visualization
 import transmission
-import path_creation
+from path import path_creation, path_follow
 from dto.robot import Move
-from src.image_recognizition.object_detection import RoboVision
-import path_follow
+from image_recognizition.object_detection import RoboVision
 import pygame
 import __init__
 from typing import List
