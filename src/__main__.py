@@ -2,7 +2,7 @@ import gui.visualization as visualization
 import transmission
 import path_creation
 from dto.robot import Move
-from object_detection import RoboVision
+from src.image_recognizition.object_detection import RoboVision
 import path_follow
 import pygame
 import __init__
