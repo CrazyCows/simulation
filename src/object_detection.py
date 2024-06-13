@@ -2,8 +2,9 @@ import cv2
 import imutils
 import numpy as np
 from cv2.gapi.wip.draw import Circle
+from typing import List, Tuple
 
-from src.dto import CircleObject, SquareObject, Position
+from dto.shapes import CircleObject, Position
 
 
 def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> float:
@@ -82,7 +83,7 @@ class RoboVision:
         self._blurred = cv2.GaussianBlur(frame, (5, 5), 0)
         self._hsv = cv2.cvtColor(self._blurred, cv2.COLOR_BGR2HSV)
 
-    def _getBallishThing(self, lowerMask, upperMask, lowerSize, upperSize):
+    def _getBallishThing(self, lowerMask, upperMask, lowerSize, upperSize) -> List[CircleObject]:
         self.commonSetup()
         mask = cv2.inRange(self._hsv, lowerMask, upperMask)
         mask = cv2.erode(mask, None, iterations=2)
@@ -116,18 +117,16 @@ class RoboVision:
                 _approximations.append(approx)
         return _approximations
 
-
-
-    def get_white_balls(self):
+    def get_white_balls(self) -> List[CircleObject]:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
 
-    def get_orange_ball(self):
+    def get_orange_ball(self) -> List[CircleObject]:
         return self._getBallishThing(self.todo, self.todo, self._whiteSizeLower, self._whiteSizeUpper)
 
-    def get_egg(self):
+    def get_egg(self) -> List[CircleObject]:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
 
-    def get_robot(self):
+    def get_robot(self) -> Tuple[CircleObject, float]:
         greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower, self._dotSizeUpper)
         if len(greendots) == 0:
             raise Exception("No green dots detected")
@@ -146,8 +145,6 @@ class RoboVision:
         angle = calculate_positive_angle(greendot, bluedot)
         print("Center: " + str(center) + "  Angle: " + str(angle))
         return center, angle
-
-
 
 
 if __name__ == '__main__':

@@ -1,29 +1,38 @@
-from dto import Player, Input, Position, Inputs, SquareObject, CircleObject
+from dto.robot import Robot, Move, MoveCommand
+from dto.shapes import CircleObject, SquareObject
 from typing import List
 import math
 import numpy as np
 
 # TODO: Move this somewhere else. Idk where, but somewhere!
-def create_inputs(player: Player) -> Inputs:
-    inputs = Inputs(inputs=[])
+def create_move(robot: Robot) -> Move:
+    """
+    Moves the robot closer to the first checkpoint in the robots list of checkpoints.
+    """
+    speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
+    radians = calculate_radians_to_turn(robot)  # We already calculated the checkpoint to go to elsewhere...
+    suck = suck_if_small(robot)
+    move = Move(speed=speed, radians=radians, suck=suck)
     
-    forwards = move_towards_checkpoint(player)
-    direction = shortest_distance_to_line_with_direction(player.line.start_pos, player.line.end_pos, player.checkpoints[0])
-    if direction != 0:
-        inputs.inputs.extend(direction)
-    inputs.inputs.extend(forwards)
-    return inputs
+    return move
 
 # TODO: Move this somewhere else. Idk where, but somewhere!
-def move_player(inputs: Inputs, player: Player, obstacles: List[SquareObject], balls: List[CircleObject]):
-    player.move(inputs, obstacles, balls)
-    [balls.remove(ball) for ball in balls if ball in player.collected_balls]
+def move_robot(move: Move, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], sim_only: bool = True):
+    robot.move(move, obstacles, balls)
 
-def shortest_distance_to_line_with_direction(start_pos: Position, end_pos: Position, ball_pos: Position):
+    if sim_only is False:
+        [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
+
+def calculate_radians_to_turn(robot: Robot) -> float:
+    """
+    Auto-correcting algorithm which (hopefully) always keeps the robot looking
+    towards the checkpoint.
+    """
+
     # Convert the inputs to numpy arrays for easier manipulation
-    start_pos = (start_pos.x, start_pos.y)
-    end_pos = (end_pos.x, end_pos.y)
-    coordinate = (ball_pos.x, ball_pos.y)
+    start_pos = (robot.line.start_pos.x, robot.line.start_pos.y)
+    end_pos = (robot.line.end_pos.x, robot.line.end_pos.y)
+    coordinate = (robot.checkpoints[0].x, robot.checkpoints[0].y)
     start = np.array(start_pos)
     end = np.array(end_pos)
     point = np.array(coordinate)
@@ -35,7 +44,7 @@ def shortest_distance_to_line_with_direction(start_pos: Position, end_pos: Posit
     # Calculate the projection of the point vector onto the line vector
     line_length_squared = np.dot(line_vector, line_vector)
     if line_length_squared == 0:
-        return np.linalg.norm(point_vector), "indeterminate"  # The start and end positions are the same
+        return 0.0  # The start and end positions are the same
     
     t = max(0, min(1, np.dot(point_vector, line_vector) / line_length_squared))
     
@@ -45,43 +54,43 @@ def shortest_distance_to_line_with_direction(start_pos: Position, end_pos: Posit
     # Calculate the distance from the point to the nearest point on the line segment
     distance = np.linalg.norm(point - nearest_point)
     if distance < 5:
-        return 0
+        return 0.0
+    
     # Determine the direction to turn (left or right)
     # We can use the cross product of the line vector and point vector to determine the direction
     cross_product = np.cross(line_vector, point_vector)
-    direction = []
-    print(f'Crossproduct is: {cross_product}')
-    print(f'Distance is: {distance}')
+    direction = 0.0
     if cross_product < 0:
-        print("LEFT")
-        direction.append(Input.LEFT)
-        for i in range (round(distance / 150)):
-            direction.append(Input.LEFT)
+        direction += MoveCommand.LEFT.value
+        for i in range(round(distance / 150)):
+            direction += MoveCommand.LEFT.value
     elif cross_product > 0:
-        print("RIGHT")
-        direction.append(Input.RIGHT)
-        for i in range (round(distance / 150)):
-            direction.append(Input.RIGHT)
+        direction += MoveCommand.RIGHT.value
+        for i in range(round(distance / 150)):
+            direction += MoveCommand.RIGHT.value
     else:
-        direction = 0  # This happens when the point is directly on the line
+        direction = 0.0  # This happens when the point is directly on the line
+    
     return direction
 
-def move_towards_checkpoint(player: Player):
-    inputs = []
-    checkpoint_pos = (player.checkpoints[0].x, player.checkpoints[0].y)
-    current_player_balls = len(player.collected_balls)
-    player_pos = (player.player.position.x, player.player.position.y)
-    distance_to_checkpoint = math.dist(player_pos, checkpoint_pos)
-    distance_to_ball = 0
-    for checkpoint in player.checkpoints:
-        if checkpoint.is_ball:
-            distance_to_ball = math.dist(player_pos, (checkpoint.x, checkpoint.y))
-            break
+def suck_if_small(robot: Robot) -> bool:
+    """
+    Sucks if the distance to the ball is too small.
+    """
+    suck = False
+    robot_pos = (robot.robot.position.x, robot.robot.position.y)
+    distance_to_ball = math.dist(robot_pos, (robot.checkpoints[0].x, robot.checkpoints[0].y))
     if distance_to_ball < 25:
-        inputs.append(Input.SUCK)
+        suck = True
+
+    return suck
+
+def remove_checkpoint_if_reached(robot: Robot):
+    """
+    Removes the current checkpoint if it has been reached.
+    """
+    checkpoint_pos = (robot.checkpoints[0].x, robot.checkpoints[0].y)
+    robot_pos = (robot.robot.position.x, robot.robot.position.y)
+    distance_to_checkpoint = math.dist(robot_pos, checkpoint_pos)
     if distance_to_checkpoint < 15:
-        player.checkpoints.pop(0)
-
-    inputs.append(Input.FORWARD)
-    return inputs
-
+        robot.checkpoints.pop(0)

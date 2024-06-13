@@ -1,57 +1,85 @@
-from typing import List, ForwardRef
-from dto import CircleObject, SquareObject, Position, Player
+from typing import List, Tuple
+from dto.shapes import CircleObject, SquareObject, Position
+from dto.robot import Robot, Checkpoint
 from pydantic import BaseModel
 import math
 
-def find_closest_ball(balls: List[CircleObject], player: Player) -> List[CircleObject]:
-    balls.sort(key=lambda ball: player.calculate_distance_to_ball(ball))
-    temp_path = []
-    for i, ball in enumerate(balls):
-        if i == 0:
-            continue
-        temp_path.append(SquareObject.create_square(position=ball.position, width=30, height=round(math.dist((ball.position.x, ball.position.y), (balls[i - 1].position.x, balls[i - 1].position.y))), radians=0))
-    return temp_path
+# TODO: Implement moving around obstacles
+def create_path(balls: List[CircleObject], robot: Robot, obstacles: List[SquareObject]) -> Tuple[List[SquareObject], List[Checkpoint]]:
+    """
+        Creates checkpoints to follow by creating a path between all balls to pick up.
+
+        args:
+            List[SquareObject]: Creates a list of square objects mimicking the robots path, including width considerations. 
+            List[Checkpoint]: List of checkpoints which the robot must pass.
+    """
+
+    temp_balls = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))
+    first_ball = True
+    checkpoints = []  # A list of checkpoints the robot must pass
+    path: List[SquareObject] = [] # Path is a line with a width to ensure the robot does not touch the obstacles
+    def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
+        return math.dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
+
+    while temp_balls:
+        if first_ball:
+            # Calculate the difference in x and y coordinates
+            dx = robot.robot.position.x - temp_balls[0].position.x
+            dy = robot.robot.position.y - temp_balls[0].position.y
+
+            # Calculate the angle in radians
+            angle_radians = math.atan2(dy, dx)
+            height = round(math.dist((robot.robot.position.x, robot.robot.position.y), (temp_balls[0].position.x, temp_balls[0].position.y)))
+            width = 30
+
+            # Calculate the midpoint position between the robot and the first ball
+            mid_x = (robot.robot.position.x + temp_balls[0].position.x) / 2
+            mid_y = (robot.robot.position.y + temp_balls[0].position.y) / 2
+
+            # Use this angle and midpoint position in your create_square function call
+            temp_path = SquareObject.create_square(
+                position=Position(x=mid_x, y=mid_y),
+                width=width,
+                height=height,
+                radians=-(angle_radians - math.pi/2)
+            )
+
+            first_ball = False
+        else:
+            sort_ball = temp_balls[0]
+            temp_balls.sort(key=lambda ball: calculate_speed_to_ball(ball, sort_ball))
+            # Calculate the difference in x and y coordinates
+            dx = temp_balls[0].position.x - temp_balls[1].position.x
+            dy = temp_balls[0].position.y - temp_balls[1].position.y
+            angle_radians = math.atan2(dy, dx)
+
+            # Calculate the midpoint position between the first and second ball
+            mid_x = (temp_balls[0].position.x + temp_balls[1].position.x) / 2
+            mid_y = (temp_balls[0].position.y + temp_balls[1].position.y) / 2
+
+            # Use this angle and midpoint position in your create_square function call
+            temp_path = SquareObject.create_square(
+                position=Position(x=mid_x, y=mid_y),
+                width=30,
+                height=round(math.dist((temp_balls[0].position.x, temp_balls[0].position.y), (temp_balls[1].position.x, temp_balls[1].position.y))),
+                radians=-(angle_radians - math.pi/2)
+            )
+            temp_balls.pop(0)
+        
+
+        path.append(temp_path)  
+        checkpoints.append(Checkpoint(x=temp_balls[0].position.x, y=temp_balls[0].position.y, is_ball=True))
+        if len(temp_balls) == 1:
+            temp_balls = None
+        
+    return path, checkpoints
+
+
+def check_for_obstacles_in_path_and_recalculate():
+
+    """"""
+
 
 def check_for_obstacles():
     ""
 
-
-
-
-"""
-Vertex = ForwardRef('Vertex')
-class Vertex(BaseModel):
-    position: Position
-    connected_vertices: List[Vertex]
-
-
-
-def navAlgorithm(white_balls: List[CircleObject],
-                 orange_ball: CircleObject,
-                 egg: CircleObject,
-                 obstacles: List[SquareObject]):
-    white_ball_vertices: List[Vertex] = [Vertex(position=ball.position, connected_vertices=[]) for ball in white_balls]
-    orange_ball_vertex = Vertex(position=orange_ball.position, connected_vertices=[])
-    egg_vertex = Vertex(position=egg.position, connected_vertices=[])
-    obstacles_vertices: List[Vertex] = []
-    for square in obstacles:
-        obstacles_vertices.append(Vertex(position=Position(x=square.vertices[0][0], y=square.vertices[0][1]), connected_vertices=[]))
-        obstacles_vertices.append(Vertex(position=Position(x=square.vertices[1][0], y=square.vertices[1][1]), connected_vertices=[]))
-
-    for obs in obstacles_vertices:
-        print(obs)
-
-
-
-def point_to_point_nav(position1: Position, position2: Position, obstacles: List[SquareObject]):
-    pass
-"""
-
-
-"""
-(__name__== '__main__'):
-    navAlgorithm(white_balls=balls,
-                 orange_ball=CircleObject(radius=5, position=Position(x=127, y=344)),
-                 egg=CircleObject(radius=5, position=Position(x=367, y=864)),
-                 obstacles=obstacles)
-"""

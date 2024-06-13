@@ -1,5 +1,7 @@
 import pygame
-from dto import Position, SquareObject, CircleObject, Checkpoint, Player
+from dto.shapes import SquareObject, CircleObject, Position
+from dto.robot import Robot
+
 
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
@@ -21,7 +23,11 @@ cross_2 = SquareObject.create_square(position=Position(x=screen.get_width() - sc
                     width=160, height=20, radians=2.35619)
 
 obstacles = [left_wall, right_wall, top_wall, bot_wall, cross_1, cross_2]
-
+"""
+balls = [
+         CircleObject(radius=5, position=Position(x=893, y=625)),
+         CircleObject(radius=5, position=Position(x=872, y=231)),]
+"""
 balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
          CircleObject(radius=5, position=Position(x=872, y=231)),
          CircleObject(radius=5, position=Position(x=512, y=333)),
@@ -31,7 +37,7 @@ balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
          CircleObject(radius=5, position=Position(x=1111, y=514)),
          CircleObject(radius=5, position=Position(x=893, y=625)),
          CircleObject(radius=5, position=Position(x=231, y=403)),]
-         #CircleObject(radius=5, position=Position(x=player.suction.position.x + player.suction.offset_x, y=player.suction.position.y + player.suction.offset_y)),]
+         #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
 
-player = Player.create_player(position=Position(x=screen.get_width() / 2, y=625), 
+robot = Robot.create_robot(position=Position(x=screen.get_width() / 2, y=625), 
                 width=30, height=30, radians=0, suction_height=20, suction_width=20, suction_offset_y=25)

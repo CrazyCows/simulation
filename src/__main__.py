@@ -1,35 +1,43 @@
-import simulation
+import gui.visualization as visualization
 import transmission
 import path_creation
-from dto import Inputs, Player, Checkpoint
+from dto.robot import Move
+from object_detection import RoboVision
 import path_follow
 import pygame
 import __init__
 from typing import List
 
-screen = __init__.screen
-player = __init__.player
-balls = __init__.balls
-obstacles = __init__.obstacles
-clock = __init__.clock
-
 
 def app(connect_to_robot: bool = False):
+    screen = __init__.screen
+    robot = __init__.robot
+    balls = __init__.balls
+    obstacles = __init__.obstacles
+    clock = __init__.clock
     running = True
     if connect_to_robot:
         transmission.connect
 
     while running:
-        temp_paths = path_creation.find_closest_ball(balls, player)
-        checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
-        player.checkpoints = checkpoints
-        inputs: Inputs = path_follow.create_inputs(player)
-        path_follow.move_player(inputs, player, obstacles, balls)
         if connect_to_robot:
-            transmission.send_command(inputs)
-
+            print("WHY THE FUCK AM I RUNNING?")
+            balls = RoboVision().get_egg()
+            robot_position, radians = RoboVision().get_robot()
+            robot = robot.create_robot(position=robot_position, 
+                            width=30, height=30, radians=radians, suction_height=20, suction_width=20, suction_offset_y=25)
+    
+        # Temp solution, just redrawing balls all da time
+        path, checkpoints = path_creation.create_path(balls, robot, obstacles)
+        # checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
+        robot.checkpoints = checkpoints
+        move : Move = path_follow.create_move(robot)
+        path_follow.move_robot(move, robot, obstacles, balls, connect_to_robot)
+        if connect_to_robot:
+            transmission.send_command(move)
+    
         # NOTE: Updates the visual representation
-        simulation.game(screen, player, obstacles, balls, temp_paths)
+        visualization.game(screen, robot, obstacles, balls, path)
         
         # Tickrate, frames/sec.
         clock.tick(60) / 1000
@@ -40,6 +48,6 @@ def app(connect_to_robot: bool = False):
 
 if __name__ == '__main__':
     pygame.init()
-    app()
+    app(False)
     pygame.quit()
 
