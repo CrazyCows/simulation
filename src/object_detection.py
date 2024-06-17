@@ -6,6 +6,51 @@ from cv2.gapi.wip.draw import Circle
 from src.dto import CircleObject, SquareObject, Position
 
 
+def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):
+    """
+    Increase the vibrance of an image by selectively increasing its saturation with a smooth transition.
+
+    Parameters:
+    image (numpy.ndarray): Input image in BGR format.
+    vibrance_scale (float): Scale factor for increasing saturation.
+                            Values greater than 1.0 will increase saturation.
+    threshold_low (int): Lower threshold for saturation values.
+    threshold_high (int): Upper threshold for saturation values.
+
+    Returns:
+    numpy.ndarray: Image with increased vibrance.
+    """
+    # Convert the image from BGR to HSV color space
+    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    # Split the HSV image into its channels
+    h, s, v = cv2.split(hsv_image)
+
+    # Create a mask for the saturation increase
+    mask_low = s >= threshold_low
+    mask_high = s <= threshold_high
+
+    # Create a smooth transition mask
+    transition_mask = np.logical_and(mask_low, mask_high)
+    scaling_factor = np.zeros_like(s, dtype=np.float32)
+
+    scaling_factor[mask_low] = 1.0
+    scaling_factor[transition_mask] = ((s[transition_mask] - threshold_low) / (threshold_high - threshold_low)) * (
+                vibrance_scale - 1.0) + 1.0
+    scaling_factor[mask_high] = vibrance_scale
+
+    # Apply the scaling factor to the saturation channel
+    s = np.clip(s * scaling_factor, 0, 255).astype(np.uint8)
+
+    # Merge the channels back
+    hsv_image = cv2.merge([h, s, v])
+
+    # Convert the image back from HSV to BGR color space
+    final_image = cv2.cvtColor(hsv_image, cv2.COLOR_HSV2BGR)
+
+    return final_image
+
+
 def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> float:
     pos1 = np.array([circle1.position.x, circle1.position.y])
     pos2 = np.array([circle2.position.x, circle2.position.y])
@@ -23,27 +68,31 @@ class RoboVision:
     _whiteSizeUpper = 20
     _eggSizeLower = _whiteSizeUpper
     _eggSizeUpper = 50
-    _dotSizeLower = 2
-    _dotSizeUpper = 1000000
+    _dotSizeLower = 4
+    _dotSizeUpper = 15
+    _robot_width = 100
+    _robot_height = 100
 
-    #Outdated values
-    """
-    _red1lower_limit = np.array([0, 100, 20])
-    _red1upper_limit = np.array([10, 255, 255])
-    _red2lower_limit = np.array([160, 40, 20]) #TODO: Sat here should be higher ideally
-    _red2upper_limit = np.array([179, 255, 255])
+    whiteLower = np.array([0, 0, 225])
+    whiteUpper = np.array([255, 50, 255])
 
-    #_green_lower_limit = np.array([67, 70, 40])
-    #_green_upper_limit = np.array([97, 255, 255])
-    #_blue_lower_limit = np.array([98, 70, 40])
-    #_blue_upper_limit = np.array([145, 255, 255])
-    _green_lower_limit = np.array([55, 100, 70])
-    _green_upper_limit = np.array([80, 255, 255])
+    red1lower_limit = np.array([0, 125, 80])
+    red1upper_limit = np.array([15, 255, 255])
+
+    red2lower_limit = np.array([160, 125, 80])
+    red2upper_limit = np.array([179, 255, 255])
+
+    _green_lower_limit = np.array([30, 180, 45])
+    _green_upper_limit = np.array([90, 255, 255])
     # Id like to avoid overlap in these filters
-    _blue_lower_limit = np.array([95, 180, 40])
-    _blue_upper_limit = np.array([115, 255, 255])
-    """
+    # IS SET TO BLACC
+    _blue_lower_limit = np.array([90, 180, 60])
+    _blue_upper_limit = np.array([130, 255, 255])
 
+    _orange_lower_limit = np.array([15, 240, 140])
+    _orange_upper_limit = np.array([50, 255, 255])
+
+    """ Outdated values
     whiteLower = np.array([0, 0, 220])
     whiteUpper = np.array([255, 100, 255])
 
@@ -61,9 +110,13 @@ class RoboVision:
 
     _orange_lower_limit = np.array([10, 100, 40])
     _orange_upper_limit = np.array([25, 255, 255])
+    """
 
     _cross_area = 100
     _vs = cv2.VideoCapture(0)
+    # Set the resolution to 1920x1080
+    _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+    _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
 
     #Variables to be updated every darn iteration
@@ -79,6 +132,7 @@ class RoboVision:
 
         if frame is None:
             raise Exception("Camera error")
+        frame = increase_vibrance(frame, 1.5)
         self._blurred = cv2.GaussianBlur(frame, (5, 5), 0)
         self._hsv = cv2.cvtColor(self._blurred, cv2.COLOR_BGR2HSV)
 
@@ -144,7 +198,7 @@ class RoboVision:
                               position=Position(x=int((greendot.position.x+bluedot.position.x)/2),
                                                 y=int((greendot.position.y+bluedot.position.y)/2)))
         angle = calculate_positive_angle(greendot, bluedot)
-        print("Center: " + str(center) + "  Angle: " + str(angle))
+        print("Center: " + str(center) + "  Angle: " + str(angle) + " radians")
         return center, angle
 
 
@@ -156,7 +210,8 @@ if __name__ == '__main__':
     while True:
         try:
             robo.get_robot()
-        except:
+        except Exception as e:
+            print(f"Error determining robot position or rotation: {e}")
             continue
     whiteBalls = robo.get_white_balls()
     #orangeBalls = robo.getOrangeBall()
