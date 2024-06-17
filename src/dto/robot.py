@@ -35,6 +35,7 @@ class Robot(BaseModel):
     collected_balls: List[CircleObject]
     obstacles_hit_list: List[SquareObject]
     previous_path: List[Position]
+    prev_checkpoint: Checkpoint = None
     checkpoints: List[Checkpoint]
     start_position: Position
     line: LineObject

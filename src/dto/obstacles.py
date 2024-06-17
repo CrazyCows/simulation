@@ -56,7 +56,7 @@ class Cross(BaseModel):
                 safe_zone_x = cross_center.x + direction_x * max_distance * 1.25
                 safe_zone_y = cross_center.y + direction_y * max_distance * 1.25
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
-            """
+            
             if i == 3 or i == 7:
                 safe_zone_x = cross_center.x + direction_x * max_distance
                 safe_zone_y = cross_center.y + direction_y * max_distance
@@ -66,7 +66,7 @@ class Cross(BaseModel):
                 safe_zone_x = cross_center.x + direction_x * max_distance
                 safe_zone_y = cross_center.y + direction_y * max_distance
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
-            """
+            
         
             
         return cls(square_1=square_1, square_2=square_2, safe_zones=safe_zones)

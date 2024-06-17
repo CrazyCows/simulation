@@ -2,6 +2,7 @@ from dto.robot import Robot, Move, MoveCommand
 from dto.shapes import CircleObject, SquareObject
 from dto.obstacles import Cross
 from typing import List
+from helper import overlap_detection
 import math
 import numpy as np
 
@@ -23,6 +24,9 @@ def move_robot(move: Move, robot: Robot, obstacles: List[SquareObject], balls: L
 
     if sim_only is False:
         [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
+    if overlap_detection.circle_square_touch(CircleObject(radius=20, position=robot.checkpoints[0]), robot.robot):
+        robot.prev_checkpoint = robot.checkpoints[0]
+        
 
 def calculate_radians_to_turn(robot: Robot) -> float:
     """
@@ -85,13 +89,3 @@ def suck_if_small(robot: Robot) -> bool:
         suck = True
 
     return suck
-
-def remove_checkpoint_if_reached(robot: Robot):
-    """
-    Removes the current checkpoint if it has been reached.
-    """
-    checkpoint_pos = (robot.checkpoints[0].x, robot.checkpoints[0].y)
-    robot_pos = (robot.robot.position.x, robot.robot.position.y)
-    distance_to_checkpoint = math.dist(robot_pos, checkpoint_pos)
-    if distance_to_checkpoint < 15:
-        robot.checkpoints.pop(0)

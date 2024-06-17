@@ -22,7 +22,6 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[SquareObjec
     path: List[SquareObject] = [] # Path is a line with a width to ensure the robot does not touch the obstacles
     def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
         return math.dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
-    prev_ball = temp_balls[0]
     while temp_balls:
         if first_ball:
             temp_path = create_temp_path(robot.robot.position, temp_balls[0].position)
@@ -31,11 +30,10 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[SquareObjec
             sort_ball = temp_balls[0]
             temp_balls.sort(key=lambda ball: calculate_speed_to_ball(ball, sort_ball))
             temp_path = create_temp_path(temp_balls[0].position, temp_balls[1].position)
-            prev_ball = temp_balls[0]
             temp_balls.pop(0)
 
         if check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path):
-            additional_path, additional_checkpoints = recalculate_path(cross, prev_ball.position, temp_balls[0].position)
+            additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_balls[0].position, robot)
             if len(additional_checkpoints) > 1:
                 path.append(create_temp_path(temp_balls[0].position, additional_checkpoints[1]))
             else:
@@ -71,7 +69,7 @@ def check_if_wall_is_touched(walls: List[SquareObject], current_path: SquareObje
         return False
 
 
-def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position) -> Tuple[List[SquareObject], List[Checkpoint]]:
+def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, robot: Robot) -> Tuple[List[SquareObject], List[Checkpoint]]:
     closest_safezone_to_current_pos = sorted(cross.safe_zones, key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (current_pos.x, current_pos.y)))
     closest_safezone_to_goal_pos = sorted(cross.safe_zones, key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (goal_pos.x, goal_pos.y)))
     checkpoints = []
@@ -105,7 +103,9 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position) ->
                 path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
             else:
                 path.append(create_temp_path(current_pos, cross.safe_zones[current_index]))
-
+            if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
+                path.pop(0)
+                continue
             checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
             last_i = i
 
@@ -122,6 +122,10 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position) ->
                 path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
             else:
                 path.append(create_temp_path(current_pos, cross.safe_zones[current_index]))
+            if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
+                path.pop(0)
+                continue
+            
             checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
     if check_if_cross_is_touched(cross, path[len(path) - 1]):
         print("OWO")
