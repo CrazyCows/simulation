@@ -50,7 +50,7 @@ def app(connect_to_robot: bool = False):
 
 
 
-def runthings():
+def test_antons_code():
     robo = RoboVision()
     while True:
         thing = robo.get_any_thing(min_count=1, max_count=1, tries=10, thing_to_get="egg")
@@ -62,9 +62,8 @@ def runthings():
 
 
 if __name__ == '__main__':
-    runthings()
-    for i in range(10):
-        print(i)
+    test_antons_code()
+
 
     #pygame.init()
     #app(False)

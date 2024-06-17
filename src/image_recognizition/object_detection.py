@@ -194,7 +194,7 @@ class RoboVision:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
 
     def _get_orange_ball(self) -> List[CircleObject]:
-        orange_balls = self._getBallishThing(self.todo, self.todo, self._whiteSizeLower, self._whiteSizeUpper)
+        orange_balls = self._getBallishThing(self._orange_lower_limit, self.orange, self._whiteSizeLower, self._whiteSizeUpper)
         return orange_balls
 
     def _get_egg(self) -> List[CircleObject]:
