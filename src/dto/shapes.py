@@ -60,6 +60,22 @@ class SquareObject(BaseModel):
                    offset_y=offset_y, 
                    vertices=vertices)
     
+    def center_of_longest_side(self):
+        def distance(p1, p2):
+            return math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
+
+        longest_side_center = None
+        max_length = 0
+
+        for i in range(4):
+            p1 = self.vertices[i]
+            p2 = self.vertices[(i + 1) % 4]
+            length = distance(p1, p2)
+            if length > max_length:
+                max_length = length
+                longest_side_center = ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
+
+        return longest_side_center
 
     
 class CircleObject(BaseModel):

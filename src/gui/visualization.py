@@ -1,10 +1,11 @@
 import pygame
 from dto.robot import Robot
 from dto.shapes import SquareObject, CircleObject, Position
+from dto.obstacles import Cross
 from typing import List
 
 
-def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], calculated_path: List[SquareObject]):
+def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], calculated_path: List[SquareObject], cross: Cross):
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -15,8 +16,11 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], ba
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "red", obstacle.vertices)
 
-    for ball in balls:
-        pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), ball.radius)
+    pygame.draw.polygon(screen, "red", cross.square_1.vertices)
+    pygame.draw.polygon(screen, "red", cross.square_2.vertices)
+    
+        
+
     
     for path in calculated_path:
         pygame.draw.polygon(screen, "grey", path.vertices)
@@ -37,6 +41,13 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], ba
                 prev_pos_y = prev_pos.y
                 pygame.draw.line(screen, color, (prev_pos_x, prev_pos_y), (current_pos_x, current_pos_y))
     
+
+    for ball in balls:
+        pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), ball.radius)
+
+    for zone in cross.safe_zones:
+        pygame.draw.circle(screen, "pink", (zone.x, zone.y), ball.radius)
+
     create_trail(robot.previous_path, color="white")
 
     pygame.display.flip()

@@ -6,6 +6,7 @@ import logging
 from enum import Enum
 from helper.overlap_detection import square_touching, circle_square_touch, calculate_coordinates_for_line
 from dto.shapes import SquareObject, CircleObject, LineObject, Position
+from dto.obstacles import Cross
 
 
 class MoveCommand(Enum):
@@ -52,7 +53,7 @@ class Robot(BaseModel):
         return obstacle_touched
                 
 
-    def move(self, move: Move, obstacles: List[SquareObject]=[], balls: List[CircleObject]=[]):
+    def move(self, move: Move, obstacles: List[SquareObject]=[], balls: List[CircleObject]=[], cross: Cross = None):
         """
             Args:
                 speed: speed from the robots current position in pixels
@@ -72,7 +73,7 @@ class Robot(BaseModel):
         dy = math.cos(radians) * speed
         dx = math.sin(radians) * speed
 
-        if self.obstacle_detection(obstacles=obstacles):
+        if self.obstacle_detection(obstacles=obstacles) or self.obstacle_detection(obstacles=[cross.square_1, cross.square_2]):
             radians = 0
             # NOTE: This is pretty jank.....
             dx = self.start_position.x - self.robot.position.x
