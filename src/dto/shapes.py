@@ -21,6 +21,7 @@ class SquareObject(BaseModel):
     vertices: List[Tuple[float, float]]
     offset_x: int
     offset_y: int
+    color: str
 
     def update_square(self, position: Position, radians: float = 0):
         # Apply offset to the position
@@ -39,7 +40,7 @@ class SquareObject(BaseModel):
         self.vertices = rotate_square(vertices=self.vertices, center=position, radians=radians)
     
     @classmethod
-    def create_square(cls, position: Position, width: int, height: int, radians: float, offset_x=0, offset_y=0):
+    def create_square(cls, position: Position, width: int, height: int, radians: float, offset_x=0, offset_y=0, color="grey"):
         position_with_offset = Position(x=position.x + offset_x, y=position.y + offset_y)
 
         half_width = width / 2
@@ -58,7 +59,8 @@ class SquareObject(BaseModel):
                    radians=radians, 
                    offset_x=offset_x, 
                    offset_y=offset_y, 
-                   vertices=vertices)
+                   vertices=vertices,
+                   color=color)
     
     def center_of_longest_side(self):
         def distance(p1, p2):

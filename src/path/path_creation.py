@@ -35,15 +35,17 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[SquareObjec
         if check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path):
             additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_balls[0].position, robot)
             if len(additional_checkpoints) > 1:
-                path.append(create_temp_path(temp_balls[0].position, additional_checkpoints[1]))
+                ""
+                path.append(create_temp_path(temp_balls[0].position, additional_checkpoints[len(additional_checkpoints) - 1], color="blue"))
             else:
-                path.append(create_temp_path(robot.robot.position, additional_checkpoints[0]))
-                path.append(create_temp_path(temp_balls[0].position, additional_checkpoints[0]))
+                ""
+                #path.append(create_temp_path(robot.robot.position, additional_checkpoints[0], color="blue"))
+                #path.append(create_temp_path(temp_balls[0].position, additional_checkpoints[0], color="blue"))
             path.extend(additional_path)
             checkpoints.extend(additional_checkpoints)
             #path.append(create_temp_path(prev_ball.position, additional_checkpoints[1]))
         else:
-            path.append(temp_path)  
+            path.append(temp_path)
             checkpoints.append(Checkpoint(x=temp_balls[0].position.x, y=temp_balls[0].position.y, is_ball=True))
 
         #for wall in walls: 
@@ -100,9 +102,10 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
             current_index = (start + i) % total_zones
             previous_index = (start + i - 1) % total_zones
             if i != 0:
-                path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
+                ""
+                path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index], "blue"))
             else:
-                path.append(create_temp_path(current_pos, cross.safe_zones[current_index]))
+                path.append(create_temp_path(current_pos, cross.safe_zones[current_index], "blue"))
             if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
                 path.pop(0)
                 continue
@@ -119,9 +122,11 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
             current_index = (start - i) % total_zones
             previous_index = (start - i + 1) % total_zones
             if i != 0:
-                path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
+                ""
+                path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index], color="blue"))
             else:
-                path.append(create_temp_path(current_pos, cross.safe_zones[current_index]))
+                ""
+                path.append(create_temp_path(current_pos, cross.safe_zones[current_index], color="blue"))
             if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
                 path.pop(0)
                 continue
@@ -133,11 +138,12 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
             
     print("'''''")
     print(checkpoints)
+    # path.pop()
     return path, checkpoints
         
 
 
-def create_temp_path(pos_1: Position, pos_2: Position) -> SquareObject:
+def create_temp_path(pos_1: Position, pos_2: Position, color: str = "grey") -> SquareObject:
     # Calculate the difference in x and y coordinates
     dx = pos_1.x - pos_2.x
     dy = pos_1.y - pos_2.y
@@ -152,7 +158,8 @@ def create_temp_path(pos_1: Position, pos_2: Position) -> SquareObject:
         position=Position(x=mid_x, y=mid_y),
         width=60,
         height=round(math.dist((pos_1.x, pos_1.y), (pos_2.x, pos_2.y))),
-        radians=-(angle_radians - math.pi/2)
+        radians=-(angle_radians - math.pi/2),
+        color=color
     )
     return temp_path
 

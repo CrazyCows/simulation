@@ -125,3 +125,4 @@ class Robot(BaseModel):
         return cls(robot=robot, suction=suction, collected_balls=collected_balls, 
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, 
                    previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line)
+    

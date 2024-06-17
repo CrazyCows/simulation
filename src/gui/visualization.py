@@ -23,7 +23,7 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], ba
 
     
     for path in calculated_path:
-        pygame.draw.polygon(screen, "grey", path.vertices)
+        pygame.draw.polygon(screen, path.color, path.vertices)
 
     pygame.draw.polygon(screen, "green", robot.robot.vertices)
     pygame.draw.polygon(screen, "yellow", robot.suction.vertices)

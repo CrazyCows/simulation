@@ -47,4 +47,4 @@ balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
          #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
 
 robot = Robot.create_robot(position=Position(x=screen.get_width() / 2, y=625), 
-                width=60, height=30, radians=0, suction_height=20, suction_width=20, suction_offset_y=25)
+                width=60, height=30, radians=1.57, suction_height=20, suction_width=20, suction_offset_y=25)
