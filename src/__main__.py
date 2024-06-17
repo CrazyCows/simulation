@@ -23,21 +23,22 @@ def app(connect_to_robot: bool = False):
             print("WHY THE FUCK AM I RUNNING?")
             balls = RoboVision().get_egg()
             robot_position, radians = RoboVision().get_robot()
-            robot = robot.create_robot(position=robot_position, 
-                            width=30, height=30, radians=radians, suction_height=20, suction_width=20, suction_offset_y=25)
-    
+            robot = robot.create_robot(position=robot_position,
+                                       width=30, height=30, radians=radians, suction_height=20, suction_width=20,
+                                       suction_offset_y=25)
+
         # Temp solution, just redrawing balls all da time
         path, checkpoints = path_creation.create_path(balls, robot, obstacles)
         # checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
         robot.checkpoints = checkpoints
-        move : Move = path_follow.create_move(robot)
+        move: Move = path_follow.create_move(robot)
         path_follow.move_robot(move, robot, obstacles, balls, connect_to_robot)
         if connect_to_robot:
             transmission.send_command(move)
-    
+
         # NOTE: Updates the visual representation
         visualization.game(screen, robot, obstacles, balls, path)
-        
+
         # Tickrate, frames/sec.
         clock.tick(60) / 1000
 
@@ -45,8 +46,23 @@ def app(connect_to_robot: bool = False):
             if event.type == pygame.QUIT:
                 running = False
 
-if __name__ == '__main__':
-    pygame.init()
-    app(False)
-    pygame.quit()
 
+def runthings():
+    robo = RoboVision()
+    while True:
+        thing = robo.get_any_thing(min_count=1, max_count=1, tries=10, thing_to_get="egg")
+        if thing is not None:
+            break
+        print("retrying")
+
+    print(thing)
+
+
+if __name__ == '__main__':
+    runthings()
+    for i in range(10):
+        print(i)
+
+    #pygame.init()
+    #app(False)
+    #pygame.quit()

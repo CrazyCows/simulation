@@ -3,8 +3,7 @@ import imutils
 import numpy as np
 from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
-
-from dto.shapes import CircleObject, Position
+from src.dto.shapes import CircleObject, Position, SquareObject
 
 
 def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):
@@ -37,7 +36,7 @@ def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high
 
     scaling_factor[mask_low] = 1.0
     scaling_factor[transition_mask] = ((s[transition_mask] - threshold_low) / (threshold_high - threshold_low)) * (
-                vibrance_scale - 1.0) + 1.0
+            vibrance_scale - 1.0) + 1.0
     scaling_factor[mask_high] = vibrance_scale
 
     # Apply the scaling factor to the saturation channel
@@ -119,15 +118,14 @@ class RoboVision:
     _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
     _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
-
-    #Variables to be updated every darn iteration
+    # Variables to be updated every darn iteration
     _blurred = None
     _hsv = None
 
     def commonSetup(self):
-        #Yes, this has to be here twice.
-        #Very first frame from droidcam is just orange for
-        #some reason
+        # Yes, this has to be here twice.
+        # Very first frame from droidcam is just orange for
+        # some reason
         ret, frame = self._vs.read()
         ret, frame = self._vs.read()
 
@@ -151,7 +149,7 @@ class RoboVision:
             if lowerSize < radius < upperSize:
                 balls.append(CircleObject(radius=int(radius), position=Position(x=x, y=y)))
         return balls
-    
+
     def getCross(self):
         self.commonSetup()
         redLowerMask = cv2.inRange(self._hsv, self._red1lower_limit, self._red1upper_limit)
@@ -171,46 +169,70 @@ class RoboVision:
                 _approximations.append(approx)
         return _approximations
 
-    def get_white_balls(self) -> List[CircleObject]:
-        return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
-
-    def get_orange_ball(self) -> List[CircleObject]:
-        return self._getBallishThing(self.todo, self.todo, self._whiteSizeLower, self._whiteSizeUpper)
-
-    def get_egg(self) -> List[CircleObject]:
-        return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
-
-    def get_robot(self) -> Tuple[CircleObject, float]:
-        greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower, self._dotSizeUpper)
+    def _get_robot_center(self) -> Tuple[CircleObject, float]:
+        greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
+                                          self._dotSizeUpper)
         if len(greendots) == 0:
             raise Exception("No green dots detected")
         elif len(greendots) > 1:
             raise Exception("Multiple green dots detected")
         greendot = greendots[0]
-        bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower, self._dotSizeUpper)
+        bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
+                                         self._dotSizeUpper)
         if len(bluedots) == 0:
             raise Exception("No blue dots detected")
         elif len(bluedots) > 1:
             raise Exception("Multiple blue dots detected")
         bluedot = bluedots[0]
         center = CircleObject(radius=1,
-                              position=Position(x=int((greendot.position.x+bluedot.position.x)/2),
-                                                y=int((greendot.position.y+bluedot.position.y)/2)))
+                              position=Position(x=int((greendot.position.x + bluedot.position.x) / 2),
+                                                y=int((greendot.position.y + bluedot.position.y) / 2)))
         angle = calculate_positive_angle(greendot, bluedot)
-        print("Center: " + str(center) + "  Angle: " + str(angle) + " radians")
         return center, angle
+
+    def _get_white_balls(self) -> List[CircleObject]:
+        return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
+
+    def _get_orange_ball(self) -> List[CircleObject]:
+        orange_balls = self._getBallishThing(self.todo, self.todo, self._whiteSizeLower, self._whiteSizeUpper)
+        return orange_balls
+
+    def _get_egg(self) -> List[CircleObject]:
+        return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
+
+    def _get_robot_square(self) -> SquareObject:
+        circle, angle = self._get_robot_center()
+        square = SquareObject.create_square(circle.position,
+                                            self._robot_width,
+                                            self._robot_height,
+                                            angle
+                                            )
+
+        print(square)
+        return square
+
+    def get_any_thing(self, min_count=0, max_count=100000, tries=25, thing_to_get=""):
+
+        if thing_to_get == "white_ball":
+            func = self._get_white_balls
+        elif thing_to_get == "orange_ball":
+            func = self._get_orange_ball
+        elif thing_to_get == "egg":
+            func = self._get_egg
+        elif thing_to_get == "cross":
+            func = self.getCross
+        elif thing_to_get == "robot":
+            func = self._get_robot_square
+        else:
+            raise Exception("Invalid argument")
+
+        for _ in range(tries):
+            list_of_thing = func()
+            if min_count <= len(list_of_thing) <= max_count:
+                return list_of_thing
+        print(thing_to_get + " not found within parameters")
+
 
 
 if __name__ == '__main__':
-
-    robo = RoboVision()
-    while True:
-        try:
-            robo.get_robot()
-        except Exception as e:
-            print(f"Error determining robot position or rotation: {e}")
-            continue
-    whiteBalls = robo.get_white_balls()
-    #orangeBalls = robo.getOrangeBall()
-    cross = robo.getCross()
-
+    pass
