@@ -12,8 +12,9 @@ def app(connect_to_robot: bool = False):
     screen = __init__.screen
     robot = __init__.robot
     balls = __init__.balls
-    obstacles = __init__.obstacles
+    walls = __init__.walls
     clock = __init__.clock
+    cross = __init__.cross
     running = True
     if connect_to_robot:
         transmission.connect
@@ -28,23 +29,25 @@ def app(connect_to_robot: bool = False):
                                        suction_offset_y=25)
 
         # Temp solution, just redrawing balls all da time
-        path, checkpoints = path_creation.create_path(balls, robot, obstacles)
+        path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
         # checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
+
         robot.checkpoints = checkpoints
         move: Move = path_follow.create_move(robot)
-        path_follow.move_robot(move, robot, obstacles, balls, connect_to_robot)
+        path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
         if connect_to_robot:
             transmission.send_command(move)
 
         # NOTE: Updates the visual representation
-        visualization.game(screen, robot, obstacles, balls, path)
-
+        visualization.game(screen, robot, walls, balls, path, cross)
+        
         # Tickrate, frames/sec.
         clock.tick(60) / 1000
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
 
 
 def runthings():
