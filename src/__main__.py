@@ -53,7 +53,7 @@ def app(connect_to_robot: bool = False):
 def test_antons_code():
     robo = RoboVision()
     while True:
-        thing = robo.get_any_thing(min_count=1, max_count=1, tries=10, thing_to_get="egg")
+        thing = robo.get_any_thing(min_count=1, max_count=1, tries=10, thing_to_get="robot")
         if thing is not None:
             break
         print("retrying")

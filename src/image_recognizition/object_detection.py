@@ -3,7 +3,7 @@ import imutils
 import numpy as np
 from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
-from src.dto.shapes import CircleObject, Position, SquareObject
+from dto.shapes import CircleObject, Position, SquareObject
 
 
 def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):
@@ -64,12 +64,12 @@ def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> fl
 class RoboVision:
     _whiteLower = np.array([0, 0, 220])
     _whiteUpper = np.array([255, 100, 255])
-    _whiteSizeLower = 5
-    _whiteSizeUpper = 20
+    _whiteSizeLower = 0
+    _whiteSizeUpper = 2000
     _eggSizeLower = _whiteSizeUpper
     _eggSizeUpper = 50
-    _dotSizeLower = 4
-    _dotSizeUpper = 15
+    _dotSizeLower = 0
+    _dotSizeUpper = 2000
     _robot_width = 100
     _robot_height = 100
 
@@ -82,8 +82,8 @@ class RoboVision:
     red2lower_limit = np.array([160, 125, 80])
     red2upper_limit = np.array([179, 255, 255])
 
-    _green_lower_limit = np.array([30, 180, 45])
-    _green_upper_limit = np.array([90, 255, 255])
+    _green_lower_limit = np.array([50, 130, 70])
+    _green_upper_limit = np.array([85, 255, 255])
     # Id like to avoid overlap in these filters
     # IS SET TO BLACC
     _blue_lower_limit = np.array([90, 180, 60])
@@ -212,25 +212,27 @@ class RoboVision:
         return square
 
     def get_any_thing(self, min_count=0, max_count=100000, tries=25, thing_to_get=""):
+        try:
+            if thing_to_get == "white_ball":
+                func = self._get_white_balls
+            elif thing_to_get == "orange_ball":
+                func = self._get_orange_ball
+            elif thing_to_get == "egg":
+                func = self._get_egg
+            elif thing_to_get == "cross":
+                func = self.getCross
+            elif thing_to_get == "robot":
+                func = self._get_robot_square
+            else:
+                raise Exception("Invalid argument")
 
-        if thing_to_get == "white_ball":
-            func = self._get_white_balls
-        elif thing_to_get == "orange_ball":
-            func = self._get_orange_ball
-        elif thing_to_get == "egg":
-            func = self._get_egg
-        elif thing_to_get == "cross":
-            func = self.getCross
-        elif thing_to_get == "robot":
-            func = self._get_robot_square
-        else:
-            raise Exception("Invalid argument")
-
-        for _ in range(tries):
-            list_of_thing = func()
-            if min_count <= len(list_of_thing) <= max_count:
-                return list_of_thing
-        print(thing_to_get + " not found within parameters")
+            for _ in range(tries):
+                list_of_thing = func()
+                if min_count <= len(list_of_thing) <= max_count:
+                    return list_of_thing
+            print(thing_to_get + " not found within parameters")
+        except Exception as e:
+            print(e)
 
 
 
