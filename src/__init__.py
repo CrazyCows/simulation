@@ -2,7 +2,7 @@ import pygame
 from dto.shapes import SquareObject, CircleObject, Position
 from dto.obstacles import Cross
 from dto.robot import Robot
-
+import image_recognizition.object_detection
 
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
@@ -29,12 +29,12 @@ cross = Cross.create_cross_with_safe_zones(
         )
 
 
-
 """
+
 balls = [
          CircleObject(radius=5, position=Position(x=893, y=625)),
          CircleObject(radius=5, position=Position(x=872, y=231)),]
-"""
+
 balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
          CircleObject(radius=5, position=Position(x=872, y=231)),
          CircleObject(radius=5, position=Position(x=512, y=333)),
@@ -45,6 +45,6 @@ balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
          CircleObject(radius=5, position=Position(x=893, y=625)),
          CircleObject(radius=5, position=Position(x=231, y=403)),]
          #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
-
+"""
 robot = Robot.create_robot(position=Position(x=screen.get_width() / 2, y=625), 
                 width=60, height=30, radians=0, suction_height=20, suction_width=20, suction_offset_y=25)
