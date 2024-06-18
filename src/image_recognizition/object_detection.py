@@ -67,8 +67,8 @@ class RoboVision:
     _whiteSizeUpper = 20
     _eggSizeLower = _whiteSizeUpper + 1
     _eggSizeUpper = 50
-    _dotSizeLower = 4
-    _dotSizeUpper = 15
+    _dotSizeLower = 0
+    _dotSizeUpper = 1500
     _robot_width = 100
     _robot_height = 100
 
@@ -181,12 +181,15 @@ class RoboVision:
         return approximations
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
-        greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
-                                          self._dotSizeUpper)
-
+        greendots = []
+        while len(greendots) != 1:
+            greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
+                                              self._dotSizeUpper)
         greendot = greendots[0]
-        bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
-                                         self._dotSizeUpper)
+        bluedots = []
+        while len(bluedots) != 1:
+            bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
+                                             self._dotSizeUpper)
         bluedot = bluedots[0]
         center = CircleObject(radius=1,
                               position=Position(x=int((greendot.position.x + bluedot.position.x) / 2),
