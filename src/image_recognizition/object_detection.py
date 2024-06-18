@@ -67,8 +67,8 @@ class RoboVision:
     _whiteSizeUpper = 20
     _eggSizeLower = _whiteSizeUpper + 1
     _eggSizeUpper = 50
-    _dotSizeLower = 0
-    _dotSizeUpper = 1500
+    _dotSizeLower = 1
+    _dotSizeUpper = 7
     _robot_width = 100
     _robot_height = 100
 
@@ -114,8 +114,8 @@ class RoboVision:
     _cross_area = 100
     _vs = cv2.VideoCapture(0)
     # Set the resolution to 1920x1080
-    _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-    _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+    _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
     # Variables to be updated every darn iteration
     _blurred = None
@@ -182,12 +182,12 @@ class RoboVision:
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
         greendots = []
-        while len(greendots) != 1:
+        while len(greendots) == 0:
             greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
                                               self._dotSizeUpper)
         greendot = greendots[0]
         bluedots = []
-        while len(bluedots) != 1:
+        while len(bluedots) == 0:
             bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
                                              self._dotSizeUpper)
         bluedot = bluedots[0]
