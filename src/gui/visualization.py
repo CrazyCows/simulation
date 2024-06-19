@@ -5,7 +5,7 @@ from dto.obstacles import Cross
 from typing import List
 
 
-def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], calculated_path: List[SquareObject], cross: Cross, walls_danger_zone: List[SquareObject]):
+def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], calculated_path: List[SquareObject], cross: Cross, walls_danger_zone: List[SquareObject], cross_danger_zones: List[SquareObject]):
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -14,6 +14,9 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], ba
     screen.fill("purple")
 
     for danger_zone in walls_danger_zone:
+        pygame.draw.polygon(screen, "orange", danger_zone.vertices)
+        
+    for danger_zone in cross_danger_zones:
         pygame.draw.polygon(screen, "orange", danger_zone.vertices)
 
     for obstacle in obstacles:

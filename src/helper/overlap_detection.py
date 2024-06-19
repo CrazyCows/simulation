@@ -72,7 +72,7 @@ def circle_square_touch(circle: CircleObject, square: SquareObject) -> bool:
         b = 2 * (fx * dx + fy * dy)
         c = (fx * fx + fy * fy) - r * r
 
-        discriminant = b * b - 4 * a * c
+        discriminant = b * b - (4 * a * c)
         if discriminant >= 0:
             discriminant = math.sqrt(discriminant)
             t1 = (-b - discriminant) / (2 * a)
@@ -95,7 +95,6 @@ def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
     """
         Calculates a straight line from coordiantes with a chosen length and angle.
     """
-
     
     end_x = start_x + length * math.sin(direction)
     end_y = start_y + length * math.cos(direction)

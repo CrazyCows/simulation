@@ -2,8 +2,14 @@ from pydantic import BaseModel, confloat
 from typing import Optional, List, Tuple
 import math
 import numpy as np
+from enum import Enum
 
-
+class WallPosition(Enum):
+    UNDEFINED = -1
+    LEFT = 0
+    RIGHT = 1
+    TOP = 2
+    BOT = 3
 
 class Position(BaseModel):
     x: float
@@ -21,6 +27,7 @@ class SquareObject(BaseModel):
     vertices: List[Tuple[float, float]]
     offset_x: int
     offset_y: int
+    wallPosition: WallPosition
     danger_zone: bool
 
     def update_square(self, position: Position, radians: float = 0):
@@ -40,7 +47,7 @@ class SquareObject(BaseModel):
         self.vertices = rotate_square(vertices=self.vertices, center=position, radians=radians)
     
     @classmethod
-    def create_square(cls, position: Position, width: int, height: int, radians: float, offset_x=0, offset_y=0, danger_zone=False):
+    def create_square(cls, position: Position, width: int, height: int, radians: float, offset_x=0, offset_y=0, danger_zone=False, wallPosition = -1):
         position_with_offset = Position(x=position.x + offset_x, y=position.y + offset_y)
 
         half_width = width / 2
@@ -60,7 +67,8 @@ class SquareObject(BaseModel):
                    offset_x=offset_x, 
                    offset_y=offset_y, 
                    vertices=vertices,
-                   danger_zone=danger_zone)
+                   danger_zone=danger_zone,
+                   wallPosition=WallPosition(wallPosition))
     
     def center_of_longest_side(self):
         def distance(p1, p2):

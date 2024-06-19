@@ -18,6 +18,7 @@ def app(connect_to_robot: bool = False):
     clock = __init__.clock
     cross = __init__.cross
     walls_danger_zones = __init__.walls_danger_zones
+    cross_danger_zones = __init__.cross_danger_zones
     running = True
     #if connect_to_robot:
     #    transmission.connect
@@ -38,7 +39,7 @@ def app(connect_to_robot: bool = False):
                                            suction_offset_y=25)
 
             # Temp solution, just redrawing balls all da time
-            path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
+            path, checkpoints = path_creation.create_path(balls, robot, walls, cross, walls_danger_zones, cross_danger_zones)
             # checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
 
             robot.checkpoints = checkpoints
@@ -48,7 +49,7 @@ def app(connect_to_robot: bool = False):
             #    transmission.send_command(move)
 
             # NOTE: Updates the visual representation
-            visualization.game(screen, robot, walls, balls, path, cross, walls_danger_zones)
+            visualization.game(screen, robot, walls, balls, path, cross, walls_danger_zones, cross_danger_zones)
 
             # Tickrate, frames/sec.
             clock.tick(60) / 1000
