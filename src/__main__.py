@@ -72,6 +72,8 @@ def test_antons_code():
 
 if __name__ == '__main__':
     wp = wall_picker.WallPicker()
+    n = wp._pick_north_wall()
+    print(n)
     #test_antons_code()
     #pygame.init()
     #app(True)

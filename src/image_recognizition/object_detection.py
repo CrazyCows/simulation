@@ -50,40 +50,26 @@ def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high
 
     return final_image
 
-def calculate_positive_angle(p1: Tuple[int, int], p2: Tuple[int, int]) -> float:
-    #IDK if its necessary to convert to np arrays
-    pos1 = np.array([circle1.position.x, circle1.position.y])
-    pos2 = np.array([circle2.position.x, circle2.position.y])
-    delta = pos2 - pos1
-    #These are switched per "(Note the role reversal: the “y-coordinate” is the first function parameter, the “x-coordinate” is the second."
-    #- numpy docs
-    angle = np.arctan2(delta[1], delta[0])
-    angle = angle - np.pi/2 - np.pi
-    angle = -angle
-    if angle < 0:
-        angle += 2 * np.pi
-    elif angle > 2*np.pi:
-        angle = angle-2*np.pi
-    return angle
+
 def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> float:
-    #IDK if its necessary to convert to np arrays
+    # IDK if its necessary to convert to np arrays
     pos1 = np.array([circle1.position.x, circle1.position.y])
     pos2 = np.array([circle2.position.x, circle2.position.y])
     delta = pos2 - pos1
-    #These are switched per "(Note the role reversal: the “y-coordinate” is the first function parameter, the “x-coordinate” is the second."
-    #- numpy docs
+    # These are switched per "(Note the role reversal: the “y-coordinate” is the first function parameter, the “x-coordinate” is the second."
+    # - numpy docs
     angle = np.arctan2(delta[1], delta[0])
-    angle = angle - np.pi/2 - np.pi
+    angle = angle - np.pi / 2 - np.pi
     angle = -angle
     if angle < 0:
         angle += 2 * np.pi
-    elif angle > 2*np.pi:
-        angle = angle-2*np.pi
+    elif angle > 2 * np.pi:
+        angle = angle - 2 * np.pi
     return angle
 
 
 class RoboVision:
-    #at a camera height of 202cm with
+    # at a camera height of 202cm with
     _whiteSizeLower = 7
     _whiteSizeUpper = 12
     _eggSizeLower = _whiteSizeUpper + 1
@@ -193,11 +179,9 @@ class RoboVision:
                 print("x: " + str(thing[0][0]))
                 print("y: " + str(thing[0][1]))
 
-
         new_approx = []
         for approx in approximations:
             pass
-
 
         return approximations
 
@@ -224,7 +208,8 @@ class RoboVision:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
 
     def _get_orange_ball(self) -> List[CircleObject]:
-        orange_balls = self._getBallishThing(self._orange_lower_limit, self.orange, self._whiteSizeLower, self._whiteSizeUpper)
+        orange_balls = self._getBallishThing(self._orange_lower_limit, self.orange, self._whiteSizeLower,
+                                             self._whiteSizeUpper)
         return orange_balls
 
     def _get_egg(self) -> List[CircleObject]:
@@ -267,7 +252,6 @@ class RoboVision:
             while not robot:
                 robot = func
             return robot
-
 
 
 if __name__ == '__main__':
