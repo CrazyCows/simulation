@@ -13,16 +13,17 @@ from image_recognizition import wall_picker
 def app(connect_to_robot: bool = False):
     screen = __init__.screen
     robot = __init__.robot
-    # balls = __init__.balls
+    balls = __init__.balls
     walls = __init__.walls
     clock = __init__.clock
     cross = __init__.cross
+    walls_danger_zones = __init__.walls_danger_zones
     running = True
     #if connect_to_robot:
     #    transmission.connect
 
     rv = RoboVision()
-    balls = rv.get_any_thing(min_count=0, max_count=25, tries=100, thing_to_get="white_ball")
+    #balls = rv.get_any_thing(min_count=0, max_count=25, tries=100, thing_to_get="white_ball")
     while running:
         try:
             if connect_to_robot:
@@ -47,7 +48,7 @@ def app(connect_to_robot: bool = False):
             #    transmission.send_command(move)
 
             # NOTE: Updates the visual representation
-            visualization.game(screen, robot, walls, balls, path, cross)
+            visualization.game(screen, robot, walls, balls, path, cross, walls_danger_zones)
 
             # Tickrate, frames/sec.
             clock.tick(60) / 1000
@@ -71,8 +72,8 @@ def test_antons_code():
 
 
 if __name__ == '__main__':
-    wp = wall_picker.WallPicker()
+    #wp = wall_picker.WallPicker()
     #test_antons_code()
-    #pygame.init()
-    #app(True)
-    #pygame.quit()
+    pygame.init()
+    app(False)
+    pygame.quit()

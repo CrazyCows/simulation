@@ -3,7 +3,7 @@ import imutils
 import numpy as np
 from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
-from src.dto.shapes import CircleObject, Position, SquareObject
+from dto.shapes import CircleObject, Position, SquareObject
 
 
 def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):

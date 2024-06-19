@@ -1,6 +1,6 @@
 import cv2
 from dto.shapes import SquareObject, Position
-import object_detection as od
+from image_recognizition import object_detection as od
 
 class WallPicker:
     def __init__(self):
