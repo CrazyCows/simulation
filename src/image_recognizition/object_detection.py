@@ -50,7 +50,21 @@ def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high
 
     return final_image
 
-
+def calculate_positive_angle(p1: Tuple[int, int], p2: Tuple[int, int]) -> float:
+    #IDK if its necessary to convert to np arrays
+    pos1 = np.array([circle1.position.x, circle1.position.y])
+    pos2 = np.array([circle2.position.x, circle2.position.y])
+    delta = pos2 - pos1
+    #These are switched per "(Note the role reversal: the “y-coordinate” is the first function parameter, the “x-coordinate” is the second."
+    #- numpy docs
+    angle = np.arctan2(delta[1], delta[0])
+    angle = angle - np.pi/2 - np.pi
+    angle = -angle
+    if angle < 0:
+        angle += 2 * np.pi
+    elif angle > 2*np.pi:
+        angle = angle-2*np.pi
+    return angle
 def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> float:
     #IDK if its necessary to convert to np arrays
     pos1 = np.array([circle1.position.x, circle1.position.y])

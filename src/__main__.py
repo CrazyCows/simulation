@@ -7,6 +7,7 @@ from image_recognizition.object_detection import RoboVision
 import pygame
 import __init__
 from typing import List
+from image_recognizition import wall_picker
 
 
 def app(connect_to_robot: bool = False):
@@ -70,7 +71,8 @@ def test_antons_code():
 
 
 if __name__ == '__main__':
+    wp = wall_picker.WallPicker()
     #test_antons_code()
-    pygame.init()
-    app(True)
-    pygame.quit()
+    #pygame.init()
+    #app(True)
+    #pygame.quit()

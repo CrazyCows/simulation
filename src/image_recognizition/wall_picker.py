@@ -1,55 +1,90 @@
 import cv2
+from dto.shapes import SquareObject, Position
+import object_detection as od
 
-# List to store the coordinates of the clicked points
-points = []
+class WallPicker:
+    def __init__(self):
+        self.points = []
+        self.frame = None
+        self.cap = cv2.VideoCapture(0)
 
-def click_event(event, x, y, flags, param):
-    # If the left mouse button is clicked
-    if event == cv2.EVENT_LBUTTONDOWN:
-        # Append the coordinates to the points list
-        points.append((x, y))
-        # Display the clicked point on the frame
-        cv2.circle(frame, (x, y), 5, (0, 255, 0), -1)
-        cv2.imshow('Webcam Feed', frame)
-        # Print the coordinates
-        print(f"Point {len(points)}: ({x}, {y})")
-        # If 12 points have been clicked, close the window
-        if len(points) == 12:
-            cv2.destroyAllWindows()
+    def _click_event(self, event, x, y, flags, param):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            self.points.append((x, y))
+            cv2.circle(self.frame, (x, y), 5, (0, 255, 0), -1)
+            cv2.imshow('Webcam Feed', self.frame)
+            if len(self.points) >= self.max_points:
+                cv2.destroyAllWindows()
 
-def main():
-    global frame
-    # Capture the video feed from the webcam
-    cap = cv2.VideoCapture(0)
+    def _pick_points(self, num_points, window_name) -> SquareObject:
+        self.points = []
+        self.max_points = num_points
+        cv2.namedWindow(window_name)
+        cv2.setMouseCallback(window_name, self._click_event)
 
-    if not cap.isOpened():
-        print("Error: Could not open webcam.")
-        return
+        while True:
+            ret, self.frame = self.cap.read()
+            if not ret:
+                print("Error: Could not read frame.")
+                break
+            cv2.imshow('Webcam Feed', self.frame)
+            if cv2.waitKey(1) & 0xFF == ord('q') or len(self.points) >= self.max_points:
+                break
+        squares = []
+        angle = od.calculate_positive_angle(self.points[1], self.points[0])
+        for index, point in self.points:
 
-    cv2.namedWindow('Webcam Feed')
-    cv2.setMouseCallback('Webcam Feed', click_event)
+            squares.append(SquareObject(x=point[0], y=point[1], angle=angle))
+        return self.points
 
-    while True:
-        # Read a frame from the webcam feed
-        ret, frame = cap.read()
+    def _pick_north_wall(self):
+        print("Click 4 points for the North Wall")
+        return self._pick_points(4, "North")
 
-        if not ret:
-            print("Error: Could not read frame.")
-            break
+    def _pick_east_wall(self):
+        print("Click 4 points for the East Wall")
+        return self._pick_points(4, "East")
 
-        # Display the frame
-        cv2.imshow('Webcam Feed', frame)
+    def _pick_south_wall(self):
+        print("Click 4 points for the South Wall")
+        return self._pick_points(4, "South")
 
-        # Wait for 1 ms and check if the 'q' key is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    def _pick_west_wall(self):
+        print("Click 4 points for the West Wall")
+        return self._pick_points(4, "West")
 
-    # Release the video capture object and close all OpenCV windows
-    cap.release()
-    cv2.destroyAllWindows()
+    def _click_cross_one(self):
+        print("Click 4 points for Cross One")
+        return self._pick_points(4, "Cross part one")
 
-    # Print the collected points
-    print("Collected points:", points)
+    def _click_cross_two(self):
+        print("Click 4 points for Cross Two")
+        return self._pick_points(4, "Cross part two")
+
+    def release(self):
+        self.cap.release()
+        cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
-    main()
+    wp = WallPicker()
+    try:
+        north_wall_points = wp._pick_north_wall()
+        print("North Wall Points:", north_wall_points)
+
+        east_wall_points = wp._pick_east_wall()
+        print("East Wall Points:", east_wall_points)
+
+        south_wall_points = wp._pick_south_wall()
+        print("South Wall Points:", south_wall_points)
+
+        west_wall_points = wp._pick_west_wall()
+        print("West Wall Points:", west_wall_points)
+
+        cross_one_points = wp._click_cross_one()
+        print("Cross One Points:", cross_one_points)
+
+        cross_two_points = wp._click_cross_two()
+        print("Cross Two Points:", cross_two_points)
+    finally:
+        wp.release()
