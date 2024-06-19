@@ -1,11 +1,14 @@
 import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
-from dto.robot import Move
+from dto.robot import Move, Checkpoint
 from dto.shapes import Position
+from dto.obstacles import Cross
 from image_recognizition.object_detection import RoboVision
+from image_recognizition.wall_picker import WallPicker
 import pygame
 import __init__
+
 from typing import List
 from image_recognizition import wall_picker
 
@@ -13,22 +16,28 @@ from image_recognizition import wall_picker
 def app(connect_to_robot: bool = False):
     screen = __init__.screen
     robot = __init__.robot
-    # balls = __init__.balls
-    walls = __init__.walls
+    #balls = __init__.balls
+    #walls = __init__.walls
     clock = __init__.clock
-    cross = __init__.cross
+    #cross = __init__.cross
     running = True
     #if connect_to_robot:
     #    transmission.connect
 
-    rv = RoboVision()
-    balls = rv.get_any_thing(min_count=0, max_count=25, tries=100, thing_to_get="white_ball")
+    if (connect_to_robot):
+        wp = WallPicker()
+        walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_south_wall(), wp.pick_west_wall()]
+        rv = RoboVision()
+        cross_squares = wp.click_cross()
+        print("Here")
+        cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls, safe_distance=20)
     while running:
         try:
             if connect_to_robot:
                 print("WHY THE FUCK AM I RUNNING?")
                 balls = RoboVision().get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
                 temprobo = RoboVision().get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
+
                 robot_position = temprobo.position
                 #print(robot_position)
                 radians = temprobo.radians
@@ -38,11 +47,14 @@ def app(connect_to_robot: bool = False):
 
             # Temp solution, just redrawing balls all da time
             path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
-            # checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
+            checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
 
             robot.checkpoints = checkpoints
-            move: Move = path_follow.create_move(robot)
-            path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
+            try:
+                move: Move = path_follow.create_move(robot)
+                path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
+            except Exception as e:
+                continue
             #if connect_to_robot:
             #    transmission.send_command(move)
 
@@ -71,10 +83,7 @@ def test_antons_code():
 
 
 if __name__ == '__main__':
-    wp = wall_picker.WallPicker()
-    n = wp._pick_north_wall()
-    print(n)
     #test_antons_code()
-    #pygame.init()
-    #app(True)
-    #pygame.quit()
+    pygame.init()
+    app(True)
+    pygame.quit()

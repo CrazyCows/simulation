@@ -1,9 +1,41 @@
 import math
 from typing import Tuple
-
+import numpy as np
 import cv2
 from dto.shapes import SquareObject, Position, CircleObject
-import image_recognizition.object_detection as od
+from copy import deepcopy
+from dto.obstacles import Cross
+from dto.robot import Checkpoint
+
+
+def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> float:
+    # IDK if its necessary to convert to np arrays
+    pos1 = np.array([circle1.position.x, circle1.position.y])
+    pos2 = np.array([circle2.position.x, circle2.position.y])
+    delta = pos2 - pos1
+    # These are switched per "(Note the role reversal: the “y-coordinate” is the first function parameter, the “x-coordinate” is the second."
+    # - numpy docs
+    angle = np.arctan2(delta[1], delta[0])
+    angle = -angle
+    if angle < 0:
+        angle += 2 * np.pi
+
+    #Error checking for float inaccuracies
+    elif angle > 2 * np.pi:
+        angle = angle - 2 * np.pi
+    return angle
+
+def calculate_centroid(points):
+    if not points:
+        return None
+
+    x_coords = [p[0] for p in points]
+    y_coords = [p[1] for p in points]
+
+    centroid_x = sum(x_coords) / len(points)
+    centroid_y = sum(y_coords) / len(points)
+
+    return (centroid_x, centroid_y)
 
 
 def euclidean_distance(point1: Tuple[int, int], point2: Tuple[int, int]) -> float:
@@ -29,6 +61,8 @@ class WallPicker:
         self.points = []
         self.frame = None
         self.cap = cv2.VideoCapture(0)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         self.frame_name = "Placeholder_name"
 
     def _click_event(self, event, x, y, flags, param):
@@ -61,34 +95,38 @@ class WallPicker:
             if cv2.waitKey(1) & 0xFF == ord('q') or len(self.points) >= num_points:
                 break
         print(self.points)
-        pos = Position(x=self.points[0][1], y=self.points[0][1])
-        p1 = CircleObject(radius=1, position=pos)
-        p2 = CircleObject(radius=1, position=Position(x=self.points[1][1], y=self.points[1][1]))
-        angle = od.calculate_positive_angle(p1, p2)
+
+        p1 = CircleObject(radius=1, position=Position(x=self.points[0][0], y=self.points[0][1]))
+        p2 = CircleObject(radius=1, position=Position(x=self.points[1][0], y=self.points[1][1]))
+        angle = calculate_positive_angle(p1, p2)
         width = int(euclidean_distance(self.points[0], self.points[1]))
         height = int(euclidean_distance(self.points[1], self.points[2]))
+        x, y = calculate_centroid(self.points)
+        print(x,y)
 
-        return SquareObject(position=pos,
+
+
+        return SquareObject.create_square(
+                            position=Position(x=x, y=y),
                             width=width,
                             height=height,
                             radians=angle,
-                            vertices=self.points,
                             offset_x=0,
                             offset_y=0)
 
-    def _pick_north_wall(self):
+    def pick_north_wall(self):
         print("Click 4 points for the North Wall")
         return self._pick_points("North")
 
-    def _pick_east_wall(self):
+    def pick_east_wall(self):
         print("Click 4 points for the East Wall")
         return self._pick_points("East")
 
-    def _pick_south_wall(self):
+    def pick_south_wall(self):
         print("Click 4 points for the South Wall")
         return self._pick_points("South")
 
-    def _pick_west_wall(self):
+    def pick_west_wall(self):
         print("Click 4 points for the West Wall")
         return self._pick_points("West")
 
@@ -96,9 +134,14 @@ class WallPicker:
         print("Click 4 points for Cross One")
         return self._pick_points("Cross part one")
 
-    def _click_cross_two(self):
-        print("Click 4 points for Cross Two")
-        return self._pick_points("Cross part two")
+    def click_cross(self):
+        cross_part_one: SquareObject = self._click_cross_one()
+        cross_part_two: SquareObject = deepcopy(cross_part_one)
+        cross_part_two.update_square(position=cross_part_two.position, radians=cross_part_two.radians+np.pi/2)
+        if (cross_part_two.radians > 2*np.pi):
+            cross_part_two.radians = cross_part_two.radians - 2*np.pi
+
+        return [cross_part_one, cross_part_two]
 
     def release(self):
         self.cap.release()
@@ -106,24 +149,4 @@ class WallPicker:
 
 
 if __name__ == "__main__":
-    wp = WallPicker()
-    try:
-        north_wall_points = wp._pick_north_wall()
-        print("North Wall Points:", north_wall_points)
-
-        east_wall_points = wp._pick_east_wall()
-        print("East Wall Points:", east_wall_points)
-
-        south_wall_points = wp._pick_south_wall()
-        print("South Wall Points:", south_wall_points)
-
-        west_wall_points = wp._pick_west_wall()
-        print("West Wall Points:", west_wall_points)
-
-        cross_one_points = wp._click_cross_one()
-        print("Cross One Points:", cross_one_points)
-
-        cross_two_points = wp._click_cross_two()
-        print("Cross Two Points:", cross_two_points)
-    finally:
-        wp.release()
+    pass

@@ -224,7 +224,6 @@ class RoboVision:
                                             angle
                                             )
 
-        print("\n\nThe angle is" + str(angle) + "\n\n")
         return square
 
     def get_any_thing(self, min_count=0, max_count=100000, tries=25, thing_to_get=""):

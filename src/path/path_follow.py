@@ -33,7 +33,8 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     Auto-correcting algorithm which (hopefully) always keeps the robot looking
     towards the checkpoint.
     """
-
+    #if robot.checkpoints != []:
+    #    return robot
     # Convert the inputs to numpy arrays for easier manipulation
     start_pos = (robot.line.start_pos.x, robot.line.start_pos.y)
     end_pos = (robot.line.end_pos.x, robot.line.end_pos.y)
