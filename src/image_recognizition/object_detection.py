@@ -52,23 +52,30 @@ def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high
 
 
 def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> float:
+    #IDK if its necessary to convert to np arrays
     pos1 = np.array([circle1.position.x, circle1.position.y])
     pos2 = np.array([circle2.position.x, circle2.position.y])
     delta = pos2 - pos1
+    #These are switched per "(Note the role reversal: the “y-coordinate” is the first function parameter, the “x-coordinate” is the second."
+    #- numpy docs
     angle = np.arctan2(delta[1], delta[0])
+    angle = angle - np.pi/2 - np.pi
+    angle = -angle
     if angle < 0:
         angle += 2 * np.pi
+    elif angle > 2*np.pi:
+        angle = angle-2*np.pi
     return angle
 
 
 class RoboVision:
-
-    _whiteSizeLower = 5
-    _whiteSizeUpper = 20
+    #at a camera height of 202cm with
+    _whiteSizeLower = 7
+    _whiteSizeUpper = 12
     _eggSizeLower = _whiteSizeUpper + 1
     _eggSizeUpper = 50
     _dotSizeLower = 1
-    _dotSizeUpper = 7
+    _dotSizeUpper = 70
     _robot_width = 100
     _robot_height = 100
 
@@ -183,11 +190,13 @@ class RoboVision:
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
         greendots = []
         while len(greendots) == 0:
+            print("Looking for green dots")
             greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
                                               self._dotSizeUpper)
         greendot = greendots[0]
         bluedots = []
         while len(bluedots) == 0:
+            print("Looking for blue dots")
             bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
                                              self._dotSizeUpper)
         bluedot = bluedots[0]
@@ -216,7 +225,7 @@ class RoboVision:
                                             angle
                                             )
 
-        print(square)
+        print("\n\nThe angle is" + str(angle) + "\n\n")
         return square
 
     def get_any_thing(self, min_count=0, max_count=100000, tries=25, thing_to_get=""):

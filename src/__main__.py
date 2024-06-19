@@ -55,7 +55,7 @@ def app(connect_to_robot: bool = False):
                 if event.type == pygame.QUIT:
                     running = False
         except Exception as e:
-            print(e)
+            raise e
 
 
 def test_antons_code():
