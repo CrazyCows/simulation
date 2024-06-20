@@ -11,7 +11,7 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], ba
         if event.type == pygame.QUIT:
             return False
 
-    screen.fill("purple")
+    #screen.fill("purple")
 
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "red", obstacle.vertices)

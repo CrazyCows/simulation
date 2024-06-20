@@ -5,7 +5,6 @@ from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
 from src.dto.shapes import CircleObject, Position, SquareObject
 
-
 def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):
     """
     Increase the vibrance of an image by selectively increasing its saturation with a smooth transition.
@@ -68,19 +67,26 @@ def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> fl
     return angle
 
 
-class RoboVision:
+class RoboVision():
     # at a camera height of 202cm with
     _whiteSizeLower = 7
     _whiteSizeUpper = 12
     _eggSizeLower = _whiteSizeUpper + 1
     _eggSizeUpper = 50
-    _dotSizeLower = 1
-    _dotSizeUpper = 70
-    _robot_width = 100
-    _robot_height = 100
+    _dotSizeLower = 10
+    _dotSizeUpper = 45
+
+    _robot_y = 100
+    _robot_x = 100
+    _robot_z_cm = 41 #TODO: make parameters?
+    _camera_z_cm = 190
+    _camera_x: int = None
+    _camera_y: int = None
+    _z_factor = 1-(_camera_z_cm-_robot_z_cm)/_camera_z_cm
+
 
     _whiteLower = np.array([0, 0, 220])
-    _whiteUpper = np.array([255, 100, 255])
+    _whiteUpper = np.array([255, 50, 255])
 
     _red1lower_limit = np.array([0, 125, 80])
     _red1upper_limit = np.array([15, 255, 255])
@@ -120,7 +126,6 @@ class RoboVision:
 
     _cross_area = 100
     _vs = cv2.VideoCapture(0)
-    # Set the resolution to 1920x1080
     _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -128,15 +133,19 @@ class RoboVision:
     _blurred = None
     _hsv = None
 
-    def commonSetup(self):
-        # Yes, this has to be here twice.
-        # Very first frame from droidcam is just orange for
-        # some reason
+    def get_flipped_frame(self):
         ret, frame = self._vs.read()
+        cv2.flip(frame, 1, frame)
+        return frame
+
+    def commonSetup(self):
         ret, frame = self._vs.read()
 
         if frame is None:
             raise Exception("Camera error")
+        if self._camera_x is None:
+            self._camera_x = int(self._vs.get(cv2.CAP_PROP_FRAME_WIDTH)/2)
+            self._camera_y = int(self._vs.get(cv2.CAP_PROP_FRAME_HEIGHT)/2)
         frame = increase_vibrance(frame, 1.5)
         self._blurred = cv2.GaussianBlur(frame, (5, 5), 0)
         self._hsv = cv2.cvtColor(self._blurred, cv2.COLOR_BGR2HSV)
@@ -179,30 +188,39 @@ class RoboVision:
                 print("x: " + str(thing[0][0]))
                 print("y: " + str(thing[0][1]))
 
-        new_approx = []
-        for approx in approximations:
-            pass
-
         return approximations
+
+    def _correct_robot_location_perspective(self, before_center: CircleObject) -> CircleObject:
+        before_center.position.x = before_center.position.x + self._z_factor*(self._camera_x-before_center.position.x)
+        before_center.position.y = before_center.position.y + self._z_factor*(self._camera_y-before_center.position.y)
+        return before_center
+
+    def _correct_point_location_perspective(self, before_center: CircleObject) -> CircleObject:
+        before_center.position.x = before_center.position.x + self._z_factor*(self._camera_x-before_center.position.x)
+        before_center.position.y = before_center.position.y + self._z_factor*(self._camera_y-before_center.position.y)
+        return before_center
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
         greendots = []
-        while len(greendots) == 0:
-            print("Looking for green dots")
+        while len(greendots) != 1:
             greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
                                               self._dotSizeUpper)
+            print("Looking for green dots. Current number of green dots: " + str(len(greendots)))
+
         greendot = greendots[0]
         bluedots = []
-        while len(bluedots) == 0:
-            print("Looking for blue dots")
+        while len(bluedots) != 1:
             bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
                                              self._dotSizeUpper)
+            print("Looking for blue dot. Current number of blue dots: " + str(len(bluedots)))
+            print(bluedots)
         bluedot = bluedots[0]
         center = CircleObject(radius=1,
                               position=Position(x=int((greendot.position.x + bluedot.position.x) / 2),
                                                 y=int((greendot.position.y + bluedot.position.y) / 2)))
-        angle = calculate_positive_angle(greendot, bluedot)
-        return center, angle
+        angle_xy = calculate_positive_angle(greendot, bluedot)
+        center = self._correct_robot_location_perspective(center)
+        return center, angle_xy
 
     def _get_white_balls(self) -> List[CircleObject]:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
@@ -219,8 +237,8 @@ class RoboVision:
         circle, angle = self._get_robot_center()
 
         square = SquareObject.create_square(circle.position,
-                                            self._robot_width,
-                                            self._robot_height,
+                                            self._robot_y,
+                                            self._robot_x,
                                             angle
                                             )
 
