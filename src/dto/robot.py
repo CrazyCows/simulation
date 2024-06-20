@@ -27,7 +27,12 @@ class Paths(BaseModel):
 
 class Checkpoint(Position):
     is_ball: bool
+    is_goal: bool = False
 
+class Phase(Enum):
+    CALIBRATE = 'calibrate'
+    PICKUP = 'pickup'
+    GOAL = 'goal'
 
 class Robot(BaseModel):
     robot: SquareObject
@@ -39,6 +44,7 @@ class Robot(BaseModel):
     checkpoints: List[Checkpoint]
     start_position: Position
     line: LineObject
+    phase: Phase = Phase.PICKUP
 
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
@@ -62,14 +68,12 @@ class Robot(BaseModel):
                 obstacles: Objects the robot can't collide with
         """
 
-        print(self.robot.radians)
-        print(move)
+        #print(self.robot.radians)
+        #print(move)
         speed = move.speed
         radians = move.radians
         suck = move.suck
-        print(speed)
-        print(radians)
-        print(suck)
+        print("Speed:", speed, "radians:", radians, "suck", suck)
         radians += self.robot.radians
         dy = math.cos(radians) * speed
         dx = math.sin(radians) * speed
