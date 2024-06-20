@@ -29,21 +29,20 @@ def app(connect_to_robot: bool = False):
 
     if connect_to_robot:
         wp = WallPicker()
-        walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_south_wall(), wp.pick_west_wall()]
+        walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_west_wall(), wp.pick_south_wall()]
         rv = RoboVision()
         cross_squares = wp.pick_cross()
-        print("Here")
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls, safe_distance=20)
     while running:
         try:
             if connect_to_robot:
                 #print("WHY THE FUCK AM I RUNNING?")
                 balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-                temprobo = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
+                temp_robo = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
 
-                robot_position = temprobo.position
+                robot_position = temp_robo.position
                 #print(robot_position)
-                radians = temprobo.radians
+                radians = temp_robo.radians
                 robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
                                            width=30, height=30, radians=radians, suction_height=20, suction_width=20,
                                            suction_offset_y=25)
