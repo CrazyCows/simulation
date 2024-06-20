@@ -132,13 +132,13 @@ class WallPicker:
 
     def _click_cross_one(self):
         print("Click 4 points for Cross One")
-        return self._pick_points("Cross part one")
+        return self._pick_points("One rectangle from cross")
 
-    def click_cross(self):
+    def pick_cross(self):
         cross_part_one: SquareObject = self._click_cross_one()
         cross_part_two: SquareObject = deepcopy(cross_part_one)
         cross_part_two.update_square(position=cross_part_two.position, radians=cross_part_two.radians+np.pi/2)
-        if (cross_part_two.radians > 2*np.pi):
+        if cross_part_two.radians > 2*np.pi:
             cross_part_two.radians = cross_part_two.radians - 2*np.pi
 
         return [cross_part_one, cross_part_two]
