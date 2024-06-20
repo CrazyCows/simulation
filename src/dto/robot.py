@@ -41,6 +41,7 @@ class Robot(BaseModel):
     start_position: Position
     line: LineObject
     edge_mode: bool
+    exit_edge_mode: bool
 
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
@@ -126,4 +127,4 @@ class Robot(BaseModel):
         
         return cls(robot=robot, suction=suction, collected_balls=collected_balls, 
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, 
-                   previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line, edge_mode=False)
+                   previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line, edge_mode=False, exit_edge_mode=False)

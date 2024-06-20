@@ -29,7 +29,7 @@ def create_path(
     checkpoints = []
     path = []
     first_ball = True
-
+    print(1)
     while temp_balls:
         dzc_position = input_edge_wall(temp_balls[0], walls_danger_zones)
         danger_case = dzc_position != temp_balls[0].position
@@ -38,19 +38,32 @@ def create_path(
             temp_path = create_temp_path(robot.robot.position, temp_balls[0].position)
             first_ball = False
         else:
-            temp_balls.sort(key=lambda ball: calculate_speed_to_ball(ball, temp_balls[0]))
-            temp_path = create_temp_path(temp_balls[0].position, temp_balls[1].position)
-            temp_balls.pop(0)
+            if len(temp_balls) > 1:
+                temp_balls.sort(key=lambda ball: calculate_speed_to_ball(ball, temp_balls[0]))
+                temp_path = create_temp_path(temp_balls[0].position, temp_balls[1].position)
+            else:
+                temp_path = create_temp_path(temp_balls[0].position, robot.robot.position)
 
-        if danger_case:
-            checkpoints.append(Checkpoint(x=dzc_position.x, y=dzc_position.y, is_ball=False, danger_point=True))
+
+        if danger_case and not robot.edge_mode:
+            if len(robot.checkpoints) > 0:
+                if robot.prev_checkpoint == robot.checkpoints[0]:
+                    pass
+                else:
+                    checkpoints.append(Checkpoint(x=dzc_position.x, y=dzc_position.y, is_ball=False, danger_point=True))
+                    temp_path = create_temp_path(Position(x=checkpoints[0].x, y=checkpoints[0].y), robot.robot.position)
+            else:
+                checkpoints.append(Checkpoint(x=dzc_position.x, y=dzc_position.y, is_ball=False, danger_point=True))
+                temp_path = create_temp_path(Position(x=checkpoints[0].x, y=checkpoints[0].y), robot.robot.position)
 
         if check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path):
             additional_path, additional_checkpoints = recalculate_path(
-                cross, robot.robot.position, temp_balls[0].position, robot, danger_case, dzc_position
+                cross, robot.robot.position, temp_balls[0].position, robot
             )
             path.extend(additional_path)
+            #additional_checkpoints.extend(checkpoints)
             checkpoints.extend(additional_checkpoints)
+            #checkpoints = additional_checkpoints
         else:
             path.append(temp_path)
             checkpoints.append(Checkpoint(
@@ -59,8 +72,9 @@ def create_path(
                 is_ball=True,
                 danger_point=False
             ))
-        if len(temp_balls) == 1:
-            temp_balls = None
+
+        temp_balls.pop(0)
+
 
     return path, checkpoints
 
@@ -73,22 +87,17 @@ def check_if_cross_is_touched(cross: Cross, current_path: SquareObject) -> bool:
 def check_if_wall_is_touched(walls: List[SquareObject], current_path: SquareObject) -> bool:
     return any(square_touching(wall, current_path) for wall in walls)
 
+def closest_safezone(p1: Position, cross: Cross) -> Position:
+    return sorted(cross.safe_zones, key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (p1.x, p1.y)))[0]
+
 def recalculate_path(
     cross: Cross,
     current_pos: Position,
     goal_pos: Position,
     robot: Robot,
-    danger_case: bool,
-    extra_checkpoint: Position
 ) -> Tuple[List[SquareObject], List[Checkpoint]]:
-    closest_safezone_to_current_pos = sorted(
-        cross.safe_zones,
-        key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (current_pos.x, current_pos.y))
-    )[0]
-    closest_safezone_to_goal_pos = sorted(
-        cross.safe_zones,
-        key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (goal_pos.x, goal_pos.y))
-    )[0]
+    closest_safezone_to_current_pos = closest_safezone(current_pos, cross)
+    closest_safezone_to_goal_pos = closest_safezone(goal_pos, cross)
 
     checkpoints = []
     path = []
@@ -163,11 +172,11 @@ def input_edge_wall(ball: CircleObject, walls_danger_zones: List[SquareObject]) 
     for danger_zone in walls_danger_zones:
         if circle_square_touch(ball, danger_zone):
             if danger_zone.wallPosition == WallPosition.TOP:
-                y -= 100
+                y -= 150
             elif danger_zone.wallPosition == WallPosition.BOT:
-                y += 100
+                y += 150
             elif danger_zone.wallPosition == WallPosition.LEFT:
-                x += 200
+                x += 150
             elif danger_zone.wallPosition == WallPosition.RIGHT:
-                x -= 100
+                x -= 150
     return Position(x=x, y=y)

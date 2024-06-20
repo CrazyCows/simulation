@@ -1,4 +1,4 @@
-import gui.visualization as visualization
+import src.gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
 from dto.robot import Move

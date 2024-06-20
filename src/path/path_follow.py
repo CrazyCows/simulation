@@ -11,11 +11,14 @@ def create_move(robot: Robot) -> Move:
     """
     Moves the robot closer to the first checkpoint in the robots list of checkpoints.
     """
+    radians = calculate_radians_to_turn(robot)
     if robot.edge_mode:
-        speed = 0
+        if radians == 0:
+            speed = 1
+        else:
+            speed = 0
     else:
         speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
-    radians = calculate_radians_to_turn(robot)  # We already calculated the checkpoint to go to elsewhere...
     suck = suck_if_small(robot)
     move = Move(speed=speed, radians=radians, suck=suck)
     
@@ -29,6 +32,9 @@ def move_robot(move: Move, robot: Robot, obstacles: List[SquareObject], balls: L
         [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
     if overlap_detection.circle_square_touch(CircleObject(radius=20, position=robot.checkpoints[0]), robot.robot):
         robot.prev_checkpoint = robot.checkpoints[0]
+        if robot.edge_mode and robot.checkpoints[0].is_ball:
+            robot.edge_mode = False
+            robot.exit_edge_mode = True
         if robot.checkpoints[0].danger_point:
             robot.edge_mode = True
         
@@ -62,9 +68,12 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     nearest_point = start + t * line_vector
     
     # Calculate the distance from the point to the nearest point on the line segment
+
     distance = np.linalg.norm(point - nearest_point)
+
     if distance < 5:
         return 0.0
+
     
     # Determine the direction to turn (left or right)
     # We can use the cross product of the line vector and point vector to determine the direction

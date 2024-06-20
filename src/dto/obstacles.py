@@ -1,3 +1,4 @@
+from dto.robot import Checkpoint
 from dto.shapes import SquareObject, CircleObject, Position
 from pydantic import BaseModel
 from typing import List
@@ -39,7 +40,7 @@ class Cross(BaseModel):
             max_distance = float('inf')
             for wall in walls:
                 for vertex in wall.vertices:
-                    wall_vertex_pos = Position(x=vertex[0], y=vertex[1])
+                    wall_vertex_pos = Checkpoint(x=vertex[0], y=vertex[1])
                     distance_x = (wall_vertex_pos.x - cross_center.x) / direction_x if direction_x != 0 else float('inf')
                     distance_y = (wall_vertex_pos.y - cross_center.y) / direction_y if direction_y != 0 else float('inf')
                     distance = min(abs(distance_x), abs(distance_y)) - safe_distance
@@ -49,23 +50,23 @@ class Cross(BaseModel):
             if i == 0 or i == 4:
                 safe_zone_x = cross_center.x + direction_x * max_distance * 0.75
                 safe_zone_y = cross_center.y + direction_y * max_distance * 0.75
-                safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
+                safe_zones.append(Checkpoint(x=safe_zone_x, y=safe_zone_y, danger_point=False, is_ball=False))
             
             # Up and down point
             if i == 2 or i == 6:
                 safe_zone_x = cross_center.x + direction_x * max_distance * 1.25
                 safe_zone_y = cross_center.y + direction_y * max_distance * 1.25
-                safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
+                safe_zones.append(Checkpoint(x=safe_zone_x, y=safe_zone_y, danger_point=False, is_ball=False))
             
             if i == 3 or i == 7:
                 safe_zone_x = cross_center.x + direction_x * max_distance
                 safe_zone_y = cross_center.y + direction_y * max_distance
-                safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
+                safe_zones.append(Checkpoint(x=safe_zone_x, y=safe_zone_y, danger_point=False, is_ball=False))
             
             if i== 1 or i == 5:
                 safe_zone_x = cross_center.x + direction_x * max_distance
                 safe_zone_y = cross_center.y + direction_y * max_distance
-                safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
+                safe_zones.append(Checkpoint(x=safe_zone_x, y=safe_zone_y, danger_point=False, is_ball=False))
             
         
             
