@@ -6,6 +6,9 @@ from helper.overlap_detection import square_touching
 from pydantic import BaseModel
 import math
 
+from src.dto.robot import CheckpointType
+
+
 # TODO: Implement moving around obstacles
 def create_path(balls: List[CircleObject], robot: Robot, walls: List[SquareObject], cross: Cross) -> Tuple[List[SquareObject], List[Checkpoint]]:
     """
@@ -44,7 +47,11 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[SquareObjec
             #path.append(create_temp_path(prev_ball.position, additional_checkpoints[1]))
         else:
             path.append(temp_path)  
-            checkpoints.append(Checkpoint(x=temp_balls[0].position.x, y=temp_balls[0].position.y, is_ball=True))
+            checkpoints.append(Checkpoint(
+                x=temp_balls[0].position.x,
+                y=temp_balls[0].position.y,
+                checkpointType=CheckpointType.BALL.value)
+            )
 
         #for wall in walls: 
         #    if obstacles_hit:
@@ -103,14 +110,14 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
                 path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
             else:
                 path.append(create_temp_path(current_pos, cross.safe_zones[current_index]))
-            if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
+            if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpointType = CheckpointType.SAFEZONE.value):
                 path.pop(0)
                 continue
-            checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
+            checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpointType = CheckpointType.SAFEZONE.value))
             last_i = i
 
         #if check_if_cross_is_touched(cross, path):
-        #    checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
+        #    checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpointType = CheckpointType.BALL.value))
 
     else:
         # If the counterclockwise distance is shorter
@@ -122,11 +129,11 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
                 path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
             else:
                 path.append(create_temp_path(current_pos, cross.safe_zones[current_index]))
-            if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
+            if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpointType = CheckpointType.SAFEZONE.value):
                 path.pop(0)
                 continue
             
-            checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
+            checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpointType = CheckpointType.SAFEZONE.value))
     if check_if_cross_is_touched(cross, path[len(path) - 1]):
         print("OWO")
             

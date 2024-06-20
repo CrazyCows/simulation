@@ -4,6 +4,8 @@ from dto.shapes import SquareObject, CircleObject, Position
 from dto.obstacles import Cross
 from typing import List
 
+from src.dto.robot import CheckpointType
+
 
 def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], calculated_path: List[SquareObject], cross: Cross):
     
@@ -40,13 +42,19 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], ba
                 prev_pos_x = prev_pos.x
                 prev_pos_y = prev_pos.y
                 pygame.draw.line(screen, color, (prev_pos_x, prev_pos_y), (current_pos_x, current_pos_y))
-    
 
-    for ball in balls:
-        pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), ball.radius)
+    for checkpoint in robot.checkpoints:
+        if checkpoint.checkpointType.value == CheckpointType.BALL.value:
+            pygame.draw.circle(screen, "green", (checkpoint.x, checkpoint.y), 5)
+        if checkpoint.checkpointType.value == CheckpointType.SAFEZONE.value:
+            pygame.draw.circle(screen, "pink", (checkpoint.x, checkpoint.y), 5)
+        if checkpoint.checkpointType.value == CheckpointType.GOAL.value:
+            pygame.draw.circle(screen, "orange", (checkpoint.x, checkpoint.y), 5)
+        if checkpoint.checkpointType.value == CheckpointType.INTERMEDIATE.value:
+            pygame.draw.circle(screen, "yellow", (checkpoint.x, checkpoint.y), 5)
 
     for zone in cross.safe_zones:
-        pygame.draw.circle(screen, "pink", (zone.x, zone.y), ball.radius)
+        pygame.draw.circle(screen, "pink", (zone.x, zone.y), 5)
 
     create_trail(robot.previous_path, color="white")
 

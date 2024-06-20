@@ -25,8 +25,24 @@ class Move(BaseModel):
 class Paths(BaseModel):
     paths: List[Position]
 
+
+# A checkpoint can have different types
+# based on the type the robot will behave differently
+class CheckpointType(Enum):
+    BALL = "ball"
+    SAFEZONE = "safezone"
+    GOAL = "goal"
+    INTERMEDIATE = "intermediate"
+
+
 class Checkpoint(Position):
-    is_ball: bool
+    checkpointType: CheckpointType = CheckpointType.BALL.value
+
+
+class Phase(Enum):
+    CALIBRATE = "calibrate"
+    PICKUP = "pickup"
+    GOAL = "goal"
 
 
 class Robot(BaseModel):
@@ -39,6 +55,7 @@ class Robot(BaseModel):
     checkpoints: List[Checkpoint]
     start_position: Position
     line: LineObject
+    phase: Phase = Phase.PICKUP
 
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
@@ -52,7 +69,6 @@ class Robot(BaseModel):
                 self.obstacles_hit_list.append(obstacle)
                 obstacle_touched = True
         return obstacle_touched
-                
 
     def move(self, move: Move, obstacles: List[SquareObject]=[], balls: List[CircleObject]=[], cross: Cross = None):
         """
@@ -62,14 +78,12 @@ class Robot(BaseModel):
                 obstacles: Objects the robot can't collide with
         """
 
-        print(self.robot.radians)
-        print(move)
+        #print(self.robot.radians)
+        #print(move)
         speed = move.speed
         radians = move.radians
         suck = move.suck
-        print(speed)
-        print(radians)
-        print(suck)
+        print("Speed: ", speed, "|", "Radians: ", radians, "|", "Suck: ", suck)
         radians += self.robot.radians
         dy = math.cos(radians) * speed
         dx = math.sin(radians) * speed
