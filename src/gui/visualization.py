@@ -1,18 +1,19 @@
 import pygame
 from dto.robot import Robot
 from dto.shapes import SquareObject, CircleObject, Position
-from dto.obstacles import Cross
+from dto.obstacles import Cross, Wall
 from typing import List
 
 
-def game(screen: pygame.Surface, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], calculated_path: List[SquareObject], cross: Cross):
+def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: List[CircleObject], calculated_path: List[SquareObject], cross: Cross):
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
 
     screen.fill("purple")
-
+    for obstacle in obstacles:
+        pygame.draw.polygon(screen, "orange", obstacle.danger_zone.vertices)
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "red", obstacle.vertices)
 

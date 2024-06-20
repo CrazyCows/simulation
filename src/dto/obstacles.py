@@ -1,7 +1,40 @@
 from dto.shapes import SquareObject, CircleObject, Position
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+from enum import Enum
 import math
+
+class WallPlacement(Enum):
+    LEFT = "left"
+    RIGHT = "right"
+    TOP = "up"
+    BOT = "down"
+
+class Wall(SquareObject):
+    placement: WallPlacement
+    danger_zone: SquareObject
+
+    @classmethod
+    def create(cls, square_object: SquareObject, placement: WallPlacement):
+        return cls(
+            position=Position(x=square_object.position.x, y=square_object.position.y),
+            width=square_object.width,
+            height=square_object.height,
+            radians=square_object.radians,
+            vertices=square_object.vertices,
+            offset_x=square_object.offset_x,
+            offset_y=square_object.offset_y,
+            placement=placement,
+            danger_zone=SquareObject.create_square(
+                position=Position(x=square_object.position.x, y=square_object.position.y),
+                width=square_object.width + 40,
+                height=square_object.height + 40,
+                radians=square_object.radians,
+                offset_x=square_object.offset_x,
+                offset_y=square_object.offset_y
+            )
+        )
+
 
 class Cross(BaseModel):
     square_1: SquareObject

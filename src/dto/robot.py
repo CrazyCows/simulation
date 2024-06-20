@@ -12,8 +12,8 @@ from dto.obstacles import Cross
 class MoveCommand(Enum):
     FORWARD = 2.0
     BACKWARD = -2.0
-    LEFT = 0.025
-    RIGHT = -0.025
+    LEFT = 0.055
+    RIGHT = -0.055
     SUCK = True
 
 class Move(BaseModel):
@@ -25,9 +25,21 @@ class Move(BaseModel):
 class Paths(BaseModel):
     paths: List[Position]
 
+class CheckpointType(Enum):
+    BALL = 1
+    SAFE_CHECKPOINT = 2
+    DANGER_CHECKPOINT = 3
+    GOAL = 4
+
 class Checkpoint(Position):
     is_ball: bool
+    checkpoint_type: CheckpointType = CheckpointType.SAFE_CHECKPOINT
 
+
+class RobotMode(Enum):
+    SAFE = 1
+    DANGER = 2
+    DANGER_REVERSE = 3
 
 class Robot(BaseModel):
     robot: SquareObject
@@ -35,10 +47,11 @@ class Robot(BaseModel):
     collected_balls: List[CircleObject]
     obstacles_hit_list: List[SquareObject]
     previous_path: List[Position]
-    prev_checkpoint: Checkpoint = None
+    prev_checkpoint: Checkpoint
     checkpoints: List[Checkpoint]
     start_position: Position
     line: LineObject
+    mode: RobotMode = RobotMode.SAFE
 
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
@@ -52,6 +65,9 @@ class Robot(BaseModel):
                 self.obstacles_hit_list.append(obstacle)
                 obstacle_touched = True
         return obstacle_touched
+    
+    def calculate_dist_to_checkpoint(self, checkpoint: Checkpoint):
+        return math.dist((self.robot.position.x, self.robot.position.y), (checkpoint.x, checkpoint.y))
                 
 
     def move(self, move: Move, obstacles: List[SquareObject]=[], balls: List[CircleObject]=[], cross: Cross = None):
@@ -63,13 +79,13 @@ class Robot(BaseModel):
         """
 
         print(self.robot.radians)
-        print(move)
+        #print(move)
         speed = move.speed
         radians = move.radians
         suck = move.suck
-        print(speed)
-        print(radians)
-        print(suck)
+        #print(speed)
+        #print(radians)
+        #print(suck)
         radians += self.robot.radians
         dy = math.cos(radians) * speed
         dx = math.sin(radians) * speed
@@ -124,4 +140,4 @@ class Robot(BaseModel):
         
         return cls(robot=robot, suction=suction, collected_balls=collected_balls, 
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, 
-                   previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line)
+                   previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line, prev_checkpoint=Checkpoint(x=position.x, y=position.y, is_ball=False, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))

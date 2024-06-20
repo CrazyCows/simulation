@@ -1,13 +1,13 @@
 from typing import List, Tuple
 from dto.shapes import CircleObject, SquareObject, Position
-from dto.robot import Robot, Checkpoint
-from dto.obstacles import Cross
-from helper.overlap_detection import square_touching
+from dto.robot import Robot, Checkpoint, CheckpointType, RobotMode
+from dto.obstacles import Cross, WallPlacement, Wall
+from helper.overlap_detection import square_touching, circle_square_touch
 from pydantic import BaseModel
 import math
 
-# TODO: Implement moving around obstacles
-def create_path(balls: List[CircleObject], robot: Robot, walls: List[SquareObject], cross: Cross) -> Tuple[List[SquareObject], List[Checkpoint]]:
+
+def create_path(balls: List[CircleObject], robot: Robot, walls: List[Wall], cross: Cross) -> Tuple[List[SquareObject], List[Checkpoint]]:
     """
         Creates checkpoints to follow by creating a path between all balls to pick up.
 
@@ -16,44 +16,45 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[SquareObjec
             List[Checkpoint]: List of checkpoints which the robot must pass.
     """
 
-    temp_balls = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))
+    temp_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
     first_ball = True
     checkpoints = []  # A list of checkpoints the robot must pass
     path: List[SquareObject] = [] # Path is a line with a width to ensure the robot does not touch the obstacles
+
     def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
         return math.dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
-    while temp_balls:
-        if first_ball:
-            temp_path = create_temp_path(robot.robot.position, temp_balls[0].position)
-            first_ball = False
+    
+    temp_path = create_temp_path(robot.robot.position, temp_ball.position)
+    p, b = close_to_wall(temp_ball, walls)
+    #print(robot.prev_checkpoint.checkpoint_type, robot.mode, robot.collected_balls)
+    if robot.mode == RobotMode.DANGER_REVERSE and robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and len(robot.collected_balls) != 0:
+        p, b = close_to_wall(robot.collected_balls[-1], walls)
+        path.append(create_temp_path(robot.robot.position, p))
+        path.append(create_temp_path(temp_ball.position, p))
+        checkpoints.append(Checkpoint(x=p.x, y=p.y, is_ball=False, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
+        checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, is_ball=True, checkpoint_type=CheckpointType.BALL))
+        print(path, "\n", checkpoints)
+        return path, checkpoints
+    if check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path):
+        additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_ball.position, robot)
+        if len(additional_checkpoints) > 1:
+            path.append(create_temp_path(temp_ball.position, additional_checkpoints[1]))
         else:
-            sort_ball = temp_balls[0]
-            temp_balls.sort(key=lambda ball: calculate_speed_to_ball(ball, sort_ball))
-            temp_path = create_temp_path(temp_balls[0].position, temp_balls[1].position)
-            temp_balls.pop(0)
-
-        if check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path):
-            additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_balls[0].position, robot)
-            if len(additional_checkpoints) > 1:
-                path.append(create_temp_path(temp_balls[0].position, additional_checkpoints[1]))
-            else:
-                path.append(create_temp_path(robot.robot.position, additional_checkpoints[0]))
-                path.append(create_temp_path(temp_balls[0].position, additional_checkpoints[0]))
-            path.extend(additional_path)
-            checkpoints.extend(additional_checkpoints)
-            #path.append(create_temp_path(prev_ball.position, additional_checkpoints[1]))
+            path.append(create_temp_path(robot.robot.position, additional_checkpoints[0]))
+            path.append(create_temp_path(temp_ball.position, additional_checkpoints[0]))
+        path.extend(additional_path)
+        checkpoints.extend(additional_checkpoints)
+    else:
+        if b and (not robot.prev_checkpoint or (robot.prev_checkpoint.x != p.x and robot.prev_checkpoint.y != p.y)):
+            path.append(create_temp_path(robot.robot.position, p))
+            path.append(create_temp_path(temp_ball.position, p))
+            checkpoints.append(Checkpoint(x=p.x, y=p.y, is_ball=False, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
+            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, is_ball=True, checkpoint_type=CheckpointType.BALL))
         else:
-            path.append(temp_path)  
-            checkpoints.append(Checkpoint(x=temp_balls[0].position.x, y=temp_balls[0].position.y, is_ball=True))
+            path.append(temp_path)
+            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, is_ball=True, checkpoint_type=CheckpointType.BALL))
+    
 
-        #for wall in walls: 
-        #    if obstacles_hit:
-        #        break
-        #    obstacles_hit = square_touching(wa)
-
-        if len(temp_balls) == 1:
-            temp_balls = None
-        
     return path, checkpoints
 
 
@@ -70,69 +71,57 @@ def check_if_wall_is_touched(walls: List[SquareObject], current_path: SquareObje
 
 
 def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, robot: Robot) -> Tuple[List[SquareObject], List[Checkpoint]]:
-    closest_safezone_to_current_pos = sorted(cross.safe_zones, key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (current_pos.x, current_pos.y)))
-    closest_safezone_to_goal_pos = sorted(cross.safe_zones, key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (goal_pos.x, goal_pos.y)))
+    # Find the closest safe zones to the current and goal positions
+    closest_safezone_to_current_pos = min(cross.safe_zones, key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (current_pos.x, current_pos.y)))
+    closest_safezone_to_goal_pos = min(cross.safe_zones, key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y), (goal_pos.x, goal_pos.y)))
+
     checkpoints = []
     path = []
-    start = None
-    end = None
     
-    for i, zone in enumerate(cross.safe_zones):
-        if closest_safezone_to_current_pos[0] == zone:
-            start = i
-        if closest_safezone_to_goal_pos[0] == zone:
-            end = i
+    # Get indices of the closest safe zones
+    start_index = cross.safe_zones.index(closest_safezone_to_current_pos)
+    end_index = cross.safe_zones.index(closest_safezone_to_goal_pos)
 
-    if start == end:
-        checkpoints.append(cross.safe_zones[start])
+    if start_index == end_index:
+        checkpoints.append(closest_safezone_to_current_pos)
         return [], checkpoints
 
     total_zones = len(cross.safe_zones)
     
     # Calculate the distance clockwise and counterclockwise
-    clockwise_distance = (end - start) % total_zones
-    counterclockwise_distance = (start - end) % total_zones
-    last_i = 0
+    clockwise_distance = (end_index - start_index) % total_zones
+    counterclockwise_distance = (start_index - end_index) % total_zones
+
     if clockwise_distance <= counterclockwise_distance:
-        # If the clockwise distance is shorter or equal
+        # Clockwise path
         for i in range(clockwise_distance + 1):
-            # checkpoint_start = cross.safe_zones.c
-            current_index = (start + i) % total_zones
-            previous_index = (start + i - 1) % total_zones
-            if i != 0:
-                path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
-            else:
+            current_index = (start_index + i) % total_zones
+            previous_index = (start_index + i - 1) % total_zones
+            if i == 0:
                 path.append(create_temp_path(current_pos, cross.safe_zones[current_index]))
-            if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
-                path.pop(0)
-                continue
-            checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
-            last_i = i
-
-        #if check_if_cross_is_touched(cross, path):
-        #    checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
-
+            else:
+                path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
+            
+            if robot.prev_checkpoint != Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
+                checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
     else:
-        # If the counterclockwise distance is shorter
+        # Counterclockwise path
         for i in range(counterclockwise_distance + 1):
-        #while check_if_cross_is_touched(cross, path):
-            current_index = (start - i) % total_zones
-            previous_index = (start - i + 1) % total_zones
-            if i != 0:
-                path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
-            else:
+            current_index = (start_index - i) % total_zones
+            previous_index = (start_index - i + 1) % total_zones
+            if i == 0:
                 path.append(create_temp_path(current_pos, cross.safe_zones[current_index]))
-            if robot.prev_checkpoint == Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
-                path.pop(0)
-                continue
+            else:
+                path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
             
-            checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
-    if check_if_cross_is_touched(cross, path[len(path) - 1]):
-        print("OWO")
-            
-            
-    print("'''''")
-    print(checkpoints)
+            if robot.prev_checkpoint != Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
+                checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
+
+    # Debugging output
+    if check_if_cross_is_touched(cross, path[-1]):
+        print("Cross is touched at the last segment of the path.")
+    print("Checkpoints:", checkpoints)
+    
     return path, checkpoints
         
 
@@ -156,6 +145,20 @@ def create_temp_path(pos_1: Position, pos_2: Position) -> SquareObject:
     )
     return temp_path
 
-def check_for_obstacles():
-    ""
+def close_to_wall(ball: CircleObject, walls: List[Wall]) -> Tuple[Position, bool]:
+    x = ball.position.x
+    y = ball.position.y
+    is_in_danger = False
+    for wall in walls:
+        if circle_square_touch(ball, wall.danger_zone):
+            is_in_danger = True
+            if wall.placement == WallPlacement.TOP:
+                y += 150
+            elif wall.placement == WallPlacement.BOT:
+                y -= 150
+            elif wall.placement == WallPlacement.LEFT:
+                x += 150
+            elif wall.placement == WallPlacement.RIGHT:
+                x -= 150
+    return Position(x=x, y=y), is_in_danger
 
