@@ -42,6 +42,9 @@ def create_path(
             temp_path = create_temp_path(temp_balls[0].position, temp_balls[1].position)
             temp_balls.pop(0)
 
+        if danger_case:
+            checkpoints.append(Checkpoint(x=dzc_position.x, y=dzc_position.y, is_ball=False, danger_point=True))
+
         if check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path):
             additional_path, additional_checkpoints = recalculate_path(
                 cross, robot.robot.position, temp_balls[0].position, robot, danger_case, dzc_position
@@ -53,11 +56,9 @@ def create_path(
             checkpoints.append(Checkpoint(
                 x=temp_balls[0].position.x,
                 y=temp_balls[0].position.y,
-                is_ball=True
+                is_ball=True,
+                danger_point=False
             ))
-        if len(checkpoints)==1:
-            if(danger_case):
-                checkpoints.append(Checkpoint(x=dzc_position.x, y=dzc_position.y, is_ball=False))
         if len(temp_balls) == 1:
             temp_balls = None
 
@@ -134,7 +135,8 @@ def calculate_path_segment(
         current_checkpoint = Checkpoint(
             x=cross.safe_zones[current_index].x,
             y=cross.safe_zones[current_index].y,
-            is_ball=False
+            is_ball=False,
+            danger_point=False
         )
         if robot.prev_checkpoint == current_checkpoint:
             path.pop(0)
@@ -161,11 +163,11 @@ def input_edge_wall(ball: CircleObject, walls_danger_zones: List[SquareObject]) 
     for danger_zone in walls_danger_zones:
         if circle_square_touch(ball, danger_zone):
             if danger_zone.wallPosition == WallPosition.TOP:
-                y -= 20
+                y -= 100
             elif danger_zone.wallPosition == WallPosition.BOT:
-                y += 20
+                y += 100
             elif danger_zone.wallPosition == WallPosition.LEFT:
-                x += 20
+                x += 200
             elif danger_zone.wallPosition == WallPosition.RIGHT:
-                x -= 20
+                x -= 100
     return Position(x=x, y=y)

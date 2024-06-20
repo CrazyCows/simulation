@@ -50,7 +50,7 @@ cross_danger_zones = [danger_zone_cross_1, danger_zone_cross_2]
 
 
 balls = [
-         CircleObject(radius=10, position=Position(x=60, y=screen.get_height() / 2)),
+         CircleObject(radius=10, position=Position(x=70, y=screen.get_height() / 2)),
 ]
 
 """
