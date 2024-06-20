@@ -74,8 +74,7 @@ class WallPicker:
             if len(self.points) >= self.max_points:
                 cv2.destroyAllWindows()
 
-    def _pick_points(self, window_name) -> SquareObject:
-        num_points = 4
+    def _pick_points(self, window_name, num_points) -> SquareObject:
         self.points = []
         self.max_points = num_points
         self.frame_name = window_name
@@ -116,23 +115,29 @@ class WallPicker:
 
     def pick_north_wall(self):
         print("Click 4 points for the North Wall")
-        return self._pick_points("North")
+        return self._pick_points("North", 4)
 
     def pick_east_wall(self):
         print("Click 4 points for the East Wall")
-        return self._pick_points("East")
+        return self._pick_points("East", 4)
 
     def pick_south_wall(self):
         print("Click 4 points for the South Wall")
-        return self._pick_points("South")
+        return self._pick_points("South", 4)
 
     def pick_west_wall(self):
         print("Click 4 points for the West Wall")
-        return self._pick_points("West")
+        return self._pick_points("West", 4)
 
     def _click_cross_one(self):
         print("Click 4 points for Cross One")
-        return self._pick_points("One rectangle from cross")
+        return self._pick_points("One rectangle from cross", 4)
+
+    def pick_hole(self):
+        print("Click the two of the hole")
+        points = self._pick_points("Hole", 2)
+        x, y = calculate_centroid(points)
+        return CircleObject(radius=1, position=Position(x=x, y=y))
 
     def pick_cross(self):
         cross_part_one: SquareObject = self._click_cross_one()

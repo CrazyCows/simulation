@@ -78,8 +78,8 @@ class RoboVision():
 
     _robot_y = 100
     _robot_x = 100
-    _robot_z_cm = 40 #TODO: Measure and maybe make parameters?
-    _camera_z_cm = 190 #TODO: Measure and maybe make parameters?
+    _robot_z_cm = 41 #TODO: make parameters?
+    _camera_z_cm = 190
     _camera_x: int = None
     _camera_y: int = None
     _z_factor = 1-(_camera_z_cm-_robot_z_cm)/_camera_z_cm
@@ -139,10 +139,6 @@ class RoboVision():
         return frame
 
     def commonSetup(self):
-        # Yes, this has to be here twice.
-        # Very first frame from droidcam is just orange for
-        # some reason
-        #ret, frame = self._vs.read() #TODO: Test if this is still needed. Massive performance gains right here
         ret, frame = self._vs.read()
 
         if frame is None:
