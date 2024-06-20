@@ -43,28 +43,37 @@ def app(connect_to_robot: bool = False):
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
                                         width=30, height=30, radians=radians, suction_height=20, suction_width=20,
                                         suction_offset_y=25)
-        test_walls = []
-        test_walls.append(Wall.create(walls[0], WallPlacement.LEFT))
-        test_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
-        test_walls.append(Wall.create(walls[2], WallPlacement.TOP))
-        test_walls.append(Wall.create(walls[3], WallPlacement.BOT))
+        tmp_walls = []
+        tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT))
+        tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
+        tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP))
+        tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT))
+
+        walls = tmp_walls
 
         # Temp solution, just redrawing balls all da time
-        path, checkpoints = path_creation.create_path(balls, robot, test_walls, cross)
-        robot.checkpoints = checkpoints
-        try:
-            move: Move = path_follow.create_move(robot)
-            path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
-        except Exception as e:
-            continue
+        if len(balls) > 0:
+            
+            path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
+            robot.checkpoints = checkpoints
+            try:
+                move: Move = path_follow.create_move(robot)
+                path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
+            except Exception as e:
+                continue
+            #print("Left: ", robot.distance_to_wall_left)
+            #print("Right: ", robot.distance_to_wall_right)
+            #print("Top: ", robot.distance_to_wall_top)
+            #print("Bot: ", robot.distance_to_wall_bot)
+            print("Cross: ", robot.distance_to_cross)
         #if connect_to_robot:
         #    transmission.send_command(move)
 
-        # NOTE: Updates the visual representation
-        visualization.game(screen, robot, test_walls, balls, path, cross)
+            # NOTE: Updates the visual representation
+            visualization.game(screen, robot, walls, balls, path, cross)
 
         # Tickrate, frames/sec.
-        clock.tick(60) / 1000
+            clock.tick(60) / 1000
 
         # Hello
         for event in pygame.event.get():

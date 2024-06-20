@@ -1,6 +1,6 @@
 from dto.robot import Robot, Move, MoveCommand, CheckpointType, RobotMode
 from dto.shapes import CircleObject, SquareObject
-from dto.obstacles import Cross
+from dto.obstacles import Cross, Wall
 from typing import List
 from helper import overlap_detection
 import math
@@ -35,8 +35,8 @@ def create_move(robot: Robot) -> Move:
     return move
 
 # TODO: Move this somewhere else. Idk where, but somewhere!
-def move_robot(move: Move, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], cross: Cross, sim_only: bool = True):
-    robot.move(move, obstacles, balls, cross)
+def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleObject], cross: Cross, sim_only: bool = True):
+    robot.move(move, walls, balls, cross)
 
     if sim_only is False:
         [balls.remove(ball) for ball in balls if ball in robot.collected_balls]

@@ -16,7 +16,8 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
         pygame.draw.polygon(screen, "orange", obstacle.danger_zone.vertices)
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "red", obstacle.vertices)
-
+    pygame.draw.polygon(screen, "orange", cross.square_1.danger_zone.vertices)
+    pygame.draw.polygon(screen, "orange", cross.square_2.danger_zone.vertices)
     pygame.draw.polygon(screen, "red", cross.square_1.vertices)
     pygame.draw.polygon(screen, "red", cross.square_2.vertices)
     
@@ -42,12 +43,14 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
                 prev_pos_y = prev_pos.y
                 pygame.draw.line(screen, color, (prev_pos_x, prev_pos_y), (current_pos_x, current_pos_y))
     
+    try:
+        for ball in balls:
+            pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), ball.radius)
+        for zone in cross.safe_zones:
+            pygame.draw.circle(screen, "pink", (zone.x, zone.y), ball.radius)
+    except:
+        print("Visualization: No more balls")
 
-    for ball in balls:
-        pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), ball.radius)
-
-    for zone in cross.safe_zones:
-        pygame.draw.circle(screen, "pink", (zone.x, zone.y), ball.radius)
 
     create_trail(robot.previous_path, color="white")
 

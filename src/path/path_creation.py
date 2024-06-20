@@ -25,16 +25,18 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[Wall], cros
         return math.dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
     
     temp_path = create_temp_path(robot.robot.position, temp_ball.position)
-    p, b = close_to_wall(temp_ball, walls)
-    #print(robot.prev_checkpoint.checkpoint_type, robot.mode, robot.collected_balls)
+
+    p, b = is_ball_close_to_obstacle(temp_ball, walls,cross)
+
     if robot.mode == RobotMode.DANGER_REVERSE and robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and len(robot.collected_balls) != 0:
-        p, b = close_to_wall(robot.collected_balls[-1], walls)
+        p, b = is_ball_close_to_obstacle(robot.collected_balls[-1], walls,cross)
         path.append(create_temp_path(robot.robot.position, p))
         path.append(create_temp_path(temp_ball.position, p))
         checkpoints.append(Checkpoint(x=p.x, y=p.y, is_ball=False, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
         checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, is_ball=True, checkpoint_type=CheckpointType.BALL))
-        print(path, "\n", checkpoints)
         return path, checkpoints
+
+
     if check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path):
         additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_ball.position, robot)
         if len(additional_checkpoints) > 1:
@@ -145,7 +147,7 @@ def create_temp_path(pos_1: Position, pos_2: Position) -> SquareObject:
     )
     return temp_path
 
-def close_to_wall(ball: CircleObject, walls: List[Wall]) -> Tuple[Position, bool]:
+def is_ball_close_to_wall(ball: CircleObject, walls: List[Wall]) -> Tuple[Position, bool]:
     x = ball.position.x
     y = ball.position.y
     is_in_danger = False
@@ -161,4 +163,29 @@ def close_to_wall(ball: CircleObject, walls: List[Wall]) -> Tuple[Position, bool
             elif wall.placement == WallPlacement.RIGHT:
                 x -= 150
     return Position(x=x, y=y), is_in_danger
+
+def is_ball_close_to_cross(ball: CircleObject, cross: Cross) -> Tuple[Position, bool]:
+    x = ball.position.x
+    y = ball.position.y
+    is_in_danger = False
+    for wall in cross:
+        if circle_square_touch(ball, wall.danger_zone):
+            is_in_danger = True
+            theta = wall.danger_zone.radians
+            perp_x = -math.sin(theta)
+            perp_y = math.cos(theta)
+            x += perp_x *50
+            y += perp_y *50
+    return Position(x=x, y=y), is_in_danger
+
+
+def is_ball_close_to_obstacle(ball: CircleObject, walls: List[Wall], cross: Cross) -> Tuple[Position, bool]:
+    dzwc, dzwc_danger = is_ball_close_to_wall(ball, walls)
+    if dzwc_danger:
+        return dzwc, True
+    dzcc, dzcc_danger = is_ball_close_to_cross(ball, cross)
+    if dzcc_danger:
+        return dzcc, True
+    return ball.position, False
+
 

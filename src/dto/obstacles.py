@@ -9,13 +9,14 @@ class WallPlacement(Enum):
     RIGHT = "right"
     TOP = "up"
     BOT = "down"
+    CROSS = "cross"
 
 class Wall(SquareObject):
     placement: WallPlacement
     danger_zone: SquareObject
 
     @classmethod
-    def create(cls, square_object: SquareObject, placement: WallPlacement):
+    def create(cls, square_object: SquareObject, placement: WallPlacement, danger_zone_size: float = 40):
         return cls(
             position=Position(x=square_object.position.x, y=square_object.position.y),
             width=square_object.width,
@@ -27,8 +28,8 @@ class Wall(SquareObject):
             placement=placement,
             danger_zone=SquareObject.create_square(
                 position=Position(x=square_object.position.x, y=square_object.position.y),
-                width=square_object.width + 40,
-                height=square_object.height + 40,
+                width=square_object.width + danger_zone_size,
+                height=square_object.height + danger_zone_size,
                 radians=square_object.radians,
                 offset_x=square_object.offset_x,
                 offset_y=square_object.offset_y
@@ -37,9 +38,13 @@ class Wall(SquareObject):
 
 
 class Cross(BaseModel):
-    square_1: SquareObject
-    square_2: SquareObject
+    square_1: Wall
+    square_2: Wall
     safe_zones: List[Position]
+
+    def __iter__(cls):
+        yield cls.square_1
+        yield cls.square_2
 
     @classmethod
     def create_cross_with_safe_zones(cls, square_1: SquareObject, square_2: SquareObject, walls: List[SquareObject], safe_distance: float =200):
@@ -102,7 +107,7 @@ class Cross(BaseModel):
             
         
             
-        return cls(square_1=square_1, square_2=square_2, safe_zones=safe_zones)
+        return cls(square_1=Wall.create(square_object=square_1, placement=WallPlacement.CROSS, danger_zone_size=60), square_2=Wall.create(square_object=square_2, placement=WallPlacement.CROSS, danger_zone_size=60), safe_zones=safe_zones)
 
 
 if __name__ == '__main__':

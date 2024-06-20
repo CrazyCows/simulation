@@ -6,7 +6,7 @@ import logging
 from enum import Enum
 from helper.overlap_detection import square_touching, circle_square_touch, calculate_coordinates_for_line
 from dto.shapes import SquareObject, CircleObject, LineObject, Position
-from dto.obstacles import Cross
+from dto.obstacles import Cross, Wall, WallPlacement
 
 
 class MoveCommand(Enum):
@@ -52,6 +52,11 @@ class Robot(BaseModel):
     start_position: Position
     line: LineObject
     mode: RobotMode = RobotMode.SAFE
+    distance_to_wall_left: float = 0
+    distance_to_wall_right: float = 0
+    distance_to_wall_top: float = 0
+    distance_to_wall_bot: float = 0
+    distance_to_cross: float = 0
 
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
@@ -70,7 +75,7 @@ class Robot(BaseModel):
         return math.dist((self.robot.position.x, self.robot.position.y), (checkpoint.x, checkpoint.y))
                 
 
-    def move(self, move: Move, obstacles: List[SquareObject]=[], balls: List[CircleObject]=[], cross: Cross = None):
+    def move(self, move: Move, obstacles: List[Wall]=[], balls: List[CircleObject]=[], cross: Cross = None):
         """
             Args:
                 speed: speed from the robots current position in pixels
@@ -78,7 +83,6 @@ class Robot(BaseModel):
                 obstacles: Objects the robot can't collide with
         """
 
-        print(self.robot.radians)
         #print(move)
         speed = move.speed
         radians = move.radians
@@ -102,6 +106,7 @@ class Robot(BaseModel):
         self.previous_path.append(self.robot.position)
         self.robot.update_square(Position(x=robot_dx, y=robot_dy), radians)
         self.suction.update_square(Position(x=robot_dx, y=robot_dy), radians)
+        self.self_to_wall_distance(obstacles, cross)
         if suck:
             self.suck(balls=balls)
         self.line = calculate_coordinates_for_line(
@@ -141,3 +146,55 @@ class Robot(BaseModel):
         return cls(robot=robot, suction=suction, collected_balls=collected_balls, 
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, 
                    previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line, prev_checkpoint=Checkpoint(x=position.x, y=position.y, is_ball=False, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
+
+    def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
+        """
+            Calculates a straight line from coordiantes with a chosen length and angle.
+        """
+
+        
+        end_x = start_x + length * math.sin(direction)
+        end_y = start_y + length * math.cos(direction)
+        
+        return LineObject(start_pos=Position(x=start_x, y=start_y), end_pos=Position(x=end_x, y=end_y))
+
+
+    def _point_to_line_distance(self, px: float, py: float, x1: float, y1: float, x2: float, y2: float) -> float:
+        # Line equation coefficients A, B, and C
+        A = y2 - y1
+        B = x1 - x2
+        C = x2 * y1 - x1 * y2
+        
+        # Distance from point (px, py) to the line (Ax + By + C = 0)
+        distance = abs(A * px + B * py + C) / math.sqrt(A**2 + B**2)
+        return distance
+
+    def self_to_wall_distance(self, walls: List[Wall], cross: Cross):
+        min_distance = float('inf')
+        for wall in walls:
+            num_vertices = len(wall.vertices)
+            
+            for i in range(num_vertices):
+                x1, y1 = wall.vertices[i]
+                x2, y2 = wall.vertices[(i + 1) % num_vertices]
+                distance = self._point_to_line_distance(self.robot.position.x, self.robot.position.y, x1, y1, x2, y2)
+                min_distance = min(min_distance, distance)
+            if wall.placement == WallPlacement.LEFT:
+                self.distance_to_wall_left = min_distance
+            elif wall.placement == WallPlacement.RIGHT:
+                self.distance_to_wall_right = min_distance
+            elif wall.placement == WallPlacement.TOP:
+                self.distance_to_wall_top = min_distance
+            elif wall.placement == WallPlacement.BOT:
+                self.distance_to_wall_bot = min_distance
+        for wall in cross:
+            num_vertices = len(wall.vertices)
+            for i in range(num_vertices):
+                x1, y1 = wall.vertices[i]
+                x2, y2 = wall.vertices[(i + 1) % num_vertices]
+                distance = self._point_to_line_distance(self.robot.position.x, self.robot.position.y, x1, y1, x2, y2)
+                min_distance = min(min_distance, distance)
+            self.distance_to_cross = min_distance
+        
+
+

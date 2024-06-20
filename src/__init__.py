@@ -47,15 +47,15 @@ balls = [
 """
 balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
          CircleObject(radius=5, position=Position(x=872, y=231)),
-         CircleObject(radius=5, position=Position(x=512, y=333)),
+         #CircleObject(radius=5, position=Position(x=512, y=333)),
          CircleObject(radius=5, position=Position(x=432, y=90)),
          CircleObject(radius=5, position=Position(x=944, y=666)),
          CircleObject(radius=5, position=Position(x=244, y=666)),
          CircleObject(radius=5, position=Position(x=963, y=155)),
          CircleObject(radius=5, position=Position(x=1111, y=514)),
          CircleObject(radius=5, position=Position(x=893, y=225)),
-         CircleObject(radius=5, position=Position(x=231, y=403)),]
+         CircleObject(radius=5, position=Position(x=screen.get_width() - screen.get_width() / 2-60, y=screen.get_height() / 2)),]
          #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
 
-robot = Robot.create_robot(position=Position(x=screen.get_width() / 2, y=625), 
+robot = Robot.create_robot(position=Position(x=screen.get_width() / 2-400, y=425), 
                 width=60, height=30, radians=0, suction_height=20, suction_width=20, suction_offset_y=25)
