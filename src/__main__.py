@@ -25,7 +25,7 @@ def app(connect_to_robot: bool = False):
     #    transmission.connect
 
     # TODO: The robot phase is currently set to goal phase for testing by Lucas
-    robot.phase = Phase.PICKUP
+    #robot.phase = Phase.GOAL
 
     if (connect_to_robot):
         wp = WallPicker()
@@ -54,8 +54,9 @@ def app(connect_to_robot: bool = False):
         if robot.phase.value == Phase.CALIBRATE.value:
             print("Calibartion phase is currently running")
 
+        # TODO: These phases are currently combined into one, but should be separated into two different phases
         # The pickup phase: For picking up balls and running its main sequence
-        if robot.phase.value == Phase.PICKUP.value:
+        if robot.phase.value == Phase.PICKUP.value:# or robot.phase.value == Phase.GOAL.value:
             # Temp solution, just redrawing balls all da time
             path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
             checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, checkpointType=CheckpointType.BALL.value) for ball in balls]
@@ -69,14 +70,14 @@ def app(connect_to_robot: bool = False):
 
             robot.checkpoints = checkpoints
             try:
-                move: Move = path_follow.create_move(robot)
+                move: Move = path_follow.create_move(robot, walls)
                 path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
             except Exception as e:
                 continue
 
         # The goal phase: The goal sequence
-        if robot.phase.value == Phase.GOAL.value:
-            print("Goal phase is currently running")
+        #if robot.phase.value == Phase.GOAL.value:
+        #    print("Goal phase is currently running")
 
         #if connect_to_robot:
         #    transmission.send_command(move)

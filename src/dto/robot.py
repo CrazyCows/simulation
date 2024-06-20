@@ -26,6 +26,13 @@ class Paths(BaseModel):
     paths: List[Position]
 
 
+class Direction(Enum):
+    NORTH = "north"
+    EAST = "east"
+    SOUTH = "south"
+    WEST = "west"
+
+
 # A checkpoint can have different types
 # based on the type the robot will behave differently
 class CheckpointType(Enum):
