@@ -44,6 +44,7 @@ def app(connect_to_robot: bool = False):
         # Tickrate, frames/sec.
         clock.tick(60) / 1000
 
+        # Hello
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
