@@ -6,8 +6,7 @@ import logging
 from enum import Enum
 from helper.overlap_detection import square_touching, circle_square_touch, calculate_coordinates_for_line
 from dto.shapes import SquareObject, CircleObject, LineObject, Position
-from dto.obstacles import Cross
-
+from dto.obstacles import Cross, Checkpoint
 
 class MoveCommand(Enum):
     FORWARD = 2.0
@@ -25,10 +24,6 @@ class Move(BaseModel):
 class Paths(BaseModel):
     paths: List[Position]
 
-class Checkpoint(Position):
-    danger_point: bool
-    is_ball: bool
-
 
 class Robot(BaseModel):
     robot: SquareObject
@@ -42,6 +37,7 @@ class Robot(BaseModel):
     line: LineObject
     edge_mode: bool
     exit_edge_mode: bool
+    safe_checkpoints: List[Checkpoint] = []
 
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
@@ -70,13 +66,13 @@ class Robot(BaseModel):
         speed = move.speed
         radians = move.radians
         suck = move.suck
-        print(speed)
-        print(radians)
-        print(suck)
         radians += self.robot.radians
         dy = math.cos(radians) * speed
         dx = math.sin(radians) * speed
 
+        print(speed)
+        print(radians)
+        print(suck)
         if self.obstacle_detection(obstacles=obstacles) or self.obstacle_detection(obstacles=[cross.square_1, cross.square_2]):
             radians = 0
             # NOTE: This is pretty jank.....
@@ -127,4 +123,5 @@ class Robot(BaseModel):
         
         return cls(robot=robot, suction=suction, collected_balls=collected_balls, 
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, 
-                   previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line, edge_mode=False, exit_edge_mode=False)
+                   previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints,
+                   line=line, edge_mode=False, exit_edge_mode=False)

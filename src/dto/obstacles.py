@@ -1,8 +1,11 @@
-from dto.robot import Checkpoint
 from dto.shapes import SquareObject, CircleObject, Position
 from pydantic import BaseModel
 from typing import List
 import math
+
+class Checkpoint(Position):
+    danger_point: bool
+    is_ball: bool
 
 class Cross(BaseModel):
     square_1: SquareObject
@@ -10,7 +13,8 @@ class Cross(BaseModel):
     safe_zones: List[Position]
 
     @classmethod
-    def create_cross_with_safe_zones(cls, square_1: SquareObject, square_2: SquareObject, walls: List[SquareObject], safe_distance: float):
+    def create_cross_with_safe_zones(cls, square_1: SquareObject, square_2: SquareObject, walls: List[SquareObject],
+                                     safe_distance: float):
         center_1 = square_1.position
         center_2 = square_2.position
 
@@ -32,7 +36,7 @@ class Cross(BaseModel):
         ]
 
         safe_zones = []
-        
+
         for i, direction in enumerate(directions):
             direction_x, direction_y = direction
 
@@ -40,36 +44,36 @@ class Cross(BaseModel):
             max_distance = float('inf')
             for wall in walls:
                 for vertex in wall.vertices:
-                    wall_vertex_pos = Checkpoint(x=vertex[0], y=vertex[1])
-                    distance_x = (wall_vertex_pos.x - cross_center.x) / direction_x if direction_x != 0 else float('inf')
-                    distance_y = (wall_vertex_pos.y - cross_center.y) / direction_y if direction_y != 0 else float('inf')
+                    wall_vertex_pos = Checkpoint(x=vertex[0], y=vertex[1], is_ball=False, danger_point=False)
+                    distance_x = (wall_vertex_pos.x - cross_center.x) / direction_x if direction_x != 0 else float(
+                        'inf')
+                    distance_y = (wall_vertex_pos.y - cross_center.y) / direction_y if direction_y != 0 else float(
+                        'inf')
                     distance = min(abs(distance_x), abs(distance_y)) - safe_distance
                     max_distance = min(max_distance, distance)
-            
+
             # Left and right point
             if i == 0 or i == 4:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.75
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.75
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.6
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.6
                 safe_zones.append(Checkpoint(x=safe_zone_x, y=safe_zone_y, danger_point=False, is_ball=False))
-            
+
             # Up and down point
             if i == 2 or i == 6:
                 safe_zone_x = cross_center.x + direction_x * max_distance * 1.25
                 safe_zone_y = cross_center.y + direction_y * max_distance * 1.25
                 safe_zones.append(Checkpoint(x=safe_zone_x, y=safe_zone_y, danger_point=False, is_ball=False))
-            
+
             if i == 3 or i == 7:
                 safe_zone_x = cross_center.x + direction_x * max_distance
                 safe_zone_y = cross_center.y + direction_y * max_distance
                 safe_zones.append(Checkpoint(x=safe_zone_x, y=safe_zone_y, danger_point=False, is_ball=False))
-            
-            if i== 1 or i == 5:
+
+            if i == 1 or i == 5:
                 safe_zone_x = cross_center.x + direction_x * max_distance
                 safe_zone_y = cross_center.y + direction_y * max_distance
                 safe_zones.append(Checkpoint(x=safe_zone_x, y=safe_zone_y, danger_point=False, is_ball=False))
-            
-        
-            
+
         return cls(square_1=square_1, square_2=square_2, safe_zones=safe_zones)
 
 

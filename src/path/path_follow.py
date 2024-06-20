@@ -7,37 +7,52 @@ import math
 import numpy as np
 
 # TODO: Move this somewhere else. Idk where, but somewhere!
-def create_move(robot: Robot) -> Move:
+def create_move(robot: Robot, danger_zones: List[SquareObject]) -> Move:
     """
     Moves the robot closer to the first checkpoint in the robots list of checkpoints.
     """
+    speed = MoveCommand.FORWARD.value
     radians = calculate_radians_to_turn(robot)
     if robot.edge_mode:
         if radians == 0:
             speed = 1
         else:
             speed = 0
+    elif robot.exit_edge_mode:
+        speed = -1
+        radians = 0
     else:
-        speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
+        for danger_zone in danger_zones:
+            if overlap_detection.square_touching(robot.robot, danger_zone):
+                speed = 0.3
+  # TODO: Implement logic for slowing down/stopping.
     suck = suck_if_small(robot)
+    if(suck):
+        print("HERE\nHERE\nHERE\nHERE\nHERE\nHERE\nHERE\nHERE\nHERE\nHERE\nHERE\nHERE\nHERE\nHERE\n")
     move = Move(speed=speed, radians=radians, suck=suck)
     
     return move
 
 # TODO: Move this somewhere else. Idk where, but somewhere!
 def move_robot(move: Move, robot: Robot, obstacles: List[SquareObject], balls: List[CircleObject], cross: Cross, sim_only: bool = True):
+
     robot.move(move, obstacles, balls, cross)
 
     if sim_only is False:
         [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
-    if overlap_detection.circle_square_touch(CircleObject(radius=20, position=robot.checkpoints[0]), robot.robot):
+    if robot.checkpoints[0].is_ball:
+        radius = 25
+    else:
+        radius = 10
+    if overlap_detection.circle_square_touch(CircleObject(radius=radius, position=robot.checkpoints[0]), robot.robot):
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.edge_mode and robot.checkpoints[0].is_ball:
             robot.edge_mode = False
             robot.exit_edge_mode = True
         if robot.checkpoints[0].danger_point:
             robot.edge_mode = True
-        
+        if robot.exit_edge_mode and not robot.checkpoints[0].is_ball:
+            robot.exit_edge_mode = False
 
 def calculate_radians_to_turn(robot: Robot) -> float:
     """
@@ -99,7 +114,7 @@ def suck_if_small(robot: Robot) -> bool:
     suck = False
     robot_pos = (robot.robot.position.x, robot.robot.position.y)
     distance_to_ball = math.dist(robot_pos, (robot.checkpoints[0].x, robot.checkpoints[0].y))
-    if distance_to_ball < 25:
+    if distance_to_ball < 50:
         suck = True
 
     return suck

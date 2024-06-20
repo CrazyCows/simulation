@@ -1,4 +1,4 @@
-import src.gui.visualization as visualization
+import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
 from dto.robot import Move
@@ -43,7 +43,7 @@ def app(connect_to_robot: bool = False):
             # checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
 
             robot.checkpoints = checkpoints
-            move: Move = path_follow.create_move(robot)
+            move: Move = path_follow.create_move(robot, walls_danger_zones)
             path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
             #if connect_to_robot:
             #    transmission.send_command(move)

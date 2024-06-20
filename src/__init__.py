@@ -43,35 +43,36 @@ cross = Cross.create_cross_with_safe_zones(
 """
 walls_danger_zones = []
 for wall in walls:
-    danger_zone = SquareObject.create_square(position=wall.position, width=wall.width + 40, height=wall.height + 40,
+    danger_zone = SquareObject.create_square(position=wall.position, width=wall.width + 70, height=wall.height + 70,
                                              radians=wall.radians, danger_zone=True, wallPosition=wall.wallPosition)
     walls_danger_zones.append(danger_zone)
 
-danger_zone_cross_1 = SquareObject.create_square(position=cross.square_1.position, width=cross.square_1.width + 40,
-                                                 height=cross.square_1.height + 40, radians=cross.square_1.radians,
+danger_zone_cross_1 = SquareObject.create_square(position=cross.square_1.position, width=cross.square_1.width + 70,
+                                                 height=cross.square_1.height + 70, radians=cross.square_1.radians,
                                                  danger_zone=True)
-danger_zone_cross_2 = SquareObject.create_square(position=cross.square_2.position, width=cross.square_2.width + 40,
-                                                 height=cross.square_2.height + 40, radians=cross.square_2.radians,
+danger_zone_cross_2 = SquareObject.create_square(position=cross.square_2.position, width=cross.square_2.width + 70,
+                                                 height=cross.square_2.height + 70, radians=cross.square_2.radians,
                                                  danger_zone=True)
 cross_danger_zones = [danger_zone_cross_1, danger_zone_cross_2]
-
+"""
 balls = [
     CircleObject(radius=10, position=Position(x=70, y=screen.get_height() / 2)),
-    CircleObject(radius=10, position=Position(x=920, y=650))
+    CircleObject(radius=10, position=Position(x=920, y=250))
 
 ]
-
 """
-balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
-         CircleObject(radius=5, position=Position(x=872, y=231)),
+
+balls = [CircleObject(radius=5, position=Position(x=70, y=screen.get_height() / 2)),
+         CircleObject(radius=5, position=Position(x=124, y=534)),
+         CircleObject(radius=5, position=Position(x=screen.get_width() - screen.get_width() / 2-55, y=screen.get_height() / 2)),
          CircleObject(radius=5, position=Position(x=512, y=333)),
          CircleObject(radius=5, position=Position(x=432, y=90)),
-         CircleObject(radius=5, position=Position(x=144, y=666)),
+         CircleObject(radius=5, position=Position(x=144, y=500)),
          CircleObject(radius=5, position=Position(x=963, y=155)),
-         CircleObject(radius=5, position=Position(x=1111, y=514)),
+         CircleObject(radius=5, position=Position(x=1210, y=514)),
          CircleObject(radius=5, position=Position(x=893, y=625)),
          CircleObject(radius=5, position=Position(x=231, y=403)),]
          #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
-"""
+
 robot = Robot.create_robot(position=Position(x=screen.get_width() / 2, y=625),
-                           width=60, height=30, radians=1.5, suction_height=20, suction_width=20, suction_offset_y=25)
+                           width=60, height=30, radians=3.14, suction_height=20, suction_width=20, suction_offset_y=25)

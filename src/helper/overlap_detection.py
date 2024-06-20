@@ -54,13 +54,12 @@ def circle_touch(circle1: CircleObject, circle2: CircleObject) -> bool:
 
 def circle_square_touch(circle: CircleObject, square: SquareObject) -> bool:
     """
-        Checks if a square and a circle is touching
+    Checks if a square and a circle are touching or if the circle is inside the square
     """
     def circle_line_segment_touch(circle: CircleObject, p1: Position, p2: Position) -> bool:
         """
-            Checks if a segment of a square is touching
+        Checks if a segment of a square is touching the circle
         """
-
         cx, cy, r = circle.position.x, circle.position.y, circle.radius
         x1, y1 = p1.x, p1.y
         x2, y2 = p2.x, p2.y
@@ -83,11 +82,23 @@ def circle_square_touch(circle: CircleObject, square: SquareObject) -> bool:
 
         return False
 
+    # Check if the circle's center is inside the square
+    min_x = min(square.vertices, key=lambda v: v[0])[0]
+    max_x = max(square.vertices, key=lambda v: v[0])[0]
+    min_y = min(square.vertices, key=lambda v: v[1])[1]
+    max_y = max(square.vertices, key=lambda v: v[1])[1]
+
+    if min_x <= circle.position.x <= max_x and min_y <= circle.position.y <= max_y:
+        return True
+
+    # Check if the circle touches any of the square's edges
     for i in range(len(square.vertices)):
         p1 = Position(x=square.vertices[i][0], y=square.vertices[i][1])
         p2 = Position(x=square.vertices[(i + 1) % len(square.vertices)][0], y=square.vertices[(i + 1) % len(square.vertices)][1])
         if circle_line_segment_touch(circle, p1, p2):
             return True
+
+    return False
 
     return False
 

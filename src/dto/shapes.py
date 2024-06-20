@@ -101,9 +101,6 @@ class CircleObject(BaseModel):
         return math.hypot(self.position.x - point.x, self.position.y - point.y) <= self.radius
 
 
-class Ball(CircleObject):
-    is_in_danger_zone: bool
-    
 
 
 def rotate_square(vertices: List[Tuple[float, float]], center: Position, radians: float) -> List[Tuple[float, float]]:
