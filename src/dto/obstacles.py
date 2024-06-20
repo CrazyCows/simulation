@@ -9,7 +9,7 @@ class Cross(BaseModel):
     safe_zones: List[Position]
 
     @classmethod
-    def create_cross_with_safe_zones(cls, square_1: SquareObject, square_2: SquareObject, walls: List[SquareObject], safe_distance: float):
+    def create_cross_with_safe_zones(cls, square_1: SquareObject, square_2: SquareObject, walls: List[SquareObject], safe_distance: float =200):
         center_1 = square_1.position
         center_2 = square_2.position
 
