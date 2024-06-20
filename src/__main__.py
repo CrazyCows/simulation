@@ -16,10 +16,10 @@ from image_recognizition import wall_picker
 def app(connect_to_robot: bool = False):
     screen = __init__.screen
     robot = __init__.robot
-    #balls = __init__.balls
-    #walls = __init__.walls
+    balls = __init__.balls
+    walls = __init__.walls
     clock = __init__.clock
-    #cross = __init__.cross
+    cross = __init__.cross
     running = True
     #if connect_to_robot:
     #    transmission.connect
@@ -32,37 +32,36 @@ def app(connect_to_robot: bool = False):
         print("Here")
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls, safe_distance=20)
     while running:
+        if connect_to_robot:
+            print("WHY THE FUCK AM I RUNNING?")
+            balls = RoboVision().get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
+            temprobo = RoboVision().get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
+
+            robot_position = temprobo.position
+            #print(robot_position)
+            radians = temprobo.radians
+            robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
+                                        width=30, height=30, radians=radians, suction_height=20, suction_width=20,
+                                        suction_offset_y=25)
+
+        # Temp solution, just redrawing balls all da time
+        path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
+        checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
+
+        robot.checkpoints = checkpoints
         try:
-            if connect_to_robot:
-                print("WHY THE FUCK AM I RUNNING?")
-                balls = RoboVision().get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-                temprobo = RoboVision().get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
+            move: Move = path_follow.create_move(robot)
+            path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
+        except Exception as e:
+            continue
+        #if connect_to_robot:
+        #    transmission.send_command(move)
 
-                robot_position = temprobo.position
-                #print(robot_position)
-                radians = temprobo.radians
-                robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                           width=30, height=30, radians=radians, suction_height=20, suction_width=20,
-                                           suction_offset_y=25)
+        # NOTE: Updates the visual representation
+        visualization.game(screen, robot, walls, balls, path, cross)
 
-            # Temp solution, just redrawing balls all da time
-            path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
-            checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
-
-            robot.checkpoints = checkpoints
-            try:
-                move: Move = path_follow.create_move(robot)
-                path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
-            except Exception as e:
-                continue
-            #if connect_to_robot:
-            #    transmission.send_command(move)
-
-            # NOTE: Updates the visual representation
-            visualization.game(screen, robot, walls, balls, path, cross)
-
-            # Tickrate, frames/sec.
-            clock.tick(60) / 1000
+        # Tickrate, frames/sec.
+        clock.tick(120) / 1000
 
         # Hello
         for event in pygame.event.get():
@@ -86,5 +85,5 @@ def test_antons_code():
 if __name__ == '__main__':
     #test_antons_code()
     pygame.init()
-    app(True)
+    app(False)
     pygame.quit()
