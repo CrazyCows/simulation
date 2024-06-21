@@ -4,6 +4,8 @@ from dto.shapes import SquareObject, CircleObject, Position
 from dto.obstacles import Cross, Wall
 from typing import List
 
+from src.dto.robot import CheckpointType
+
 
 def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: List[CircleObject], calculated_path: List[SquareObject], cross: Cross):
     
@@ -42,14 +44,24 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
                 prev_pos_x = prev_pos.x
                 prev_pos_y = prev_pos.y
                 pygame.draw.line(screen, color, (prev_pos_x, prev_pos_y), (current_pos_x, current_pos_y))
-    
-    try:
-        for ball in balls:
-            pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), ball.radius)
-        for zone in cross.safe_zones:
-            pygame.draw.circle(screen, "pink", (zone.x, zone.y), ball.radius)
-    except:
-        print("Visualization: No more balls")
+
+    for ball in balls:
+        pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), 4)
+
+    for checkpoint in robot.checkpoints:
+        print("The last loaded", checkpoint)
+        if checkpoint.checkpoint_type.value == CheckpointType.BALL.value:
+            pygame.draw.circle(screen, "green", (checkpoint.x, checkpoint.y), 8)
+            pygame.draw.circle(screen, "black", (checkpoint.x, checkpoint.y), 4)
+        if checkpoint.checkpoint_type.value == CheckpointType.SAFE_CHECKPOINT.value:
+            pygame.draw.circle(screen, "pink", (checkpoint.x, checkpoint.y), 5)
+        if checkpoint.checkpoint_type.value == CheckpointType.GOAL.value:
+            pygame.draw.circle(screen, "orange", (checkpoint.x, checkpoint.y), 5)
+        if checkpoint.checkpoint_type.value == CheckpointType.DANGER_CHECKPOINT.value:
+            pygame.draw.circle(screen, "yellow", (checkpoint.x, checkpoint.y), 5)
+
+    for zone in cross.safe_zones:
+        pygame.draw.circle(screen, "pink", (zone.x, zone.y), 5)
 
 
     create_trail(robot.previous_path, color="white")
