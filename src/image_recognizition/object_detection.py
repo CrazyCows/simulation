@@ -5,6 +5,7 @@ from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
 from src.dto.shapes import CircleObject, Position, SquareObject
 
+
 def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):
     """
     Increase the vibrance of an image by selectively increasing its saturation with a smooth transition.
@@ -80,10 +81,9 @@ class RoboVision():
     _min_y = 1000000
     _max_y = 0
 
-
     def __init__(self, walls: List[SquareObject]):
         for wall in walls:
-            for vertex in wall.vertices: #Not very pythonic
+            for vertex in wall.vertices:  # Not very pythonic
                 if vertex[0] > self._max_x:
                     self._max_x = vertex[0]
                 if vertex[0] < self._min_x:
@@ -97,17 +97,13 @@ class RoboVision():
         print("Minimum wall y position: " + str(self._min_y))
         print("Maximum wall y position: " + str(self._max_y))
 
-
-
-
     _robot_y = 100
     _robot_x = 100
-    _robot_z_cm = 41 #TODO: make parameters?
+    _robot_z_cm = 41  # TODO: make parameters?
     _camera_z_cm = 190
     _camera_x: int = None
     _camera_y: int = None
-    _z_factor = 1-(_camera_z_cm-_robot_z_cm)/_camera_z_cm
-
+    _z_factor = 1 - (_camera_z_cm - _robot_z_cm) / _camera_z_cm
 
     _whiteLower = np.array([0, 0, 220])
     _whiteUpper = np.array([255, 50, 255])
@@ -125,8 +121,11 @@ class RoboVision():
     _blue_lower_limit = np.array([90, 180, 60])
     _blue_upper_limit = np.array([130, 255, 255])
 
-    _orange_lower_limit = np.array([15, 240, 140])
-    _orange_upper_limit = np.array([50, 255, 255])
+    _orange_lower_limit = np.array([15, 250, 235])
+    _orange_upper_limit = np.array([32, 255, 255])
+
+    #_orange_lower_limit = np.array([15, 240, 140])
+    #_orange_upper_limit = np.array([50, 255, 255])
 
     """ Outdated values
     whiteLower = np.array([0, 0, 220])
@@ -167,19 +166,18 @@ class RoboVision():
 
         if frame is None:
             raise Exception("Camera error")
-        #print(type(frame))
-        #print("Dimensions:" + str(frame.shape))
-        #frame = frame[int(self._min_y):int(self._max_y), int(self._min_x):int(self._max_x)]
-        #print(type(frame))
-        #print("Dimensions:" + str(frame.shape))
+        # print(type(frame))
+        # print("Dimensions:" + str(frame.shape))
+        # frame = frame[int(self._min_y):int(self._max_y), int(self._min_x):int(self._max_x)]
+        # print(type(frame))
+        # print("Dimensions:" + str(frame.shape))
 
         if self._camera_x is None:
-            self._camera_x = int(self._vs.get(cv2.CAP_PROP_FRAME_WIDTH)/2)
-            self._camera_y = int(self._vs.get(cv2.CAP_PROP_FRAME_HEIGHT)/2)
+            self._camera_x = int(self._vs.get(cv2.CAP_PROP_FRAME_WIDTH) / 2)
+            self._camera_y = int(self._vs.get(cv2.CAP_PROP_FRAME_HEIGHT) / 2)
         frame = increase_vibrance(frame, 1.5)
         self._blurred = cv2.GaussianBlur(frame, (5, 5), 0)
         self._hsv = cv2.cvtColor(self._blurred, cv2.COLOR_BGR2HSV)
-
 
     def _getBallishThing(self, lowerMask, upperMask, lowerSize, upperSize) -> List[CircleObject]:
         self.commonSetup()
@@ -222,13 +220,17 @@ class RoboVision():
         return approximations
 
     def _correct_robot_location_perspective(self, before_center: CircleObject) -> CircleObject:
-        before_center.position.x = before_center.position.x + self._z_factor*(self._camera_x-before_center.position.x)
-        before_center.position.y = before_center.position.y + self._z_factor*(self._camera_y-before_center.position.y)
+        before_center.position.x = before_center.position.x + self._z_factor * (
+                    self._camera_x - before_center.position.x)
+        before_center.position.y = before_center.position.y + self._z_factor * (
+                    self._camera_y - before_center.position.y)
         return before_center
 
     def _correct_point_location_perspective(self, before_center: CircleObject) -> CircleObject:
-        before_center.position.x = before_center.position.x + self._z_factor*(self._camera_x-before_center.position.x)
-        before_center.position.y = before_center.position.y + self._z_factor*(self._camera_y-before_center.position.y)
+        before_center.position.x = before_center.position.x + self._z_factor * (
+                    self._camera_x - before_center.position.x)
+        before_center.position.y = before_center.position.y + self._z_factor * (
+                    self._camera_y - before_center.position.y)
         return before_center
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
