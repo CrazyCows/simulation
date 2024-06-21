@@ -12,26 +12,31 @@ def create_move(robot: Robot) -> Move:
     Moves the robot closer to the first checkpoint in the robots list of checkpoints.
     """
     radians = calculate_radians_to_turn(robot)  # We already calculated the checkpoint to go to elsewhere...
-    if robot.mode == RobotMode.DANGER:
-        if robot.mode == RobotMode.DANGER and radians != 0.0 and robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT:
-            speed = 0  # TODO: Implement logic for slowing down/stopping.
-        elif robot.mode == RobotMode.DANGER and radians == 0.0 and robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT:
-            speed = 1  # TODO: Implement logic for slowing down/stopping.
-        else:
+    if robot.distance_to_wall_right > 50 and robot.distance_to_wall_left > 50 and robot.distance_to_wall_top > 50 and robot.distance_to_wall_bot > 50:
+        if robot.mode == RobotMode.DANGER:
+            if robot.mode == RobotMode.DANGER and radians != 0.0 and robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT:
+                speed = 0  # TODO: Implement logic for slowing down/stopping.
+            elif robot.mode == RobotMode.DANGER and radians == 0.0 and robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT:
+                speed = 1  # TODO: Implement logic for slowing down/stopping.
+            else:
+                speed = -1
+        elif robot.mode == RobotMode.SAFE:
+            if robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 10 :
+                speed = 1
+            else:
+                speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
+        elif robot.mode == RobotMode.DANGER_REVERSE:
             speed = -1
-    elif robot.mode == RobotMode.SAFE:
-        if robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 10 :
-            speed = 1
+            radians = 0
         else:
-            speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
-    elif robot.mode == RobotMode.DANGER_REVERSE:
-        speed = -1
-        radians = 0
+            speed = 0
+            radians = 1
     else:
-        speed = 0
-        radians = 1
+        speed = 0.2
+        radians = 0.025
     suck = suck_if_small(robot)
     move = Move(speed=speed, radians=radians, suck=suck)
+    print(move)
     return move
 
 # TODO: Move this somewhere else. Idk where, but somewhere!
@@ -90,11 +95,11 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     direction = 0.0
     if cross_product < 0:
         direction += MoveCommand.LEFT.value
-        for i in range(round(distance / 150)):
+        for i in range(round(distance / 100)):
             direction += MoveCommand.LEFT.value
     elif cross_product > 0:
         direction += MoveCommand.RIGHT.value
-        for i in range(round(distance / 150)):
+        for i in range(round(distance / 100)):
             direction += MoveCommand.RIGHT.value
     else:
         direction = 0.0  # This happens when the point is directly on the line

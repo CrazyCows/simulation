@@ -27,9 +27,12 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[Wall], cros
     temp_path = create_temp_path(robot.robot.position, temp_ball.position)
 
     p, b = is_ball_close_to_obstacle(temp_ball, walls,cross)
-
+    print(robot.mode, robot.prev_checkpoint.checkpoint_type, len(robot.collected_balls))
+    print(robot.mode == RobotMode.DANGER_REVERSE, robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL, len(robot.collected_balls) != 0)
+    print(robot.mode == RobotMode.DANGER_REVERSE and robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and len(robot.collected_balls) != 0)
     if robot.mode == RobotMode.DANGER_REVERSE and robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and len(robot.collected_balls) != 0:
         p, b = is_ball_close_to_obstacle(robot.collected_balls[-1], walls,cross)
+        print(p, robot.robot.position)
         path.append(create_temp_path(robot.robot.position, p))
         path.append(create_temp_path(temp_ball.position, p))
         checkpoints.append(Checkpoint(x=p.x, y=p.y, is_ball=False, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
@@ -174,8 +177,8 @@ def is_ball_close_to_cross(ball: CircleObject, cross: Cross) -> Tuple[Position, 
             theta = wall.danger_zone.radians
             perp_x = -math.sin(theta)
             perp_y = math.cos(theta)
-            x += perp_x *50
-            y += perp_y *50
+            x += perp_x *100
+            y += perp_y *100
     return Position(x=x, y=y), is_in_danger
 
 
@@ -185,6 +188,7 @@ def is_ball_close_to_obstacle(ball: CircleObject, walls: List[Wall], cross: Cros
         return dzwc, True
     dzcc, dzcc_danger = is_ball_close_to_cross(ball, cross)
     if dzcc_danger:
+        print("DZCC DANGER", dzcc)
         return dzcc, True
     return ball.position, False
 

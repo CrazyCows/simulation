@@ -62,12 +62,12 @@ def app(connect_to_robot: bool = False):
             except Exception as e:
                 continue
             #print("Left: ", robot.distance_to_wall_left)
-            #print("Right: ", robot.distance_to_wall_right)
+            print("Right: ", robot.distance_to_wall_right)
             #print("Top: ", robot.distance_to_wall_top)
             #print("Bot: ", robot.distance_to_wall_bot)
-            print("Cross: ", robot.distance_to_cross)
-        #if connect_to_robot:
-        #    transmission.send_command(move)
+            #print("Cross: ", robot.distance_to_cross)
+            #if connect_to_robot:
+            #    transmission.send_command(move)
 
             # NOTE: Updates the visual representation
             visualization.game(screen, robot, walls, balls, path, cross)

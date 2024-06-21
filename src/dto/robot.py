@@ -12,8 +12,8 @@ from dto.obstacles import Cross, Wall, WallPlacement
 class MoveCommand(Enum):
     FORWARD = 2.0
     BACKWARD = -2.0
-    LEFT = 0.055
-    RIGHT = -0.055
+    LEFT = 0.025
+    RIGHT = -0.025
     SUCK = True
 
 class Move(BaseModel):
@@ -173,7 +173,7 @@ class Robot(BaseModel):
         min_distance = float('inf')
         for wall in walls:
             num_vertices = len(wall.vertices)
-            
+            min_distance = float('inf')
             for i in range(num_vertices):
                 x1, y1 = wall.vertices[i]
                 x2, y2 = wall.vertices[(i + 1) % num_vertices]
@@ -188,6 +188,7 @@ class Robot(BaseModel):
             elif wall.placement == WallPlacement.BOT:
                 self.distance_to_wall_bot = min_distance
         for wall in cross:
+            min_distance = float('inf')
             num_vertices = len(wall.vertices)
             for i in range(num_vertices):
                 x1, y1 = wall.vertices[i]
