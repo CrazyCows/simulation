@@ -1,13 +1,14 @@
 import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
-from dto.robot import Move, Checkpoint
-from dto.shapes import Position
+from dto.robot import Move, Checkpoint, RobotMode
+from dto.shapes import Position, CircleObject
 from dto.obstacles import Cross, Wall, WallPlacement
 from image_recognizition.object_detection import RoboVision
 from image_recognizition.wall_picker import WallPicker
 import pygame
 import __init__
+from math import dist
 
 from typing import List
 from image_recognizition import wall_picker
@@ -23,7 +24,7 @@ def app(connect_to_robot: bool = False):
     running = True
     #if connect_to_robot:
     #    transmission.connect
-
+    focused_ball: CircleObject = None
     if (connect_to_robot):
         wp = WallPicker()
         walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_south_wall(), wp.pick_west_wall()]
@@ -48,13 +49,16 @@ def app(connect_to_robot: bool = False):
         tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
         tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP))
         tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT))
-
+        def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
+            return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
         walls = tmp_walls
+        if robot.mode != RobotMode.DANGER:
+            focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
         # Temp solution, just redrawing balls all da time
         if len(balls) > 0:
             
-            path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
+            path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
             robot.checkpoints = checkpoints
             try:
                 move: Move = path_follow.create_move(robot)
