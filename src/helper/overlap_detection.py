@@ -83,6 +83,15 @@ def circle_square_touch(circle: CircleObject, square: SquareObject) -> bool:
 
         return False
 
+        # Check if the circle's center is inside the square
+    min_x = min(square.vertices, key=lambda v: v[0])[0]
+    max_x = max(square.vertices, key=lambda v: v[0])[0]
+    min_y = min(square.vertices, key=lambda v: v[1])[1]
+    max_y = max(square.vertices, key=lambda v: v[1])[1]
+
+    if min_x <= circle.position.x <= max_x and min_y <= circle.position.y <= max_y:
+        return True
+
     for i in range(len(square.vertices)):
         p1 = Position(x=square.vertices[i][0], y=square.vertices[i][1])
         p2 = Position(x=square.vertices[(i + 1) % len(square.vertices)][0], y=square.vertices[(i + 1) % len(square.vertices)][1])

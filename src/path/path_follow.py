@@ -20,21 +20,17 @@ def create_move(robot: Robot) -> Move:
             speed = 1  # TODO: Implement logic for slowing down/stopping.
         else:
             speed = -1
-    elif robot.distance_to_wall_right > 50 and robot.distance_to_wall_left > 50 and robot.distance_to_wall_top > 50 and robot.distance_to_wall_bot > 50:
-        if robot.mode == RobotMode.SAFE:
-            if robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 10:
-                speed = 1
-            else:
-                speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
-        elif robot.mode == RobotMode.DANGER_REVERSE:
-            speed = -1
-            radians = 0
-        else:
+    elif robot.mode == RobotMode.SAFE:
+        if robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) > 150:
+            speed = 1
+        elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 150 and radians != 0:
             speed = 0
-            radians = 1
-    else:
-        speed = 0.2
-        radians = 0.025
+        else:
+            speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
+    elif robot.mode == RobotMode.DANGER_REVERSE:
+        speed = -1
+        radians = 0
+
     suck = suck_if_small(robot)
     move = Move(speed=speed, radians=radians, suck=suck)
     print(move)
@@ -54,7 +50,9 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
             robot.mode = RobotMode.DANGER
         elif robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and robot.mode == RobotMode.DANGER:
             robot.mode = RobotMode.DANGER_REVERSE
-        elif robot.prev_checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT and robot.mode == RobotMode.DANGER_REVERSE:
+            robot.ignore_danger_in_corner = False
+        elif robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_REVERSE_CHECKPOINT and robot.mode == RobotMode.DANGER_REVERSE:
+            robot.ignore_danger_in_corner = False
             robot.mode = RobotMode.SAFE
 
 
@@ -117,7 +115,7 @@ def suck_if_small(robot: Robot) -> bool:
     suck = False
     robot_pos = (robot.robot.position.x, robot.robot.position.y)
     distance_to_ball = math.dist(robot_pos, (robot.checkpoints[0].x, robot.checkpoints[0].y))
-    if distance_to_ball < 100:
+    if (distance_to_ball < 100 and robot.ignore_danger_in_corner == False) or (robot.ignore_danger_in_corner and distance_to_ball < 200):
         suck = True
 
     return suck

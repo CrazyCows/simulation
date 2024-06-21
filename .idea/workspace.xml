@@ -7,12 +7,19 @@
     <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="Merge with robovision_integration">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/visualization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/path_follow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_follow.py" afterDir="false" />
     </list>
     <list id="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" name="Changes by ansi1" comment="">
+      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dto/obstacles.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/obstacles.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/helper/overlap_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/helper/overlap_detection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/path_follow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_follow.py" afterDir="false" />
     </list>
     <list id="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" name="Changes by ChristofferFoldager" comment="" />
@@ -25,50 +32,64 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/src/__main__.py">
+      <ranges>
+        <range start1="24" end1="25" start2="24" end2="25" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="33" end1="34" start2="33" end2="35" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="41" end1="42" start2="42" end2="43" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="44" end1="46" start2="45" end2="47" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="51" end1="51" start2="52" end2="53" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="53" end1="53" start2="55" end2="56" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="54" end1="55" start2="57" end2="58" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="59" end1="60" start2="62" end2="63" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="67" end1="68" start2="70" end2="71" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="69" end1="73" start2="72" end2="76" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="78" end1="79" start2="81" end2="82" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="87" end1="88" start2="90" end2="90" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="101" end1="102" start2="103" end2="104" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/src/__init__.py">
+      <ranges>
+        <range start1="45" end1="46" start2="45" end2="49" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="60" end1="61" start2="63" end2="64" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+      </ranges>
+    </file>
     <file path="$PROJECT_DIR$/src/dto/robot.py">
       <ranges>
-        <range start1="18" end1="18" start2="18" end2="19" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="22" end1="23" start2="23" end2="24" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="27" end1="27" start2="28" end2="29" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="33" end1="33" start2="35" end2="36" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="42" end1="42" start2="45" end2="46" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="71" end1="72" start2="75" end2="76" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="74" end1="75" start2="78" end2="78" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="76" end1="77" start2="79" end2="80" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="84" end1="85" start2="87" end2="88" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="88" end1="91" start2="91" end2="94" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="95" end1="96" start2="98" end2="100" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="121" end1="121" start2="125" end2="133" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="122" end1="125" start2="134" end2="138" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="128" end1="138" start2="141" end2="151" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="139" end1="140" start2="152" end2="153" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="143" end1="147" start2="156" end2="162" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="153" end1="154" start2="168" end2="168" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="156" end1="157" start2="170" end2="171" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="159" end1="160" start2="173" end2="173" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="165" end1="166" start2="178" end2="179" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="167" end1="168" start2="180" end2="181" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="197" end1="200" start2="210" end2="210" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="33" end1="34" start2="33" end2="35" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="62" end1="62" start2="63" end2="64" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="126" end1="127" start2="128" end2="130" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="131" end1="132" start2="134" end2="135" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
       </ranges>
     </file>
     <file path="$PROJECT_DIR$/src/path/path_follow.py">
       <ranges>
-        <range start1="8" end1="8" start2="8" end2="9" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="14" end1="24" start2="15" end2="25" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="41" end1="41" start2="42" end2="43" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="42" end1="43" start2="44" end2="46" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="47" end1="48" start2="50" end2="51" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="55" end1="56" start2="58" end2="59" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="62" end1="63" start2="65" end2="66" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="71" end1="72" start2="74" end2="75" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="75" end1="76" start2="78" end2="79" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="80" end1="81" start2="83" end2="84" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="82" end1="83" start2="85" end2="86" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="85" end1="86" start2="88" end2="89" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="90" end1="91" start2="93" end2="94" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="105" end1="106" start2="108" end2="109" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="108" end1="108" start2="111" end2="112" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="115" end1="116" start2="119" end2="120" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="22" end1="37" start2="22" end2="33" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="56" end1="57" start2="52" end2="55" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="119" end1="120" start2="117" end2="118" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/src/path/path_creation.py">
+      <ranges>
+        <range start1="15" end1="16" start2="15" end2="16" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="29" end1="30" start2="29" end2="30" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="32" end1="32" start2="32" end2="34" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="33" end1="33" start2="35" end2="36" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="35" end1="36" start2="38" end2="39" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="39" end1="40" start2="42" end2="43" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="43" end1="45" start2="46" end2="50" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="127" end1="128" start2="132" end2="134" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="141" end1="142" start2="147" end2="149" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="176" end1="176" start2="183" end2="184" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="180" end1="181" start2="188" end2="190" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="182" end1="183" start2="191" end2="193" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="184" end1="185" start2="194" end2="196" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="186" end1="188" start2="197" end2="200" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="194" end1="203" start2="206" end2="225" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="206" end1="207" start2="228" end2="229" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="208" end1="210" start2="230" end2="232" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="212" end1="214" start2="234" end2="236" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
       </ranges>
     </file>
   </component>
@@ -171,6 +192,8 @@
       <workItem from="1718807374804" duration="9396000" />
       <workItem from="1718886011215" duration="5136000" />
       <workItem from="1718895108165" duration="4552000" />
+      <workItem from="1718970742816" duration="9812000" />
+      <workItem from="1718981951612" duration="682000" />
     </task>
     <servers />
   </component>
@@ -195,16 +218,31 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="python-line">
+        <line-breakpoint type="python-line">
           <url>file://$PROJECT_DIR$/src/image_recognizition/object_detection.py</url>
           <line>249</line>
           <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/src/path/path_follow.py</url>
+          <line>55</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/helper/overlap_detection.py</url>
+          <line>98</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/src/path/path_follow.py</url>
+          <line>40</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1718970587391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1718982253389" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/simulation$robot.coverage" NAME="robot Coverage Results" MODIFIED="1718966619752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/dto" />
     <SUITE FILE_PATH="coverage/simulation$path_follow.coverage" NAME="path_follow Coverage Results" MODIFIED="1718967678356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
     <SUITE FILE_PATH="coverage/simulation$pytest_in___main___py.coverage" NAME="pytest in __main__.py Coverage Results" MODIFIED="1718805991821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />

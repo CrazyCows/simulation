@@ -53,12 +53,17 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
         if checkpoint.checkpoint_type.value == CheckpointType.BALL.value:
             pygame.draw.circle(screen, "green", (checkpoint.x, checkpoint.y), 8)
             pygame.draw.circle(screen, "black", (checkpoint.x, checkpoint.y), 4)
-        if checkpoint.checkpoint_type.value == CheckpointType.SAFE_CHECKPOINT.value:
+        elif checkpoint.checkpoint_type.value == CheckpointType.SAFE_CHECKPOINT.value:
             pygame.draw.circle(screen, "pink", (checkpoint.x, checkpoint.y), 5)
-        if checkpoint.checkpoint_type.value == CheckpointType.GOAL.value:
+        elif checkpoint.checkpoint_type.value == CheckpointType.GOAL.value:
             pygame.draw.circle(screen, "orange", (checkpoint.x, checkpoint.y), 5)
-        if checkpoint.checkpoint_type.value == CheckpointType.DANGER_CHECKPOINT.value:
+        elif checkpoint.checkpoint_type.value == CheckpointType.DANGER_CHECKPOINT.value:
             pygame.draw.circle(screen, "yellow", (checkpoint.x, checkpoint.y), 5)
+        elif checkpoint.checkpoint_type.value == CheckpointType.DANGER_REVERSE_CHECKPOINT.value:
+            pygame.draw.circle(screen, "blue", (checkpoint.x, checkpoint.y), 5)
+        else:
+            pygame.draw.circle(screen, "purple", (checkpoint.x, checkpoint.y), 5)
+
 
     for zone in cross.safe_zones:
         pygame.draw.circle(screen, "pink", (zone.x, zone.y), 5)

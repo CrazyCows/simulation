@@ -16,7 +16,7 @@ class Wall(SquareObject):
     danger_zone: SquareObject
 
     @classmethod
-    def create(cls, square_object: SquareObject, placement: WallPlacement, danger_zone_size: float = 40):
+    def create(cls, square_object: SquareObject, placement: WallPlacement, danger_zone_size: int = 40):
         return cls(
             position=Position(x=square_object.position.x, y=square_object.position.y),
             width=square_object.width,

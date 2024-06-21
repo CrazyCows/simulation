@@ -31,7 +31,8 @@ class CheckpointType(Enum):
     BALL = 1
     SAFE_CHECKPOINT = 2
     DANGER_CHECKPOINT = 3
-    GOAL = 4
+    DANGER_REVERSE_CHECKPOINT = 4
+    GOAL = 5
 
 
 class Checkpoint(Position):
@@ -60,6 +61,7 @@ class Robot(BaseModel):
     distance_to_wall_top: float = 0
     distance_to_wall_bot: float = 0
     distance_to_cross: float = 0
+    ignore_danger_in_corner: bool = False
 
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
@@ -124,12 +126,13 @@ class Robot(BaseModel):
         return math.dist((self.robot.position.x, self.robot.position.y), (ball.position.x, ball.position.y))
 
     def self_reached_checkpoint(self, checkpoint: Checkpoint):
-        if checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT:
+        if (checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT or
+                checkpoint.checkpoint_type == CheckpointType.DANGER_REVERSE_CHECKPOINT):
             return True if (
                     self.robot.position.x + 5 > checkpoint.x > self.robot.position.x - 5 and
                     self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
         else:
-            return circle_square_touch(CircleObject(radius=20, position=checkpoint), self.robot)
+            return circle_square_touch(CircleObject(radius=10, position=checkpoint), self.robot)
 
     @classmethod
     def create_robot(cls, position: Position, width: int, height: int, radians: float,

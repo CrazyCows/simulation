@@ -22,7 +22,7 @@ def app(connect_to_robot: bool = False):
     clock = __init__.clock
     cross = __init__.cross
     running = True
-    #if connect_to_robot:
+    # if connect_to_robot:
     #    transmission.connect
     focused_ball: CircleObject = None
     if (connect_to_robot):
@@ -31,7 +31,8 @@ def app(connect_to_robot: bool = False):
         rv = RoboVision()
         cross_squares = wp.click_cross()
         print("Here")
-        cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls, safe_distance=20)
+        cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
+                                                   safe_distance=20)
     while running:
         if connect_to_robot:
             print("WHY THE FUCK AM I RUNNING?")
@@ -39,25 +40,27 @@ def app(connect_to_robot: bool = False):
             temprobo = RoboVision().get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
 
             robot_position = temprobo.position
-            #print(robot_position)
+            # print(robot_position)
             radians = temprobo.radians
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                        width=30, height=30, radians=radians, suction_height=20, suction_width=20,
-                                        suction_offset_y=25)
+                                       width=30, height=30, radians=radians, suction_height=20, suction_width=20,
+                                       suction_offset_y=25)
         tmp_walls = []
         tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT))
         tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
         tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP))
         tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT))
+
         def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
             return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
+
         walls = tmp_walls
-        if robot.mode != RobotMode.DANGER:
+        if robot.mode != RobotMode.DANGER and robot.mode != RobotMode.DANGER_REVERSE:
             focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
         # Temp solution, just redrawing balls all da time
         if len(balls) > 0:
-            
+
             path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
             robot.checkpoints = checkpoints
             try:
@@ -65,25 +68,24 @@ def app(connect_to_robot: bool = False):
                 path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
             except Exception as e:
                 continue
-            #print("Left: ", robot.distance_to_wall_left)
+            # print("Left: ", robot.distance_to_wall_left)
             print("Right: ", robot.distance_to_wall_right)
-            #print("Top: ", robot.distance_to_wall_top)
-            #print("Bot: ", robot.distance_to_wall_bot)
-            #print("Cross: ", robot.distance_to_cross)
-            #if connect_to_robot:
+            # print("Top: ", robot.distance_to_wall_top)
+            # print("Bot: ", robot.distance_to_wall_bot)
+            # print("Cross: ", robot.distance_to_cross)
+            # if connect_to_robot:
             #    transmission.send_command(move)
 
             # NOTE: Updates the visual representation
             visualization.game(screen, robot, walls, balls, path, cross)
 
-        # Tickrate, frames/sec.
+            # Tickrate, frames/sec.
             clock.tick(60) / 1000
 
         # Hello
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
 
 
 def test_antons_code():
@@ -99,7 +101,7 @@ def test_antons_code():
 
 
 if __name__ == '__main__':
-    #test_antons_code()
+    # test_antons_code()
     pygame.init()
     app(False)
     pygame.quit()
