@@ -3,7 +3,7 @@ from typing import List
 from dto.robot import Move, Move
 import math
 
-server_ip = '192.168.88.77'  # Erstat med IP-adressen til din EV3
+server_ip = '192.168.137.232'  # Erstat med IP-adressen til din EV3
 port = 5000
 client_socket = socket.socket # Modified to not crash program on launch... Can't instantiate if no robot.
 
@@ -52,6 +52,11 @@ def prepare_command(move: Move):
 
     # Left motor speed, Right motor speed, fan on/off, latch open/close
     return lm, rm, 1 if suck else 0, 1 if latch else 0
+
+
+def goal_command():
+    move: Move = Move(speed=0, radians=0, suck=False, latch=True)
+    send_command(move)
 
 def send_command(move: Move):
     command = prepare_command(move)

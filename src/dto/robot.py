@@ -20,6 +20,7 @@ class Move(BaseModel):
     speed: float
     radians: float
     suck: bool
+    latch: bool = False
     
 
 class Paths(BaseModel):
