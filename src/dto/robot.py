@@ -61,7 +61,9 @@ class Robot(BaseModel):
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
             if circle_square_touch(ball, self.suction):
+                print("I WILL REMOVE THE BALL NOW! (", ball.position, ")")
                 self.collected_balls.append(ball)
+                balls.remove(ball)
 
     def obstacle_detection(self, obstacles) -> bool:
         obstacle_touched = False

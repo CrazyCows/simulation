@@ -43,8 +43,8 @@ def create_move(robot: Robot) -> Move:
 def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleObject], cross: Cross, sim_only: bool = True):
     robot.move(move, walls, balls, cross)
 
-    if sim_only is False:
-        [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
+    #if sim_only is False:
+    #    [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
     if overlap_detection.circle_square_touch(CircleObject(radius=25, position=robot.checkpoints[0]), robot.robot):
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:

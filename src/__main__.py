@@ -53,7 +53,8 @@ def app(connect_to_robot: bool = False):
             return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
         walls = tmp_walls
         if robot.mode != RobotMode.DANGER:
-            focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
+            if len(balls) > 0:
+                focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
         # Temp solution, just redrawing balls all da time
         if len(balls) > 0:
