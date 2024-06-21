@@ -26,7 +26,7 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[Wall], cros
     
     temp_path = create_temp_path(robot.robot.position, temp_ball.position)
 
-    p, b = is_ball_close_to_obstacle(temp_ball, walls,cross)
+    p, b = is_ball_close_to_obstacle(temp_ball, walls, cross)
     print(robot.mode, robot.prev_checkpoint.checkpoint_type, len(robot.collected_balls))
     print(robot.mode == RobotMode.DANGER_REVERSE, robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL, len(robot.collected_balls) != 0)
     print(robot.mode == RobotMode.DANGER_REVERSE and robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and len(robot.collected_balls) != 0)
@@ -35,8 +35,8 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[Wall], cros
         print(p, robot.robot.position)
         path.append(create_temp_path(robot.robot.position, p))
         path.append(create_temp_path(temp_ball.position, p))
-        checkpoints.append(Checkpoint(x=p.x, y=p.y, is_ball=False, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
-        checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, is_ball=True, checkpoint_type=CheckpointType.BALL))
+        checkpoints.append(Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
+        checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, checkpoint_type=CheckpointType.BALL))
         return path, checkpoints
 
 
@@ -53,11 +53,11 @@ def create_path(balls: List[CircleObject], robot: Robot, walls: List[Wall], cros
         if b and (not robot.prev_checkpoint or (robot.prev_checkpoint.x != p.x and robot.prev_checkpoint.y != p.y)):
             path.append(create_temp_path(robot.robot.position, p))
             path.append(create_temp_path(temp_ball.position, p))
-            checkpoints.append(Checkpoint(x=p.x, y=p.y, is_ball=False, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
-            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, is_ball=True, checkpoint_type=CheckpointType.BALL))
+            checkpoints.append(Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
+            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, checkpoint_type=CheckpointType.BALL))
         else:
             path.append(temp_path)
-            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, is_ball=True, checkpoint_type=CheckpointType.BALL))
+            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y, checkpoint_type=CheckpointType.BALL))
     
 
     return path, checkpoints
@@ -88,7 +88,7 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
     end_index = cross.safe_zones.index(closest_safezone_to_goal_pos)
 
     if start_index == end_index:
-        checkpoints.append(closest_safezone_to_current_pos)
+        checkpoints.append(Checkpoint(x=closest_safezone_to_current_pos.x, y=closest_safezone_to_current_pos.y, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
         return [], checkpoints
 
     total_zones = len(cross.safe_zones)
@@ -107,8 +107,8 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
             else:
                 path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
             
-            if robot.prev_checkpoint != Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
-                checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
+            if robot.prev_checkpoint != Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpoint_type=CheckpointType.SAFE_CHECKPOINT):
+                checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
     else:
         # Counterclockwise path
         for i in range(counterclockwise_distance + 1):
@@ -119,8 +119,8 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
             else:
                 path.append(create_temp_path(cross.safe_zones[previous_index], cross.safe_zones[current_index]))
             
-            if robot.prev_checkpoint != Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False):
-                checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, is_ball=False))
+            if robot.prev_checkpoint != Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpoint_type=CheckpointType.SAFE_CHECKPOINT):
+                checkpoints.append(Checkpoint(x=cross.safe_zones[current_index].x, y=cross.safe_zones[current_index].y, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
 
     # Debugging output
     if check_if_cross_is_touched(cross, path[-1]):

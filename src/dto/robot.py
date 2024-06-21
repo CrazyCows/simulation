@@ -32,7 +32,6 @@ class CheckpointType(Enum):
     GOAL = 4
 
 class Checkpoint(Position):
-    is_ball: bool
     checkpoint_type: CheckpointType = CheckpointType.SAFE_CHECKPOINT
 
 
@@ -145,7 +144,7 @@ class Robot(BaseModel):
         
         return cls(robot=robot, suction=suction, collected_balls=collected_balls, 
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit, 
-                   previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line, prev_checkpoint=Checkpoint(x=position.x, y=position.y, is_ball=False, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
+                   previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line, prev_checkpoint=Checkpoint(x=position.x, y=position.y, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
 
     def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
         """
