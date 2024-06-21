@@ -42,7 +42,8 @@ cross = Cross.create_cross_with_safe_zones(
 ball_radius = 4*5/2
 
 balls = [CircleObject(radius=ball_radius, position=Position(x=250, y=screen.get_height() / 2)),
-         CircleObject(radius=ball_radius, position=Position(x=1030, y=514)),]
+         CircleObject(radius=ball_radius, position=Position(x=1030, y=514)),
+         CircleObject(radius=5, position=Position(x=screen.get_width() - screen.get_width() / 2-30, y=screen.get_height() / 2)),]
 """
 balls = [CircleObject(radius=5, position=Position(x=screen.get_width() - screen.get_width() / 2-60, y=screen.get_height() / 2)),
          CircleObject(radius=5, position=Position(x=872, y=231)),

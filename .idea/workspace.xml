@@ -5,11 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="Merge with robovision_integration">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/visualization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/path/path_follow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_follow.py" afterDir="false" />
     </list>
-    <list id="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" name="Changes by ansi1" comment="" />
+    <list id="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" name="Changes by ansi1" comment="">
+      <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/path/path_follow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_follow.py" afterDir="false" />
+    </list>
     <list id="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" name="Changes by ChristofferFoldager" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +24,54 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/src/dto/robot.py">
+      <ranges>
+        <range start1="18" end1="18" start2="18" end2="19" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="22" end1="23" start2="23" end2="24" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="27" end1="27" start2="28" end2="29" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="33" end1="33" start2="35" end2="36" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="42" end1="42" start2="45" end2="46" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="71" end1="72" start2="75" end2="76" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="74" end1="75" start2="78" end2="78" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="76" end1="77" start2="79" end2="80" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="84" end1="85" start2="87" end2="88" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="88" end1="91" start2="91" end2="94" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="95" end1="96" start2="98" end2="100" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="121" end1="121" start2="125" end2="133" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="122" end1="125" start2="134" end2="138" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="128" end1="138" start2="141" end2="151" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="139" end1="140" start2="152" end2="153" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="143" end1="147" start2="156" end2="162" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="153" end1="154" start2="168" end2="168" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="156" end1="157" start2="170" end2="171" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="159" end1="160" start2="173" end2="173" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="165" end1="166" start2="178" end2="179" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="167" end1="168" start2="180" end2="181" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="197" end1="200" start2="210" end2="210" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/src/path/path_follow.py">
+      <ranges>
+        <range start1="8" end1="8" start2="8" end2="9" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="14" end1="24" start2="15" end2="25" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+        <range start1="41" end1="41" start2="42" end2="43" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="42" end1="43" start2="44" end2="46" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="47" end1="48" start2="50" end2="51" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="55" end1="56" start2="58" end2="59" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="62" end1="63" start2="65" end2="66" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="71" end1="72" start2="74" end2="75" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="75" end1="76" start2="78" end2="79" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="80" end1="81" start2="83" end2="84" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="82" end1="83" start2="85" end2="86" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="85" end1="86" start2="88" end2="89" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="90" end1="91" start2="93" end2="94" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="105" end1="106" start2="108" end2="109" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="108" end1="108" start2="111" end2="112" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
+        <range start1="115" end1="116" start2="119" end2="120" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
+      </ranges>
+    </file>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -27,24 +80,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python tests.pytest in __main__.py.executor": "Run",
-    "Python.__main__.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "Merging pathfinding",
-    "last_opened_file_path": "C:/Dev/Skole/cdio/simulation/src/__main__.py",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python tests.pytest in __main__.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.__main__.executor&quot;: &quot;Run&quot;,
+    &quot;Python.path_follow.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.robot.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;temp__pathfinding&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Dev/Skole/cdio/simulation/src/__main__.py&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.__main__">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="simulation" />
@@ -149,7 +204,9 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1718964288695" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1718970587391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/simulation$robot.coverage" NAME="robot Coverage Results" MODIFIED="1718966619752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/dto" />
+    <SUITE FILE_PATH="coverage/simulation$path_follow.coverage" NAME="path_follow Coverage Results" MODIFIED="1718967678356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
     <SUITE FILE_PATH="coverage/simulation$pytest_in___main___py.coverage" NAME="pytest in __main__.py Coverage Results" MODIFIED="1718805991821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

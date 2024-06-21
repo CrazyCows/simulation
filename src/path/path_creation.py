@@ -163,7 +163,7 @@ def create_temp_path(pos_1: Position, pos_2: Position) -> SquareObject:
     # Use this angle and midpoint position in your create_square function call
     temp_path = SquareObject.create_square(
         position=Position(x=mid_x, y=mid_y),
-        width=60,
+        width=135,
         height=round(math.dist((pos_1.x, pos_1.y), (pos_2.x, pos_2.y))),
         radians=-(angle_radians - math.pi / 2)
     )
