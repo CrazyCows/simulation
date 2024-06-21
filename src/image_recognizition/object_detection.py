@@ -73,8 +73,32 @@ class RoboVision():
     _whiteSizeUpper = 12
     _eggSizeLower = _whiteSizeUpper + 1
     _eggSizeUpper = 50
-    _dotSizeLower = 10
-    _dotSizeUpper = 45
+    _dotSizeLower = 5
+    _dotSizeUpper = 60
+    _min_x = 1000000
+    _max_x = 0
+    _min_y = 1000000
+    _max_y = 0
+
+
+    def __init__(self, walls: List[SquareObject]):
+        for wall in walls:
+            for vertex in wall.vertices: #Not very pythonic
+                if vertex[0] > self._max_x:
+                    self._max_x = vertex[0]
+                if vertex[0] < self._min_x:
+                    self._min_x = vertex[0]
+                if vertex[1] > self._max_y:
+                    self._max_y = vertex[1]
+                if vertex[1] < self._min_y:
+                    self._min_y = vertex[1]
+        print("Minimum wall x position: " + str(self._min_x))
+        print("Maximum wall x position: " + str(self._max_x))
+        print("Minimum wall y position: " + str(self._min_y))
+        print("Maximum wall y position: " + str(self._max_y))
+
+
+
 
     _robot_y = 100
     _robot_x = 100
@@ -94,7 +118,7 @@ class RoboVision():
     _red2lower_limit = np.array([160, 125, 80])
     _red2upper_limit = np.array([179, 255, 255])
 
-    _green_lower_limit = np.array([30, 180, 45])
+    _green_lower_limit = np.array([50, 180, 45])
     _green_upper_limit = np.array([90, 255, 255])
     # Id like to avoid overlap in these filters
     # IS SET TO BLACC
@@ -143,12 +167,19 @@ class RoboVision():
 
         if frame is None:
             raise Exception("Camera error")
+        #print(type(frame))
+        #print("Dimensions:" + str(frame.shape))
+        #frame = frame[int(self._min_y):int(self._max_y), int(self._min_x):int(self._max_x)]
+        #print(type(frame))
+        #print("Dimensions:" + str(frame.shape))
+
         if self._camera_x is None:
             self._camera_x = int(self._vs.get(cv2.CAP_PROP_FRAME_WIDTH)/2)
             self._camera_y = int(self._vs.get(cv2.CAP_PROP_FRAME_HEIGHT)/2)
         frame = increase_vibrance(frame, 1.5)
         self._blurred = cv2.GaussianBlur(frame, (5, 5), 0)
         self._hsv = cv2.cvtColor(self._blurred, cv2.COLOR_BGR2HSV)
+
 
     def _getBallishThing(self, lowerMask, upperMask, lowerSize, upperSize) -> List[CircleObject]:
         self.commonSetup()
@@ -161,7 +192,7 @@ class RoboVision():
 
         for cnt in cnts:
             ((x, y), radius) = cv2.minEnclosingCircle(cnt)
-            if lowerSize < radius < upperSize:
+            if lowerSize < radius < upperSize and self._max_x > x > self._min_x and self._max_y > y > self._min_y:
                 balls.append(CircleObject(radius=int(radius), position=Position(x=x, y=y)))
         return balls
 
@@ -202,18 +233,20 @@ class RoboVision():
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
         greendots = []
+        bluedots = []
+
+        while len(bluedots) != 1:
+            bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
+                                             self._dotSizeUpper)
+            print("Looking for blue dot. Current number of blue dots: " + str(len(bluedots)))
+
         while len(greendots) != 1:
             greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
                                               self._dotSizeUpper)
             print("Looking for green dots. Current number of green dots: " + str(len(greendots)))
 
         greendot = greendots[0]
-        bluedots = []
-        while len(bluedots) != 1:
-            bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
-                                             self._dotSizeUpper)
-            print("Looking for blue dot. Current number of blue dots: " + str(len(bluedots)))
-            print(bluedots)
+
         bluedot = bluedots[0]
         center = CircleObject(radius=1,
                               position=Position(x=int((greendot.position.x + bluedot.position.x) / 2),

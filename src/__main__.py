@@ -30,7 +30,7 @@ def app(connect_to_robot: bool = False):
     if connect_to_robot:
         wp = WallPicker()
         walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_west_wall(), wp.pick_south_wall()]
-        rv = RoboVision()
+        rv = RoboVision(walls)
         cross_squares = wp.pick_cross()
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls, safe_distance=20)
     while running:
