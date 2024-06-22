@@ -33,7 +33,7 @@ class CheckpointType(Enum):
     GOAL = 4
 
 class Checkpoint(Position):
-    checkpoint_type: CheckpointType = CheckpointType.SAFE_CHECKPOINT
+    checkpoint_type: CheckpointType = CheckpointType.BALL
 
 
 class RobotMode(Enum):

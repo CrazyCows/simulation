@@ -39,31 +39,31 @@ def prepare_command(move: Move):
     latch = 0
     lm = 0
     rm = 0
-    if move.radians == 0:
+    if move.radians < 1:
         lm = (speed/2)
         rm = (speed/2)
-    elif abs(move.radians) > 0.02 and abs(move.radians) < 0.03:
+    elif 0.04 < abs(move.radians) < 0.1:
         if move.radians < 0:
             lm = (speed/2) * 1
             rm = (speed/2) * 0.5
         else:
             lm = (speed/2) * 0.5
             rm = (speed/2) * 1
-    elif abs(move.radians) > 0.04 and abs(move.radians) < 0.06:
+    elif 0.08 < abs(move.radians) < 0.3:
         if move.radians < 0:
             lm = (speed/2) * 1
             rm = (speed/2) * 0.25
         else:
             lm = (speed/2) * 0.25
             rm = (speed/2) * 1
-    elif abs(move.radians) > 0.07 and abs(move.radians) < 0.08:
+    elif 0.7 < abs(move.radians) < 0.7:
         if move.radians < 0:
             lm = (speed/2) * 1
             rm = (speed/2) * -1
         else:
             lm = (speed/2) * -1
             rm = (speed/2) * 1
-    elif abs(move.radians) > 0.09 and abs(move.radians) < 0.11:
+    elif abs(move.radians) > 1.56:
         if move.radians < 0:
             lm = (speed/2) * 1
             rm = (speed/2) * -1
@@ -81,7 +81,8 @@ def goal_command():
 
 def send_command(move: Move):
     command = prepare_command(move)
-    command_string = f"{command[0]} {command[1]} {command[2]} {command[3]}" #Left motor, Right motor, Fan, latch
+    #command_string = f"{command[0]} {command[1]} {command[2]} {command[3]}" #Left motor, Right motor, Fan, latch
+    command_string = f"0 0 {command[2]} {command[3]}"  # Left motor, Right motor, Fan, latch
     print(f'command string: {command_string}')
     client_socket.send(command_string.encode())
     client_socket.recv(1024)
