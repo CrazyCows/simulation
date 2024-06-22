@@ -5,9 +5,11 @@ from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
 from src.dto.shapes import CircleObject, Position, SquareObject
 
+
 class NoRobotException(Exception):
     "Raised when a robot is not found"
     pass
+
 
 def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):
     """
@@ -127,8 +129,8 @@ class RoboVision():
     _orange_lower_limit = np.array([15, 250, 235])
     _orange_upper_limit = np.array([32, 255, 255])
 
-    #_orange_lower_limit = np.array([15, 240, 140])
-    #_orange_upper_limit = np.array([50, 255, 255])
+    # _orange_lower_limit = np.array([15, 240, 140])
+    # _orange_upper_limit = np.array([50, 255, 255])
 
     """ Outdated values
     whiteLower = np.array([0, 0, 220])
@@ -182,7 +184,8 @@ class RoboVision():
         self._blurred = cv2.GaussianBlur(frame, (5, 5), 0)
         self._hsv = cv2.cvtColor(self._blurred, cv2.COLOR_BGR2HSV)
 
-    def _getBallishThing(self, lowerMask, upperMask, lowerSize, upperSize) -> List[CircleObject]:
+    def _getBallishThing(self, lowerMask, upperMask, lowerSize, upperSize, decrease_tolerance=False) -> List[
+        CircleObject]:
         self.commonSetup()
         mask = cv2.inRange(self._hsv, lowerMask, upperMask)
         mask = cv2.erode(mask, None, iterations=2)
@@ -224,16 +227,16 @@ class RoboVision():
 
     def _correct_robot_location_perspective(self, before_center: CircleObject) -> CircleObject:
         before_center.position.x = before_center.position.x + self._z_factor * (
-                    self._camera_x - before_center.position.x)
+                self._camera_x - before_center.position.x)
         before_center.position.y = before_center.position.y + self._z_factor * (
-                    self._camera_y - before_center.position.y)
+                self._camera_y - before_center.position.y)
         return before_center
 
     def _correct_point_location_perspective(self, before_center: CircleObject) -> CircleObject:
         before_center.position.x = before_center.position.x + self._z_factor * (
-                    self._camera_x - before_center.position.x)
+                self._camera_x - before_center.position.x)
         before_center.position.y = before_center.position.y + self._z_factor * (
-                    self._camera_y - before_center.position.y)
+                self._camera_y - before_center.position.y)
         return before_center
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
@@ -257,7 +260,7 @@ class RoboVision():
                 break
         if len(greendots) > 1:
             raise NoRobotException("More than one green dot")
-        elif len(greendots == 0):
+        elif len(greendots) == 0:
             raise NoRobotException("No green dots")
         greendot = greendots[0]
 
@@ -272,9 +275,9 @@ class RoboVision():
     def _get_white_balls(self) -> List[CircleObject]:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
 
-    def _get_orange_ball(self) -> List[CircleObject]:
+    def _get_orange_ball(self, decrease_tolerance=False) -> List[CircleObject]:
         orange_balls = self._getBallishThing(self._orange_lower_limit, self.orange, self._whiteSizeLower,
-                                             self._whiteSizeUpper)
+                                             self._whiteSizeUpper, decrease_tolerance)
         return orange_balls
 
     def _get_egg(self) -> List[CircleObject]:
