@@ -56,7 +56,8 @@ def prepare_command(move: Move):
 
 def goal_command():
     move: Move = Move(speed=0, radians=0, suck=False, latch=True)
-    send_command(move)
+    client_socket.send("0 0 -1 1".encode())
+    client_socket.recv(1024)
 
 def send_command(move: Move):
     command = prepare_command(move)
