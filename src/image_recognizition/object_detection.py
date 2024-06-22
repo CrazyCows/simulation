@@ -3,8 +3,7 @@ import imutils
 import numpy as np
 from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
-from src.dto.shapes import CircleObject, Position, SquareObject
-
+from dto.shapes import CircleObject, Position, SquareObject
 
 class NoRobotException(Exception):
     "Raised when a robot is not found"

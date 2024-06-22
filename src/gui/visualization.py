@@ -3,7 +3,7 @@ from dto.robot import Robot
 from dto.shapes import SquareObject, CircleObject, Position
 from dto.obstacles import Cross, Wall
 from typing import List
-from src.dto.robot import CheckpointType
+from dto.robot import CheckpointType
 
 
 def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: List[CircleObject], calculated_path: List[SquareObject], cross: Cross):
@@ -11,8 +11,8 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
-
-    #screen.fill("purple")
+    
+    screen.fill("purple")
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "orange", obstacle.danger_zone.vertices)
     for obstacle in obstacles:
