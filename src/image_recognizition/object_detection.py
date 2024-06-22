@@ -104,7 +104,7 @@ class RoboVision():
 
     _robot_y = 100
     _robot_x = 100
-    _robot_z_cm = 41  # TODO: make parameters?
+    _robot_z_cm = 32  # TODO: make parameters?
     _camera_z_cm = 190
     _camera_x: int = None
     _camera_y: int = None
