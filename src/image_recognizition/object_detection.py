@@ -5,6 +5,9 @@ from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
 from src.dto.shapes import CircleObject, Position, SquareObject
 
+class NoRobotException(Exception):
+    "Raised when a robot is not found"
+    pass
 
 def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):
     """
@@ -236,17 +239,26 @@ class RoboVision():
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
         greendots = []
         bluedots = []
-
-        while len(bluedots) != 1:
+        for i in range(30):
             bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
                                              self._dotSizeUpper)
             print("Looking for blue dot. Current number of blue dots: " + str(len(bluedots)))
-
-        while len(greendots) != 1:
+            if len(bluedots) == 1:
+                break
+        if len(bluedots) > 1:
+            raise NoRobotException("More than one blue dot")
+        elif len(bluedots) == 0:
+            raise NoRobotException("No blue dots")
+        for i in range(30):
             greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
                                               self._dotSizeUpper)
             print("Looking for green dots. Current number of green dots: " + str(len(greendots)))
-
+            if len(greendots) == 1:
+                break
+        if len(greendots) > 1:
+            raise NoRobotException("More than one green dot")
+        elif len(greendots == 0):
+            raise NoRobotException("No green dots")
         greendot = greendots[0]
 
         bluedot = bluedots[0]
