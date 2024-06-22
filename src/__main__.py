@@ -78,7 +78,7 @@ def app(connect_to_robot: bool = False):
             visualization.game(screen, robot, walls, balls, path, cross)
 
         # Tickrate, frames/sec.
-            clock.tick(60) / 1000
+            clock.tick(25) / 1000
 
         # Hello
         for event in pygame.event.get():

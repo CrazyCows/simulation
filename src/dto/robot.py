@@ -59,7 +59,9 @@ class Robot(BaseModel):
     distance_to_cross: float = 0
 
     def suck(self, balls: List[CircleObject]):
+        print("dsaljgsdjsagpjgop")
         for ball in balls:
+            print("dfs,fdsdfs")
             if circle_square_touch(ball, self.suction):
                 print("I WILL REMOVE THE BALL NOW! (", ball.position, ")")
                 self.collected_balls.append(ball)
@@ -85,7 +87,7 @@ class Robot(BaseModel):
                 obstacles: Objects the robot can't collide with
         """
 
-        #print(move)
+        print("move:", move)
         speed = move.speed
         radians = move.radians
         suck = move.suck
@@ -103,6 +105,8 @@ class Robot(BaseModel):
             dy = self.start_position.y - self.robot.position.y
             logging.warning('robot touched a wall - resetting position')
 
+
+        print("mfdslkjsdaifoijofdjdafsjfdsajægre")
         robot_dx = self.robot.position.x + dx
         robot_dy = self.robot.position.y + dy
         self.previous_path.append(self.robot.position)
@@ -110,6 +114,7 @@ class Robot(BaseModel):
         self.suction.update_square(Position(x=robot_dx, y=robot_dy), radians)
         self.self_to_wall_distance(obstacles, cross)
         if suck:
+            print("HEERE______________________")
             self.suck(balls=balls)
         self.line = calculate_coordinates_for_line(
             radians, self.robot.position.x, self.robot.position.y

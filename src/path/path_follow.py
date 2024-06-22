@@ -45,6 +45,18 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
 
     #if sim_only is False:
     #    [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
+    """if robot.checkpoints[0].checkpoint_type == CheckpointType.DANGER_CHECKPOINT:
+        print("hdhfasdhofhfdsakæl")
+        if overlap_detection.are_objects_centered(Position(x=robot.checkpoints[0].x, y=robot.checkpoints[0].y), robot.robot.position):
+            robot.prev_checkpoint = robot.checkpoints[0]
+            print("Helloooo")
+            if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:
+                robot.mode = RobotMode.DANGER
+            elif robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and robot.mode == RobotMode.DANGER:
+                robot.mode = RobotMode.DANGER_REVERSE
+            elif robot.prev_checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT and robot.mode == RobotMode.DANGER_REVERSE:
+                robot.mode = RobotMode.SAFE
+    else:"""
     if overlap_detection.circle_square_touch(CircleObject(radius=25, position=robot.checkpoints[0]), robot.robot):
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:
@@ -115,5 +127,6 @@ def suck_if_small(robot: Robot) -> bool:
     distance_to_ball = math.dist(robot_pos, (robot.checkpoints[0].x, robot.checkpoints[0].y))
     if distance_to_ball < 50:
         suck = True
+        print("______________________________________________fsaafdsfsadf")
 
     return suck

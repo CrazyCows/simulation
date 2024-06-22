@@ -4,8 +4,6 @@ import numpy as np
 from dto.shapes import SquareObject, CircleObject, LineObject, Position
 
 
-
-
 def square_touching(square1: SquareObject, square2: SquareObject) -> bool:
     """
         Checks if two squares is touching
@@ -50,6 +48,16 @@ def circle_touch(circle1: CircleObject, circle2: CircleObject) -> bool:
     radius_sum = circle1.radius + circle2.radius
     tolerance = 0.0001
     return abs(speed - radius_sum) <= tolerance
+
+
+def are_objects_centered(checkpoint_position: Position, robot_position: Position, margin: float = 10) -> bool:
+    """
+    Checks if the circle and square are centered with each other within a given margin.
+    """
+    cx, cy = checkpoint_position.x, checkpoint_position.y
+    sx, sy = robot_position.x, robot_position.y
+
+    return abs(cx - sx) <= margin and abs(cy - sy) <= margin
 
 
 def circle_square_touch(circle: CircleObject, square: SquareObject) -> bool:
