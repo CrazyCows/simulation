@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-
 import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
@@ -35,35 +34,35 @@ def app(connect_to_robot: bool = False):
         cross_squares = wp.pick_cross()
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls, safe_distance=20)
     while running:
-        try:
-            if connect_to_robot:
-                #print("WHY THE FUCK AM I RUNNING?")
-                balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-                temp_robo = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
+        if connect_to_robot:
+            #print("WHY THE FUCK AM I RUNNING?")
+            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
+            temp_robo = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
 
-                robot_position = temp_robo.position
-                #print(robot_position)
-                radians = temp_robo.radians
-                robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                           width=30, height=30, radians=radians, suction_height=20, suction_width=20,
-                                           suction_offset_y=25)
             robot_position = temp_robo.position
             #print(robot_position)
             radians = temp_robo.radians
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                        width=30, height=30, radians=radians, suction_height=20, suction_width=20,
-                                        suction_offset_y=25)
-            """
-            tmp_walls = []
-            tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT))
-            tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
-            tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP))
-            tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT))
-            def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
-                return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
-            walls = tmp_walls
-            """
-            if robot.mode != RobotMode.DANGER:
+                                       width=30, height=30, radians=radians, suction_height=20, suction_width=20,
+                                       suction_offset_y=25)
+        robot_position = temp_robo.position
+        #print(robot_position)
+        radians = temp_robo.radians
+        robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
+                                    width=30, height=30, radians=radians, suction_height=20, suction_width=20,
+                                    suction_offset_y=25)
+        """
+        tmp_walls = []
+        tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT))
+        tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
+        tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP))
+        tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT))
+        walls = tmp_walls
+        def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
+            return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
+        """
+        if robot.mode != RobotMode.DANGER:
+            if len(balls) > 0:
                 focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
                 # Temp solution, just redrawing balls all da time
@@ -93,8 +92,6 @@ def app(connect_to_robot: bool = False):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
-        except Exception as e:
-            raise e
 
 
 if __name__ == '__main__':
