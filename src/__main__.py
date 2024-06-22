@@ -28,6 +28,7 @@ def app(connect_to_robot: bool = False):
     #    transmission.connect
     focused_ball: CircleObject = None
     if connect_to_robot:
+        transmission.connect()
         wp = WallPicker()
         walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_west_wall(), wp.pick_south_wall()]
         rv = RoboVision(walls)
@@ -36,15 +37,17 @@ def app(connect_to_robot: bool = False):
     while running:
         if connect_to_robot:
             #print("WHY THE FUCK AM I RUNNING?")
-            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
+            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
+            if len(balls) == 0:
+                balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
             temp_robo = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
 
             robot_position = temp_robo.position #TODO: Exception is thrown here..?
             #print(robot_position)
             radians = temp_robo.radians
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                       width=30, height=30, radians=radians, suction_height=20, suction_width=20,
-                                       suction_offset_y=25)
+                                       width=135, height=150, radians=radians, suction_height=25, suction_width=25,
+                                       suction_offset_y=80)
         robot_position = temp_robo.position
         #print(robot_position)
         radians = temp_robo.radians
@@ -76,8 +79,8 @@ def app(connect_to_robot: bool = False):
                     path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
                 except Exception as e:
                     continue
-                #if connect_to_robot:
-                #    transmission.send_command(move)
+                if connect_to_robot:
+                    transmission.send_command(move)
 
                 # NOTE: Updates the visual representation
                 cam_frame = rv.get_flipped_frame()
