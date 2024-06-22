@@ -39,7 +39,7 @@ def app(connect_to_robot: bool = False):
             balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
             temp_robo = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
 
-            robot_position = temp_robo.position
+            robot_position = temp_robo.position #TODO: Exception is thrown here..?
             #print(robot_position)
             radians = temp_robo.radians
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
@@ -63,10 +63,11 @@ def app(connect_to_robot: bool = False):
         """
         if robot.mode != RobotMode.DANGER:
             if len(balls) > 0:
-                focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
+                # focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
                 # Temp solution, just redrawing balls all da time
-                path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
+
+                path, checkpoints = path_creation.create_path(balls[0], robot, walls, cross)
                 checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
 
                 robot.checkpoints = checkpoints

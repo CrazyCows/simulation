@@ -88,6 +88,7 @@ class RoboVision():
 
     def __init__(self, walls: List[SquareObject]):
         for wall in walls:
+            print("")
             for vertex in wall.vertices:  # Not very pythonic
                 if vertex[0] > self._max_x:
                     self._max_x = vertex[0]
@@ -153,7 +154,7 @@ class RoboVision():
     """
 
     _cross_area = 100
-    _vs = cv2.VideoCapture(0)
+    _vs = cv2.VideoCapture(1)
     _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -286,7 +287,7 @@ class RoboVision():
     def _get_egg(self) -> List[CircleObject]:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
 
-    def _get_robot_square(self) -> SquareObject | None:
+    def _get_robot_square(self) -> SquareObject or None:
         try:
             circle, angle = self._get_robot_center()
             square = SquareObject.create_square(circle.position,
