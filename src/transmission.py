@@ -92,10 +92,12 @@ def signal_handler(sig, frame):
     disconnect()
     sys.exit(0)
 
-# Register the signal handlers
-signal.signal(signal.SIGINT, signal_handler)
-signal.signal(signal.SIGTERM, signal_handler)
+def exit_functions():
 
-# Register atexit to ensure sockets are closed on normal exit
-atexit.register(disconnect)
+    # Register the signal handlers
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+    # Register atexit to ensure sockets are closed on normal exit
+    atexit.register(disconnect)
 
