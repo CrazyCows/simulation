@@ -3,7 +3,7 @@ from typing import List
 from dto.robot import Move, Move
 import math
 
-server_ip = '192.168.137.232'  # Erstat med IP-adressen til din EV3
+server_ip = '192.168.137.3'  # Erstat med IP-adressen til din EV3
 port = 5000
 client_socket = socket.socket # Modified to not crash program on launch... Can't instantiate if no robot.
 
@@ -28,7 +28,7 @@ def prepare_command(move: Move):
         else:
             lm = (speed/2) * 0.5
             rm = (speed/2) * 1
-    elif abs(move.radians) > 0.04 and abs(move.radians) < 0.06:
+    elif abs(move.radians) > 0.04 and abs(move.radians) < 0.06:z
         if move.radians < 0:
             lm = (speed/2) * 1
             rm = (speed/2) * 0.25
