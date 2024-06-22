@@ -53,45 +53,46 @@ def app(connect_to_robot: bool = False):
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
                                         width=30, height=30, radians=radians, suction_height=20, suction_width=20,
                                         suction_offset_y=25)
-        """tmp_walls = []
-        tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT))
-        tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
-        tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP))
-        tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT))
-        def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
-            return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
-        walls = tmp_walls
-        """
-        if robot.mode != RobotMode.DANGER:
-            focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
+            """
+            tmp_walls = []
+            tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT))
+            tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
+            tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP))
+            tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT))
+            def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
+                return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
+            walls = tmp_walls
+            """
+            if robot.mode != RobotMode.DANGER:
+                focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
-            # Temp solution, just redrawing balls all da time
-            path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
-            checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
+                # Temp solution, just redrawing balls all da time
+                path, checkpoints = path_creation.create_path(balls, robot, walls, cross)
+                checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
 
-            robot.checkpoints = checkpoints
-            try:
-                move: Move = path_follow.create_move(robot)
-                path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
-            except Exception as e:
-                continue
-            #if connect_to_robot:
-            #    transmission.send_command(move)
+                robot.checkpoints = checkpoints
+                try:
+                    move: Move = path_follow.create_move(robot)
+                    path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
+                except Exception as e:
+                    continue
+                #if connect_to_robot:
+                #    transmission.send_command(move)
 
-            # NOTE: Updates the visual representation
-            cam_frame = rv.get_flipped_frame()
-            cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
-            frame = pygame.surfarray.make_surface(np.rot90(cam_frame))
-            screen.blit(frame, (0, 0))
-            #pygame.display.flip()
-            visualization.game(screen, robot, walls, balls, path, cross)
+                # NOTE: Updates the visual representation
+                cam_frame = rv.get_flipped_frame()
+                cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
+                frame = pygame.surfarray.make_surface(np.rot90(cam_frame))
+                screen.blit(frame, (0, 0))
+                #pygame.display.flip()
+                visualization.game(screen, robot, walls, balls, path, cross)
 
-        # Tickrate, frames/sec.
-            clock.tick(60) / 1000
+            # Tickrate, frames/sec.
+                clock.tick(60) / 1000
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
         except Exception as e:
             raise e
 
