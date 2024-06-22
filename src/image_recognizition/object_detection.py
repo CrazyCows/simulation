@@ -240,35 +240,38 @@ class RoboVision():
         return before_center
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
-        greendots = []
-        bluedots = []
-        for i in range(30):
-            bluedots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
+        green_dots = []
+        blue_dots = []
+        # TODO: These loops should probably just be removed. I dont want to retry extensively here,
+        # Because retrying 30 times (one second) could cause significant desync between the two dots,
+        # leading to a misrepresented location
+        for i in range(2):
+            blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
                                              self._dotSizeUpper)
-            print("Looking for blue dot. Current number of blue dots: " + str(len(bluedots)))
-            if len(bluedots) == 1:
+            # print("Looking for blue dot. Current number of blue dots: " + str(len(blue_dots)))
+            if len(blue_dots) == 1:
                 break
-        if len(bluedots) > 1:
+        if len(blue_dots) > 1:
             raise NoRobotException("More than one blue dot")
-        elif len(bluedots) == 0:
+        elif len(blue_dots) == 0:
             raise NoRobotException("No blue dots")
-        for i in range(30):
-            greendots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
+        for i in range(2):
+            green_dots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
                                               self._dotSizeUpper)
-            print("Looking for green dots. Current number of green dots: " + str(len(greendots)))
-            if len(greendots) == 1:
+            # print("Looking for green dots. Current number of green dots: " + str(len(green_dots)))
+            if len(green_dots) == 1:
                 break
-        if len(greendots) > 1:
+        if len(green_dots) > 1:
             raise NoRobotException("More than one green dot")
-        elif len(greendots) == 0:
+        elif len(green_dots) == 0:
             raise NoRobotException("No green dots")
-        greendot = greendots[0]
+        green_dot = green_dots[0]
 
-        bluedot = bluedots[0]
+        blue_dot = blue_dots[0]
         center = CircleObject(radius=1,
-                              position=Position(x=int((greendot.position.x + bluedot.position.x) / 2),
-                                                y=int((greendot.position.y + bluedot.position.y) / 2)))
-        angle_xy = calculate_positive_angle(greendot, bluedot)
+                              position=Position(x=int((green_dot.position.x + blue_dot.position.x) / 2),
+                                                y=int((green_dot.position.y + blue_dot.position.y) / 2)))
+        angle_xy = calculate_positive_angle(green_dot, blue_dot)
         center = self._correct_robot_location_perspective(center)
         return center, angle_xy
 
@@ -283,15 +286,17 @@ class RoboVision():
     def _get_egg(self) -> List[CircleObject]:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
 
-    def _get_robot_square(self) -> SquareObject:
-        circle, angle = self._get_robot_center()
-
-        square = SquareObject.create_square(circle.position,
-                                            self._robot_y,
-                                            self._robot_x,
-                                            angle
-                                            )
-
+    def _get_robot_square(self) -> SquareObject | None:
+        try:
+            circle, angle = self._get_robot_center()
+            square = SquareObject.create_square(circle.position,
+                                                self._robot_y,
+                                                self._robot_x,
+                                                angle
+                                                )
+        except Exception as e:
+            print("Failed to locate robot: " + str(e))
+            return None
         return square
 
     def get_any_thing(self, min_count=0, max_count=100000, tries=25, thing_to_get=""):
@@ -308,6 +313,7 @@ class RoboVision():
             func = self._get_robot_square
         else:
             raise Exception("Invalid argument")
+
         if thing_to_get != "robot":
             for _ in range(tries):
                 list_of_thing = func()
@@ -316,8 +322,9 @@ class RoboVision():
             print(thing_to_get + " not found within parameters")
         else:
             robot = func()
-            while not robot:
-                robot = func
+            while not robot and tries > 0:
+                robot = func()
+                tries = tries - 1
             return robot
 
 
