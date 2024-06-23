@@ -104,6 +104,8 @@ class RoboVision():
         print("Minimum wall y position: " + str(self._min_y))
         print("Maximum wall y position: " + str(self._max_y))
 
+        self.last_robot_square = SquareObject
+
         self.ai: bool = ai
 
         if self.ai:
@@ -183,13 +185,13 @@ class RoboVision():
         # How powerful the model running on the computer should be
         # Light
         if (power == 1):
-            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\light.pt").to(device)
+            model = YOLO(r"C:\Users\antho\simulation\src\image_recognizition\models\light.pt").to(device)
         # Medium
         elif power == 2:
-            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\medium.pt").to(device)
+            model = YOLO(r"C:\Users\antho\simulation\src\image_recognizition\models\medium.pt").to(device)
         # Heavy ()
         elif power == 3:
-            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\heavy.pt").to(device)
+            model = YOLO(r"C:\Users\antho\simulation\src\image_recognizition\models\heavy.pt").to(device)
         return model
 
     def get_flipped_frame(self):
@@ -430,9 +432,10 @@ class RoboVision():
                                                 self._robot_x,
                                                 angle
                                                 )
+            self.last_robot_square = square
         except Exception as e:
             print("Failed to locate robot: " + str(e))
-            return None
+            return self.last_robot_square
         return square
 
     def _get_robot_center_ai(self, green_labels: [CircleObject], blue_labels: [CircleObject]) -> Tuple[CircleObject, float]:
