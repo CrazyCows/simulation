@@ -33,6 +33,10 @@ def create_move(robot: Robot) -> Move:
             speed = 1
         elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 150 and radians != 0:
             speed = 0
+        # Tilføjet så roboten stopper foran bolden
+        # TODO: Måde at håndtere hvis roboten ikke får bolden op
+        elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 150 and radians == 0 and robot.checkpoints[0].checkpoint_type == CheckpointType.BALL:
+            speed = 0
         else:
             speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
     elif robot.mode == RobotMode.DANGER_REVERSE:
