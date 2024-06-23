@@ -3,7 +3,7 @@ from pyzbar import pyzbar
 
 # Replace with your phone's IP address and port number
 phone_ip = '192.168.0.206'
-port = '4747'
+port = '8080'
 url = f'http://{phone_ip}:{port}/video'
 
 # Initialize the video capture with the URL

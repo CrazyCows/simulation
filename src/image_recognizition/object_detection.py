@@ -4,6 +4,7 @@ import numpy as np
 from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
 from dto.shapes import CircleObject, Position, SquareObject
+import pyzbar
 
 class NoRobotException(Exception):
     "Raised when a robot is not found"
@@ -239,6 +240,47 @@ class RoboVision():
                 self._camera_y - before_center.position.y)
         return before_center
 
+    def _get_robot_center_qr_code(self, backward: bool):
+        qr_codes_final = []
+        if not self._vs.isOpened():
+            print("Error: Could not open video stream.")
+        else:
+            # Capture frame-by-frame
+            ret, frame = self._vs.read()
+            
+
+            # Detect QR Codes in the image
+            qr_codes = pyzbar.decode(frame)
+
+            # Process detected QR Codes
+            for qr in qr_codes:
+                # Extract data and rectangle corners of the QR code
+                qr_data = qr.data.decode('utf-8')
+                if qr_data.lower() == "FREMAD".lower() and backward:
+                    continue
+                elif qr_data.lower() == "TILBAGE".lower() and not backward:
+                    continue
+
+                (x, y, w, h) = qr.rect
+                center_x, center_y = x + w // 2, y + h // 2
+                
+                # Draw rectangle around the QR code
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                
+                # Draw circle at the center
+                cv2.circle(frame, (center_x, center_y), 5, (255, 0, 0), -1)
+
+                # Display the QR code data
+                text = f"Data: {qr_data} | Center: ({center_x}, {center_y})"
+                cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                qr_codes_final.append(CircleObject(radius=30, position=Position(x=center_x, y=center_y)))
+            # Display the resulting frame
+            cv2.imshow('DroidCam Video', frame)
+
+            return qr_codes_final
+                
+
+
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
         green_dots = []
         blue_dots = []
@@ -246,8 +288,9 @@ class RoboVision():
         # Because retrying 30 times (one second) could cause significant desync between the two dots,
         # leading to a misrepresented location
         for i in range(2):
-            blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
-                                             self._dotSizeUpper)
+            #blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
+            #                                 self._dotSizeUpper)
+            blue_dots = self._get_robot_center_qr_code(True)
             # print("Looking for blue dot. Current number of blue dots: " + str(len(blue_dots)))
             if len(blue_dots) == 1:
                 break
@@ -256,8 +299,9 @@ class RoboVision():
         elif len(blue_dots) == 0:
             raise NoRobotException("No blue dots")
         for i in range(2):
-            green_dots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
-                                              self._dotSizeUpper)
+            #green_dots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
+            #                                  self._dotSizeUpper)
+            green_dots = self._get_robot_center_qr_code(False)
             # print("Looking for green dots. Current number of green dots: " + str(len(green_dots)))
             if len(green_dots) == 1:
                 break
