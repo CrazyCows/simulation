@@ -18,11 +18,11 @@ else:
         # Convert the frame to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # Apply threshold to get binary image
-        _, thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY_INV)
+        # Use Canny edge detector to find edges in the image
+        edges = cv2.Canny(gray, 100, 200)
 
-        # Find contours in the image
-        contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        # Find contours in the edges
+        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         # Process each contour
         for contour in contours:
@@ -32,19 +32,26 @@ else:
 
             # Check if the approximated contour has 3 points (triangle)
             if len(approx) == 3:
-                # Compute the bounding rectangle for the triangle
-                x, y, w, h = cv2.boundingRect(approx)
-                center_x, center_y = x + w // 2, y + h // 2
+                # Compute the area of the triangle
+                area = cv2.contourArea(contour)
 
-                # Draw rectangle around the triangle
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                
-                # Draw circle at the center
-                cv2.circle(frame, (center_x, center_y), 5, (255, 0, 0), -1)
+                # Define a minimum area for triangles to be considered
+                min_area = 10  # you can adjust this value based on your needs
 
-                # Display the center coordinates
-                text = f"Center: ({center_x}, {center_y})"
-                cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                if area > min_area:
+                    # Compute the bounding rectangle for the triangle
+                    x, y, w, h = cv2.boundingRect(approx)
+                    center_x, center_y = x + w // 2, y + h // 2
+
+                    # Draw rectangle around the triangle
+                    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                    
+                    # Draw circle at the center
+                    cv2.circle(frame, (center_x, center_y), 5, (255, 0, 0), -1)
+
+                    # Display the center coordinates and area of the triangle
+                    text = f"Center: ({center_x}, {center_y}) | Area: {area}"
+                    cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
         # Display the resulting frame
         cv2.imshow('DroidCam Video', frame)
