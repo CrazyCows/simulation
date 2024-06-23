@@ -48,8 +48,8 @@ def app(connect_to_robot: bool = False):
             if balls == []:
                 balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
             if balls == []:
-                # robot.mode = RobotMode.End
-                ""
+                robot.mode = RobotMode.ENDPHASE
+                
             robot_square_object = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
             robot_position = robot_square_object.position
             radians = robot_square_object.radians

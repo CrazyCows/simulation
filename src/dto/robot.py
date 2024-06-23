@@ -166,7 +166,7 @@ class Robot(BaseModel):
         obstacles_hit = 0
         previous_path = []
         cls.line = calculate_coordinates_for_line(
-            radians, cls.robot.position.x, cls.robot.position.y
+            radians, position.x, position.y
         )
 
         return cls(robot=robot, suction=suction, collected_balls=collected_balls,
