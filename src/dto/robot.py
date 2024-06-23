@@ -132,8 +132,8 @@ class Robot(BaseModel):
         if (checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT or
                 checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT):
             return True if (
-                    self.robot.position.x + 4 > checkpoint.x > self.robot.position.x - 4 and
-                    self.robot.position.y + 4 > checkpoint.y > self.robot.position.y - 4) else False
+                    self.robot.position.x + 5 > checkpoint.x > self.robot.position.x - 5 and
+                    self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
         else:
             return circle_square_touch(CircleObject(radius=10, position=checkpoint), self.suction)
 

@@ -6,7 +6,7 @@ import signal
 import atexit
 import sys
 
-server_ip = '192.168.86.77'  # Erstat med IP-adressen til din EV3
+server_ip = '192.168.137.56'  # Erstat med IP-adressen til din EV3
 port = 5000
 client_socket = socket.socket # Modified to not crash program on launch... Can't instantiate if no robot.
 

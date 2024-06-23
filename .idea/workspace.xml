@@ -5,14 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="Merge temp to main">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/image_recognizition/models/heavy.pt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/image_recognizition/models/medium.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/face_tracking.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/image_recognizition/object_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_recognizition/object_detection.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/image_recognizition/wall_picker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_recognizition/wall_picker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/qr_code_test.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/transmission.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/transmission.py" afterDir="false" />
     </list>
     <list id="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" name="Changes by ansi1" comment="" />
@@ -25,7 +24,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="main_img_test" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,37 +37,48 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.pytest in __main__.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.__main__.executor&quot;: &quot;Run&quot;,
-    &quot;Python.transmission.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Merging final__pathfinding&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ansi1/Desktop/DTU/4. semester/CDIO/simulation/src&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.pytest in __main__.py.executor": "Run",
+    "Python.__main__.executor": "Run",
+    "Python.transmission.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/LuucM/PycharmProjects/simulation/src/image_recognizition/models",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models" />
+      <recent name="C:\Users\LuucM\PycharmProjects\simulation\src" />
+      <recent name="C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models" />
+    </key>
+  </component>
   <component name="RunManager" selected="Python.__main__">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="simulation" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.9 (simulation)" />
-      <option name="WORKING_DIRECTORY" value="C:\Users\ansi1\Desktop\DTU\4. semester\CDIO\simulation\src" />
+      <option name="SDK_NAME" value="Python 3.11 (yolo)" />
+      <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -84,6 +94,7 @@
     </configuration>
     <configuration name="pytest in __main__.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="simulation" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
@@ -105,6 +116,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest in __main__.py" />
         <item itemvalue="Python tests.pytest in __main__.py" />
         <item itemvalue="Python tests.pytest in __main__.py" />
       </list>
@@ -133,6 +145,7 @@
       <workItem from="1718989150366" duration="774000" />
       <workItem from="1719141934749" duration="53000" />
       <workItem from="1719142000086" duration="6342000" />
+      <workItem from="1719156700872" duration="5578000" />
     </task>
     <servers />
   </component>
@@ -144,7 +157,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -169,12 +194,6 @@
           <line>48</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="len(robot.collected_balls) == 2" />
-          <url>file://$PROJECT_DIR$/src/dto/robot.py</url>
-          <line>137</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -186,14 +205,14 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/simulation$transmission.coverage" NAME="transmission Coverage Results" MODIFIED="1718979118636" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/simulation$robot.coverage" NAME="robot Coverage Results" MODIFIED="1718883503884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/dto" />
-    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1719149323026" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\ansi1\Desktop\DTU\4. semester\CDIO\simulation\src" />
-    <SUITE FILE_PATH="coverage/simulation$.coverage" NAME=" Coverage Results" MODIFIED="1719132031764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/simulation$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1719104042374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/simulation$pytest_in___main___py.coverage" NAME="pytest in __main__.py Coverage Results" MODIFIED="1718805991821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1719159311492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/simulation$path_follow.coverage" NAME="path_follow Coverage Results" MODIFIED="1718967678356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
     <SUITE FILE_PATH="coverage/simulation$object_detection.coverage" NAME="object_detection Coverage Results" MODIFIED="1718731129244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/simulation$pytest_in___main___py.coverage" NAME="pytest in __main__.py Coverage Results" MODIFIED="1718805991821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/simulation$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1719104042374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/simulation$robot.coverage" NAME="robot Coverage Results" MODIFIED="1718883503884" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/dto" />
     <SUITE FILE_PATH="coverage/simulation$path_creation.coverage" NAME="path_creation Coverage Results" MODIFIED="1719118046968" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
+    <SUITE FILE_PATH="coverage/simulation$.coverage" NAME=" Coverage Results" MODIFIED="1719132031764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/simulation$transmission.coverage" NAME="transmission Coverage Results" MODIFIED="1718979118636" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

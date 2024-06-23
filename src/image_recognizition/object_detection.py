@@ -4,6 +4,8 @@ import numpy as np
 from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
 from dto.shapes import CircleObject, Position, SquareObject
+import torch
+from ultralytics import YOLO
 
 class NoRobotException(Exception):
     "Raised when a robot is not found"
@@ -85,7 +87,7 @@ class RoboVision():
     _min_y = 1000000
     _max_y = 0
 
-    def __init__(self, walls: List[SquareObject]):
+    def __init__(self, walls: List[SquareObject], ai: bool = False, power: int = 1):
         for wall in walls:
             print("")
             for vertex in wall.vertices:  # Not very pythonic
@@ -101,6 +103,14 @@ class RoboVision():
         print("Maximum wall x position: " + str(self._max_x))
         print("Minimum wall y position: " + str(self._min_y))
         print("Maximum wall y position: " + str(self._max_y))
+
+        self.model = None
+        self.ai: bool = ai
+
+        if self.ai:
+            self.load_yolo_model(power=power)
+
+        self._frame = None
 
     _robot_y = 100
     _robot_x = 100
@@ -161,6 +171,28 @@ class RoboVision():
     _blurred = None
     _hsv = None
 
+    def load_yolo_model(self, power: int):
+        if torch.cuda.is_available():
+            print(f"CUDA is available. Version: {torch.version.cuda}")
+            device = torch.device('cuda')
+            print(f"Using device: {device}")
+            print(f"GPU: {torch.cuda.get_device_name(0)}")
+        else:
+            device = torch.device('cpu')
+            print("CUDA is not available. Using CPU.")
+
+        # How powerful the model running on the computer should be
+        # Light
+        if (power == 1):
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\light.pt").to(device)
+        # Medium
+        elif power == 2:
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\medium.pt").to(device)
+        # Heavy ()
+        elif power == 3:
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\heavy.pt").to(device)
+        return model
+
     def get_flipped_frame(self):
         ret, frame = self._vs.read()
         cv2.flip(frame, 1, frame)
@@ -180,9 +212,10 @@ class RoboVision():
         if self._camera_x is None:
             self._camera_x = int(self._vs.get(cv2.CAP_PROP_FRAME_WIDTH) / 2)
             self._camera_y = int(self._vs.get(cv2.CAP_PROP_FRAME_HEIGHT) / 2)
-        frame = increase_vibrance(frame, 1.5)
-        self._blurred = cv2.GaussianBlur(frame, (5, 5), 0)
-        self._hsv = cv2.cvtColor(self._blurred, cv2.COLOR_BGR2HSV)
+
+        #self._blurred = cv2.GaussianBlur(frame, (5, 5), 0)
+        self._frame = frame
+        self._hsv = frame
 
     def _getBallishThing(self, lowerMask, upperMask, lowerSize, upperSize, decrease_tolerance=False) -> List[
         CircleObject]:
@@ -239,47 +272,6 @@ class RoboVision():
                 self._camera_y - before_center.position.y)
         return before_center
 
-    def _get_robot_center_qr_code(self, backward: bool):
-        qr_codes_final = []
-        if not self._vs.isOpened():
-            print("Error: Could not open video stream.")
-        else:
-            # Capture frame-by-frame
-            ret, frame = self._vs.read()
-            
-
-            # Detect QR Codes in the image
-            qr_codes = pyzbar.decode(frame)
-
-            # Process detected QR Codes
-            for qr in qr_codes:
-                # Extract data and rectangle corners of the QR code
-                qr_data = qr.data.decode('utf-8')
-                if qr_data.lower() == "FREMAD".lower() and backward:
-                    continue
-                elif qr_data.lower() == "TILBAGE".lower() and not backward:
-                    continue
-
-                (x, y, w, h) = qr.rect
-                center_x, center_y = x + w // 2, y + h // 2
-                
-                # Draw rectangle around the QR code
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                
-                # Draw circle at the center
-                cv2.circle(frame, (center_x, center_y), 5, (255, 0, 0), -1)
-
-                # Display the QR code data
-                text = f"Data: {qr_data} | Center: ({center_x}, {center_y})"
-                cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                qr_codes_final.append(CircleObject(radius=30, position=Position(x=center_x, y=center_y)))
-            # Display the resulting frame
-            cv2.imshow('DroidCam Video', frame)
-
-            return qr_codes_final
-                
-
-
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
         green_dots = []
         blue_dots = []
@@ -287,27 +279,31 @@ class RoboVision():
         # Because retrying 30 times (one second) could cause significant desync between the two dots,
         # leading to a misrepresented location
         for i in range(2):
-            blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
-                                             self._dotSizeUpper)
-            #blue_dots = self._get_robot_center_qr_code(True)
+            if self.ai:
+                blue_dots = self.detect_with_yolo("blue-label")
+            else:
+                blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
+                                                  self._dotSizeUpper)
+
             # print("Looking for blue dot. Current number of blue dots: " + str(len(blue_dots)))
             if len(blue_dots) == 1:
                 break
         if len(blue_dots) > 1:
-            #raise NoRobotException("More than one blue dot")
-            pass #TODO
+            raise NoRobotException("More than one blue dot")
         elif len(blue_dots) == 0:
             raise NoRobotException("No blue dots")
         for i in range(2):
-            green_dots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
-                                              self._dotSizeUpper)
-            #green_dots = self._get_robot_center_qr_code(False)
+            if self.ai:
+                green_dots = self.detect_with_yolo("green-label")
+            else:
+                green_dots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
+                                                   self._dotSizeUpper)
+
             # print("Looking for green dots. Current number of green dots: " + str(len(green_dots)))
             if len(green_dots) == 1:
                 break
         if len(green_dots) > 1:
-            #raise NoRobotException("More than one green dot")
-            pass #TODO revert
+            raise NoRobotException("More than one green dot")
         elif len(green_dots) == 0:
             raise NoRobotException("No green dots")
         green_dot = green_dots[0]
@@ -321,15 +317,25 @@ class RoboVision():
         return center, angle_xy
 
     def _get_white_balls(self) -> List[CircleObject]:
-        return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
+        if self.ai:
+            return self.detect_with_yolo("white-ball")
+        else:
+            return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
+
 
     def _get_orange_ball(self, decrease_tolerance=False) -> List[CircleObject]:
-        orange_balls = self._getBallishThing(self._orange_lower_limit, self._orange_upper_limit, self._whiteSizeLower,
-                                             self._whiteSizeUpper, decrease_tolerance)
-        return orange_balls
+        if self.ai:
+            return self.detect_with_yolo("orange-ball")
+        else:
+            return self._getBallishThing(self._orange_lower_limit, self._orange_upper_limit,
+                                                 self._whiteSizeLower,
+                                                 self._whiteSizeUpper, decrease_tolerance)
 
     def _get_egg(self) -> List[CircleObject]:
-        return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
+        if self.ai:
+            return self.detect_with_yolo("white-egg")
+        else:
+            return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
 
     def _get_robot_square(self) -> SquareObject or None:
         try:
@@ -372,6 +378,21 @@ class RoboVision():
                 tries = tries - 1
             return robot
 
+    def detect_with_yolo(self, thing_type: str) -> List[CircleObject]:
+        self.commonSetup()
+        ret, frame = self._vs.read()
+        results = self.model.predict(frame, conf=0.4, iou=0.3)
+        detected_objects = []
+        for result in results:
+            for box in result.boxes:
+                cls = result.names[box.cls[0].item()]
+                if cls == thing_type:
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    detected_objects.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+        return detected_objects
 
 if __name__ == '__main__':
     pass
