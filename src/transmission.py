@@ -6,7 +6,7 @@ import signal
 import atexit
 import sys
 
-server_ip = '192.168.137.56'  # Erstat med IP-adressen til din EV3
+server_ip = '192.168.86.77'  # Erstat med IP-adressen til din EV3
 port = 5000
 client_socket = socket.socket # Modified to not crash program on launch... Can't instantiate if no robot.
 
@@ -40,36 +40,36 @@ def prepare_command(move: Move):
     lm = 0
     rm = 0
     if move.radians < 1:
-        lm = (speed/2)
-        rm = (speed/2)
+        lm = (speed)
+        rm = (speed)
     elif 0.04 < abs(move.radians) < 0.1:
         if move.radians < 0:
-            lm = (speed/2) * 1
-            rm = (speed/2) * 0.5
+            lm = (speed) * 1
+            rm = (speed) * 0.5
         else:
-            lm = (speed/2) * 0.5
-            rm = (speed/2) * 1
+            lm = (speed) * 0.5
+            rm = (speed) * 1
     elif 0.08 < abs(move.radians) < 0.3:
         if move.radians < 0:
-            lm = (speed/2) * 1
-            rm = (speed/2) * 0.25
+            lm = (speed) * 1
+            rm = (speed) * 0.25
         else:
-            lm = (speed/2) * 0.25
-            rm = (speed/2) * 1
+            lm = (speed) * 0.25
+            rm = (speed) * 1
     elif 0.7 < abs(move.radians) < 0.7:
         if move.radians < 0:
-            lm = (speed/2) * 1
-            rm = (speed/2) * -1
+            lm = (speed) * 1
+            rm = (speed) * -1
         else:
-            lm = (speed/2) * -1
-            rm = (speed/2) * 1
+            lm = (speed) * -1
+            rm = (speed) * 1
     elif abs(move.radians) > 1.56:
         if move.radians < 0:
-            lm = (speed/2) * 1
-            rm = (speed/2) * -1
+            lm = (speed) * 1
+            rm = (speed) * -1
         else:
-            lm = (speed/2) * -1
-            rm = (speed/2) * 1
+            lm = (speed) * -1
+            rm = (speed) * 1
 
     # Left motor speed, Right motor speed, fan on/off, latch open/close
     return lm, rm, 1 if suck else 0, 1 if latch else 0
@@ -81,8 +81,8 @@ def goal_command():
 
 def send_command(move: Move):
     command = prepare_command(move)
-    #command_string = f"{command[0]} {command[1]} {command[2]} {command[3]}" #Left motor, Right motor, Fan, latch
-    command_string = f"0 0 {command[2]} {command[3]}"  # Left motor, Right motor, Fan, latch
+    command_string = f"{command[0]} {command[1]} {command[2]} {command[3]}" #Left motor, Right motor, Fan, latch
+    # command_string = f"0 0 {command[2]} {command[3]}"  # Left motor, Right motor, Fan, latch
     print(f'command string: {command_string}')
     client_socket.send(command_string.encode())
     client_socket.recv(1024)

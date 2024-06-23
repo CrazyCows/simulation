@@ -45,7 +45,7 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
         pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), 4)
         #TODO: Make elif
     for checkpoint in robot.checkpoints:
-        print("The last loaded", checkpoint)
+        print("The last loaded (checkpoint)", checkpoint)
         if checkpoint.checkpoint_type.value == CheckpointType.BALL.value:
             pygame.draw.circle(screen, "green", (checkpoint.x, checkpoint.y), 8)
             pygame.draw.circle(screen, "black", (checkpoint.x, checkpoint.y), 4)

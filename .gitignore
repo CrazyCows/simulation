@@ -59,3 +59,16 @@ docs/_build/
 /.idea/shelf/Uncommitted_changes_before_Update_at_20-06-2024_13_33__Changes_1.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+src/__pycache__/__init__.cpython-312.pyc
+src/__pycache__/transmission.cpython-312.pyc
+src/__pycache__/transmission.cpython-312.pyc
+src/dto/__pycache__/obstacles.cpython-312.pyc
+src/dto/__pycache__/robot.cpython-312.pyc
+src/dto/__pycache__/shapes.cpython-312.pyc
+src/gui/__pycache__/__init__.cpython-312.pyc
+src/gui/__pycache__/visualization.cpython-312.pyc
+src/helper/__pycache__/__init__.cpython-312.pyc
+src/helper/__pycache__/overlap_detection.cpython-312.pyc
+src/image_recognizition/__pycache__/object_detection.cpython-312.pyc
+src/path/__pycache__/path_creation.cpython-312.pyc
+src/path/__pycache__/path_follow.cpython-312.pyc

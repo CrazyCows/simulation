@@ -56,7 +56,7 @@ def app(connect_to_robot: bool = False):
             move: Move = path_follow.create_move(robot)
             path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
         except Exception as e:
-            continue
+            print("Here in main" + str(e))
         if connect_to_robot:
             transmission.send_command(move)
 
@@ -80,10 +80,10 @@ def app(connect_to_robot: bool = False):
 if __name__ == '__main__':
     
     #test_antons_code()
-    # pygame.init()
+    pygame.init()
     try:
         transmission.exit_functions()
     except Exception as e:
         logging.error(e)
-    app(False)
+    app(True)
     pygame.quit()
