@@ -4,10 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="Merge with robovision_integration">
+    <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="Merge temp to main">
+      <change afterPath="$PROJECT_DIR$/frame.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/face_tracking.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/qr_code_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image_recognizition/object_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_recognizition/object_detection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image_recognizition/wall_picker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_recognizition/wall_picker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/transmission.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/transmission.py" afterDir="false" />
     </list>
     <list id="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" name="Changes by ansi1" comment="" />
     <list id="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" name="Changes by ChristofferFoldager" comment="" />
@@ -17,6 +25,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -27,26 +40,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.pytest in __main__.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.__main__.executor&quot;: &quot;Run&quot;,
-    &quot;Python.path_follow.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.robot.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;temp__pathfinding&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Dev/Skole/cdio/simulation/src/__main__.py&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.pytest in __main__.py.executor": "Run",
+    "Python.__main__.executor": "Run",
+    "Python.transmission.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "Merging merge__branch",
+    "last_opened_file_path": "C:/Dev/Skole/cdio/simulation/src/__main__.py",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Python.__main__">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="simulation" />
@@ -96,13 +108,15 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python tests.pytest in __main__.py" />
+        <item itemvalue="Python tests.pytest in __main__.py" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-d68999036c7f-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.14475.56" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-PY-241.15989.155" />
+        <option value="bundled-python-sdk-babbdf50b680-7c6932dee5e4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.15989.155" />
       </set>
     </attachedChunks>
   </component>
@@ -118,8 +132,7 @@
       <workItem from="1718807374804" duration="9396000" />
       <workItem from="1718886011215" duration="5136000" />
       <workItem from="1718895108165" duration="4552000" />
-      <workItem from="1718970742816" duration="9812000" />
-      <workItem from="1718981951612" duration="682000" />
+      <workItem from="1718989150366" duration="774000" />
     </task>
     <servers />
   </component>
@@ -139,38 +152,39 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Merge with robovision_integration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge with robovision_integration" />
+    <MESSAGE value="Merge with pathfinding" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge with pathfinding" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint type="python-line">
-          <url>file://$PROJECT_DIR$/src/image_recognizition/object_detection.py</url>
-          <line>249</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/src/path/path_follow.py</url>
-          <line>55</line>
-          <option name="timeStamp" value="11" />
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/__main__.py</url>
+          <line>69</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/helper/overlap_detection.py</url>
-          <line>98</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/src/path/path_follow.py</url>
-          <line>40</line>
-          <option name="timeStamp" value="29" />
+          <condition expression="wall.vertices is None" language="Python" />
+          <url>file://$PROJECT_DIR$/src/image_recognizition/object_detection.py</url>
+          <line>90</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1719137358178" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1719138224258" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/simulation$robot.coverage" NAME="robot Coverage Results" MODIFIED="1718966619752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/dto" />
     <SUITE FILE_PATH="coverage/simulation$path_follow.coverage" NAME="path_follow Coverage Results" MODIFIED="1718967678356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
+    <SUITE FILE_PATH="coverage/simulation$transmission.coverage" NAME="transmission Coverage Results" MODIFIED="1718979118636" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/simulation$object_detection.coverage" NAME="object_detection Coverage Results" MODIFIED="1718731129244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/simulation$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1719104042374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/simulation$path_creation.coverage" NAME="path_creation Coverage Results" MODIFIED="1719118046968" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
     <SUITE FILE_PATH="coverage/simulation$.coverage" NAME=" Coverage Results" MODIFIED="1719132031764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />

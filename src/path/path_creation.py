@@ -24,7 +24,8 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
 
     # def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
     #    return math.dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
-
+    print(type(temp_ball))
+    print(type(robot))
     temp_path = create_temp_path(robot.robot.position, temp_ball.position)
 
     p, b, i = is_ball_close_to_obstacle(temp_ball, walls, cross)

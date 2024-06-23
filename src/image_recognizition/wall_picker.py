@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 from dto.shapes import SquareObject, Position, CircleObject
 from copy import deepcopy
-from dto.obstacles import Cross
+from dto.obstacles import Cross, Wall, WallPlacement
 from dto.robot import Checkpoint
 
 
@@ -60,7 +60,7 @@ class WallPicker:
     def __init__(self):
         self.points = []
         self.frame = None
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         self.frame_name = "Placeholder_name"
@@ -74,8 +74,7 @@ class WallPicker:
             if len(self.points) >= self.max_points:
                 cv2.destroyAllWindows()
 
-    def _pick_points(self, window_name) -> SquareObject:
-        num_points = 4
+    def _pick_points(self, window_name, num_points) -> SquareObject:
         self.points = []
         self.max_points = num_points
         self.frame_name = window_name
@@ -116,31 +115,44 @@ class WallPicker:
 
     def pick_north_wall(self):
         print("Click 4 points for the North Wall")
-        return self._pick_points("North")
+        square = self._pick_points("North", 4)
+        wall = Wall.create(square, WallPlacement.TOP)
+        return wall
 
     def pick_east_wall(self):
         print("Click 4 points for the East Wall")
-        return self._pick_points("East")
+        square = self._pick_points("East", 4)
+        wall = Wall.create(square, WallPlacement.LEFT)
+        return wall
 
     def pick_south_wall(self):
         print("Click 4 points for the South Wall")
-        return self._pick_points("South")
-
+        square = self._pick_points("South", 4)
+        wall = Wall.create(square, WallPlacement.BOT)
+        return wall
     def pick_west_wall(self):
         print("Click 4 points for the West Wall")
-        return self._pick_points("West")
+        square = self._pick_points("West", 4)
+        wall = Wall.create(square, WallPlacement.RIGHT)
+        return wall
 
     def _click_cross_one(self):
         print("Click 4 points for Cross One")
-        return self._pick_points("Cross part one")
+        return self._pick_points("One rectangle from cross", 4)
 
-    def click_cross(self):
+    def pick_hole(self):
+        print("Click the two of the hole")
+        points = self._pick_points("Hole", 2)
+        x, y = calculate_centroid(points)
+        return CircleObject(radius=1, position=Position(x=x, y=y))
+
+    def pick_cross(self):
         cross_part_one: SquareObject = self._click_cross_one()
         cross_part_two: SquareObject = deepcopy(cross_part_one)
         cross_part_two.update_square(position=cross_part_two.position, radians=cross_part_two.radians+np.pi/2)
-        if (cross_part_two.radians > 2*np.pi):
+        if cross_part_two.radians > 2*np.pi:
             cross_part_two.radians = cross_part_two.radians - 2*np.pi
-
+        #cross = Cross.create_cross_with_safe_zones(cross_part_one, cross_part_two, walls)
         return [cross_part_one, cross_part_two]
 
     def release(self):
