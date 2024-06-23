@@ -46,10 +46,10 @@ def app(connect_to_robot: bool = False):
                                        width=30, height=30, radians=radians, suction_height=20, suction_width=20,
                                        suction_offset_y=25)
         tmp_walls = []
-        tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT))
-        tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT))
-        tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP))
-        tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT))
+        tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT, danger_zone_size=204))
+        tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT, danger_zone_size=204))
+        tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP, danger_zone_size=204))
+        tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT, danger_zone_size=204))
 
         def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
             return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
