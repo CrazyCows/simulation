@@ -187,16 +187,16 @@ def is_ball_close_to_wall(ball: CircleObject, walls: List[Wall]) -> Tuple[Positi
         if circle_square_touch(ball, wall.danger_zone):
             is_in_danger = True
             if wall.placement == WallPlacement.TOP:
-                y += 200
+                y += 110
                 i += 1
             elif wall.placement == WallPlacement.BOT:
-                y -= 200
+                y -= 110
                 i += 1
             elif wall.placement == WallPlacement.LEFT:
-                x += 200
+                x += 110
                 i += 1
             elif wall.placement == WallPlacement.RIGHT:
-                x -= 200
+                x -= 110
                 i += 1
     return Position(x=x, y=y), is_in_danger, i
 
