@@ -4,25 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="Merge with robovision_integration">
+    <list default="true" id="1ae83ff1-d66f-4745-85c2-35e540718972" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dto/obstacles.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/obstacles.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/visualization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/path_follow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_follow.py" afterDir="false" />
     </list>
-    <list id="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" name="Changes by ansi1" comment="">
-      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/obstacles.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/obstacles.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helper/overlap_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/helper/overlap_detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/path_follow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_follow.py" afterDir="false" />
-    </list>
-    <list id="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" name="Changes by ChristofferFoldager" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,220 +22,60 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/src/__main__.py">
-      <ranges>
-        <range start1="24" end1="25" start2="24" end2="25" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="33" end1="34" start2="33" end2="35" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="41" end1="42" start2="42" end2="43" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="44" end1="46" start2="45" end2="47" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="51" end1="51" start2="52" end2="53" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="53" end1="53" start2="55" end2="56" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="54" end1="55" start2="57" end2="58" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="59" end1="60" start2="62" end2="63" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="67" end1="68" start2="70" end2="71" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="69" end1="73" start2="72" end2="76" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="78" end1="79" start2="81" end2="82" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="87" end1="88" start2="90" end2="90" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="101" end1="102" start2="103" end2="104" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/__init__.py">
-      <ranges>
-        <range start1="45" end1="46" start2="45" end2="49" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="60" end1="61" start2="63" end2="64" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/dto/robot.py">
-      <ranges>
-        <range start1="33" end1="34" start2="33" end2="35" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="62" end1="62" start2="63" end2="64" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="126" end1="127" start2="128" end2="130" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="131" end1="132" start2="134" end2="135" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/path/path_follow.py">
-      <ranges>
-        <range start1="22" end1="37" start2="22" end2="33" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="56" end1="57" start2="52" end2="55" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="119" end1="120" start2="117" end2="118" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/path/path_creation.py">
-      <ranges>
-        <range start1="15" end1="16" start2="15" end2="16" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="29" end1="30" start2="29" end2="30" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="32" end1="32" start2="32" end2="34" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="33" end1="33" start2="35" end2="36" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="35" end1="36" start2="38" end2="39" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="39" end1="40" start2="42" end2="43" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="43" end1="45" start2="46" end2="50" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="127" end1="128" start2="132" end2="134" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="141" end1="142" start2="147" end2="149" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="176" end1="176" start2="183" end2="184" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="180" end1="181" start2="188" end2="190" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="182" end1="183" start2="191" end2="193" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="184" end1="185" start2="194" end2="196" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="186" end1="188" start2="197" end2="200" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="194" end1="203" start2="206" end2="225" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="206" end1="207" start2="228" end2="229" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="208" end1="210" start2="230" end2="232" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="212" end1="214" start2="234" end2="236" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-      </ranges>
-    </file>
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 7
-}</component>
-  <component name="ProjectId" id="2i6JoJJCZSP06Tqrp8WhU0tuKMf" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2iG0yqKT6cfQIpCu7J5rvzJtkE2" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.pytest in __main__.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.__main__.executor&quot;: &quot;Run&quot;,
-    &quot;Python.path_follow.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.robot.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;temp__pathfinding&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Dev/Skole/cdio/simulation/src/__main__.py&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.__init__.executor": "Run",
+    "Python.__main__.executor": "Run",
+    "Python.path_creation.executor": "Run",
+    "Python.path_follow.executor": "Debug",
+    "Python.robot.executor": "Debug",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Work",
+    "last_opened_file_path": "D:/Codeing/DTU/simulation",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected="Python.__main__">
-    <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <module name="simulation" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/__main__.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pytest in __main__.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="simulation" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/src/__main__.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
-    <list>
-      <item itemvalue="Python.__main__" />
-      <item itemvalue="Python tests.pytest in __main__.py" />
-    </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python tests.pytest in __main__.py" />
-      </list>
-    </recent_temporary>
-  </component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-d68999036c7f-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.14475.56" />
+        <option value="bundled-python-sdk-09665e90c3a7-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.15026.15" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="" />
-      <created>1718805268190</created>
+      <changelist id="1ae83ff1-d66f-4745-85c2-35e540718972" name="Changes" comment="" />
+      <created>1719101863519</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1718805268190</updated>
-      <workItem from="1718805270236" duration="1973000" />
-      <workItem from="1718807374804" duration="9396000" />
-      <workItem from="1718886011215" duration="5136000" />
-      <workItem from="1718895108165" duration="4552000" />
-      <workItem from="1718970742816" duration="9812000" />
-      <workItem from="1718981951612" duration="682000" />
+      <updated>1719101863519</updated>
+      <workItem from="1719101864577" duration="21724000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Merge with robovision_integration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge with robovision_integration" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint type="python-line">
-          <url>file://$PROJECT_DIR$/src/image_recognizition/object_detection.py</url>
-          <line>249</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/src/path/path_follow.py</url>
-          <line>55</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/helper/overlap_detection.py</url>
-          <line>98</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/src/path/path_follow.py</url>
-          <line>40</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1718982253389" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/simulation$robot.coverage" NAME="robot Coverage Results" MODIFIED="1718966619752" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/dto" />
-    <SUITE FILE_PATH="coverage/simulation$path_follow.coverage" NAME="path_follow Coverage Results" MODIFIED="1718967678356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
-    <SUITE FILE_PATH="coverage/simulation$pytest_in___main___py.coverage" NAME="pytest in __main__.py Coverage Results" MODIFIED="1718805991821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/simulation$path_creation.coverage" NAME="path_creation Coverage Results" MODIFIED="1719118046968" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
+    <SUITE FILE_PATH="coverage/simulation$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1719104042374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/simulation$path_follow.coverage" NAME="path_follow Coverage Results" MODIFIED="1719121009392" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
+    <SUITE FILE_PATH="coverage/simulation$robot.coverage" NAME="robot Coverage Results" MODIFIED="1719110015974" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/dto" />
+    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1719123618910" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

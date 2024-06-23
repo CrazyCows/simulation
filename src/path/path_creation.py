@@ -7,8 +7,7 @@ from pydantic import BaseModel
 import math
 
 
-def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross: Cross) -> Tuple[
-    List[SquareObject], List[Checkpoint]]:
+def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross: Cross) -> List[Checkpoint]:
     """
         Creates checkpoints to follow by creating a path between all balls to pick up.
 
@@ -17,61 +16,20 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
             List[Checkpoint]: List of checkpoints which the robot must pass.
     """
 
-    # temp_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
-    first_ball = True
     checkpoints = []  # A list of checkpoints the robot must pass
     path: List[SquareObject] = []  # Path is a line with a width to ensure the robot does not touch the obstacles
+    p, b = is_ball_close_to_obstacle(temp_ball, walls, cross)
 
-    # def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
-    #    return math.dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
-
-    temp_path = create_temp_path(robot.robot.position, temp_ball.position)
-
-    p, b, i = is_ball_close_to_obstacle(temp_ball, walls, cross)
-    if b:
-        temp_path = create_temp_path(robot.robot.position, p)
-    if i > 1:
-        robot.ignore_danger_in_corner = True
-
-    # Create Checkpoint to reverse to when robot has picked up a ball that was in danger zone
-    if robot.mode == RobotMode.DANGER_REVERSE and robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and len(
-            robot.collected_balls) != 0:
-        p, b, i = is_ball_close_to_obstacle(robot.collected_balls[-1], walls, cross)
-        print(p, robot.robot.position)
-        path.append(create_temp_path(robot.robot.position, p))
-        path.append(create_temp_path(temp_ball.position, p))
-        checkpoints.append(Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_REVERSE_CHECKPOINT))
+    if b and robot.mode != RobotMode.DANGER and robot.mode != RobotMode.DANGER_REVERSE:
+        robot.focused = True
+        checkpoints.append(
+            Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
         checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                       checkpoint_type=CheckpointType.BALL))
-        return path, checkpoints
-    # If path collides with obstacles, recalculate route.
-    # Else:
-    # If ball is in danger zone, create
-    elif (check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path)) and not robot.ignore_danger_in_corner:
-        additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_ball.position,
-                                                                   robot)
-        if len(additional_checkpoints) > 1:
-            path.append(create_temp_path(temp_ball.position, additional_checkpoints[1]))
-        else:
-
-            path.append(create_temp_path(robot.robot.position, additional_checkpoints[0]))
-            path.append(create_temp_path(temp_ball.position, additional_checkpoints[0]))
-        path.extend(additional_path)
-        checkpoints.extend(additional_checkpoints)
     else:
-        if b and (not robot.prev_checkpoint or (robot.prev_checkpoint.x != p.x and robot.prev_checkpoint.y != p.y)):
-            path.append(create_temp_path(robot.robot.position, p))
-            path.append(create_temp_path(temp_ball.position, p))
-            checkpoints.append(
-                Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
-            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
-                                          checkpoint_type=CheckpointType.BALL))
-        else:
-            path.append(temp_path)
-            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
-                                          checkpoint_type=CheckpointType.BALL))
-
-    return path, checkpoints
+        checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
+                                      checkpoint_type=CheckpointType.BALL))
+    return checkpoints
 
 
 def check_if_cross_is_touched(cross: Cross, current_path: SquareObject):
@@ -151,8 +109,9 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
 
     # Debugging output
     if check_if_cross_is_touched(cross, path[-1]):
-        print("Cross is touched at the last segment of the path.")
-    print("Checkpoints:", checkpoints)
+        pass
+        #print("Cross is touched at the last segment of the path.")
+    #print("Checkpoints:", checkpoints)
 
     return path, checkpoints
 
@@ -197,14 +156,14 @@ def is_ball_close_to_wall(ball: CircleObject, walls: List[Wall]) -> Tuple[Positi
             elif wall.placement == WallPlacement.RIGHT:
                 x -= 200
                 i += 1
-    return Position(x=x, y=y), is_in_danger, i
+    return Position(x=x, y=y), is_in_danger
 
 
 def is_ball_close_to_cross(ball: CircleObject, cross: Cross) -> Tuple[Position, bool]:
     x = ball.position.x
     y = ball.position.y
     is_in_danger = False
-    print("LOOK HERE::", cross)
+   # print("LOOK HERE::", cross)
     i = 0
     walls = [cross.square_1, cross.square_2]
     if circle_square_touch(ball, cross.square_1.danger_zone):
@@ -212,25 +171,24 @@ def is_ball_close_to_cross(ball: CircleObject, cross: Cross) -> Tuple[Position, 
         theta = cross.square_1.danger_zone.radians
         perp_x = -math.sin(theta)
         perp_y = math.cos(theta)
-        x += perp_x * 50
-        y += perp_y * 50
+        x += perp_x * 150
+        y += perp_y * 150
     if circle_square_touch(ball, cross.square_2.danger_zone):
         is_in_danger = True
         theta = cross.square_2.danger_zone.radians
         perp_x = -math.sin(theta)
         perp_y = math.cos(theta)
-        x += perp_x * 50
-        y += perp_y * 50
+        x += perp_x * 150
+        y += perp_y * 150
 
-    return Position(x=x, y=y), is_in_danger, i
+    return Position(x=x, y=y), is_in_danger
 
 
 def is_ball_close_to_obstacle(ball: CircleObject, walls: List[Wall], cross: Cross) -> Tuple[Position, bool]:
-    dzwc, dzwc_danger, dzwc_i = is_ball_close_to_wall(ball, walls)
+    dzwc, dzwc_danger = is_ball_close_to_wall(ball, walls)
     if dzwc_danger:
-        return dzwc, True, dzwc_i
-    dzcc, dzcc_danger, dzcc_i = is_ball_close_to_cross(ball, cross)
+        return dzwc, True
+    dzcc, dzcc_danger = is_ball_close_to_cross(ball, cross)
     if dzcc_danger:
-        print("DZCC DANGER", dzcc)
-        return dzcc, True, 0
-    return ball.position, False, 0
+        return dzcc, True
+    return ball.position, False

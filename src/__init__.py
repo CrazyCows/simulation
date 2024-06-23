@@ -39,13 +39,13 @@ cross = Cross.create_cross_with_safe_zones(
         )
 """
 
-ball_radius = 4*5/2
+ball_radius = 4*5/2+6
 
 balls = [CircleObject(radius=ball_radius, position=Position(x=250, y=screen.get_height() / 2)),
          CircleObject(radius=ball_radius, position=Position(x=1030, y=514)),
          CircleObject(radius=ball_radius, position=Position(x=253, y=88)),
-         #CircleObject(radius=ball_radius, position=Position(x=350, y=160))
-         #CircleObject(radius=ball_radius, position=Position(x=screen.get_width() - screen.get_width() / 2-30, y=screen.get_height() / 2)),
+         CircleObject(radius=ball_radius, position=Position(x=350, y=160)),
+         CircleObject(radius=ball_radius, position=Position(x=screen.get_width() - screen.get_width() / 2-40, y=screen.get_height() / 2)),
          ]
 """
 balls = [CircleObject(radius=5, position=Position(x=screen.get_width() - screen.get_width() / 2-60, y=screen.get_height() / 2)),
@@ -60,5 +60,5 @@ balls = [CircleObject(radius=5, position=Position(x=screen.get_width() - screen.
          CircleObject(radius=5, position=Position(x=231, y=403)),]
          #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
 """
-robot = Robot.create_robot(position=Position(x=screen.get_width() / 3, y=550),
-                width=135, height=150, radians=3.14, suction_height=25, suction_width=5, suction_offset_y=83)
+robot = Robot.create_robot(position=Position(x=screen.get_width()/1.5, y=330),
+                width=135, height=150, radians=0, suction_height=25, suction_width=5, suction_offset_y=83)
