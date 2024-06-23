@@ -349,7 +349,7 @@ class RoboVision():
             return None
         return square
 
-    def get_any_thing(self, min_count=0, max_count=100000, tries=25, thing_to_get=""):
+    def get_any_thing(self, min_count=0, max_count=100000, tries=50, thing_to_get=""):
 
         if thing_to_get == "white_ball":
             func = self._get_white_balls
@@ -361,6 +361,8 @@ class RoboVision():
             func = self._get_cross
         elif thing_to_get == "robot":
             func = self._get_robot_square
+        elif thing_to_get == "all_balls":
+            func = self._get_all_balls
         else:
             raise Exception("Invalid argument")
 
@@ -376,6 +378,28 @@ class RoboVision():
                 robot = func()
                 tries = tries - 1
             return robot
+
+    def _get_all_balls(self):
+        self.commonSetup()
+        ret, frame = self._vs.read()
+        results = self.model.predict(frame, conf=0.4, iou=0.3)
+        detected_objects = []
+        for result in results:
+            for box in result.boxes:
+                cls = result.names[box.cls[0].item()]
+                if cls == "orange-ball":
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    return [CircleObject(radius=radius, position=Position(x=center_x, y=center_y))]
+                elif cls == "white-ball":
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    detected_objects.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+        return detected_objects
 
     def detect_with_yolo(self, thing_type: str) -> List[CircleObject]:
         self.commonSetup()
