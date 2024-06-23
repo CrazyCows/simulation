@@ -1,4 +1,4 @@
-from dto.robot import Robot, Move, MoveCommand, CheckpointType, RobotMode
+from dto.robot import Robot, Move, MoveCommand, CheckpointType, RobotMode, Position
 from dto.shapes import CircleObject, SquareObject
 from dto.obstacles import Cross, Wall
 from typing import List
@@ -33,8 +33,8 @@ def create_move(robot: Robot) -> Move:
             speed = 1
         elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 150 and radians != 0:
             speed = 0
-        elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 150 and radians == 0 and robot.checkpoints[0].checkpoint_type == CheckpointType.BALL:
-            speed = 0
+        else:
+            speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
     elif robot.mode == RobotMode.DANGER_REVERSE:
         speed = -1
         radians = 0
@@ -58,6 +58,11 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
     robot.move(move, walls, balls, cross)
     if sim_only is False:
         [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
+
+        if balls == []:
+
+            return
+            exit()
     if robot.self_reached_checkpoint(robot.checkpoints[0]):
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:

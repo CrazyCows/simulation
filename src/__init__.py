@@ -17,10 +17,10 @@ top_wall_square = SquareObject.create_square(position=Position(x=screen.get_widt
                     width=840, height=20, radians=0)
 bot_wall_square = SquareObject.create_square(position=Position(x=screen.get_width() - screen.get_width() / 2, y=655),
                     width=840, height=20, radians=0)
-left_wall = Wall.create(left_wall_square, WallPlacement.LEFT)
-right_wall = Wall.create(right_wall_square, WallPlacement.RIGHT)
-top_wall = Wall.create(top_wall_square, WallPlacement.TOP)
-bot_wall = Wall.create(bot_wall_square, WallPlacement.BOT)
+left_wall = Wall.create(left_wall_square, WallPlacement.LEFT, 100)
+right_wall = Wall.create(right_wall_square, WallPlacement.RIGHT, 100)
+top_wall = Wall.create(top_wall_square, WallPlacement.TOP, 100)
+bot_wall = Wall.create(bot_wall_square, WallPlacement.BOT, 100)
 
 
 walls = [left_wall, right_wall, top_wall, bot_wall]
@@ -50,8 +50,8 @@ balls = [
          #CircleObject(radius=5, position=Position(x=300, y=300)),
          #CircleObject(radius=5, position=Position(x=250, y=240)),
          #CircleObject(radius=5, position=Position(x=250, y=90))
-         CircleObject(radius=5, position=Position(x=350, y=200)),
-         CircleObject(radius=5, position=Position(x=750, y=300))]
+         CircleObject(radius=5, position=Position(x=350, y=200)),]
+         # CircleObject(radius=5, position=Position(x=750, y=300))]
 
 """balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
          CircleObject(radius=5, position=Position(x=872, y=231)),

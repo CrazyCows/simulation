@@ -85,7 +85,9 @@ class CircleObject(BaseModel):
     def contains_point(self, point: Position) -> bool:
         return math.hypot(self.position.x - point.x, self.position.y - point.y) <= self.radius
     
-    
+class Goal(CircleObject):
+    ""
+
 def rotate_square(vertices: List[Tuple[float, float]], center: Position, radians: float) -> List[Tuple[float, float]]:
         """
             Rotates verticies around a center using matrix multiplication with np array to minimize resource usage.

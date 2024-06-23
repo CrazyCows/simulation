@@ -2,7 +2,7 @@ import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
 from dto.robot import Move, Checkpoint, RobotMode, CheckpointType
-from dto.shapes import Position, CircleObject
+from dto.shapes import Position, CircleObject, Goal
 from dto.obstacles import Cross, Wall, WallPlacement
 from image_recognizition.object_detection import RoboVision
 from image_recognizition.wall_picker import WallPicker
@@ -22,7 +22,7 @@ def app(connect_to_robot: bool = False):
     clock = __init__.clock
     cross = __init__.cross
     running = True
-    goal = CircleObject(radius=1, position=Position(x=230, y=screen.get_height()/2))
+    goal = Goal(radius=1, position=Position(x=230, y=screen.get_height()/2))
     if connect_to_robot:
         transmission.connect()
     focused_ball: CircleObject = None
@@ -32,13 +32,15 @@ def app(connect_to_robot: bool = False):
         rv = RoboVision(walls=walls)
         cross_squares = wp.pick_cross()
         print("Here")
+        
+        walls = []
+        walls.append(Wall.create(wall_squares[0], WallPlacement.LEFT, danger_zone_size=100))
+        walls.append(Wall.create(wall_squares[1], WallPlacement.RIGHT, danger_zone_size=100))
+        walls.append(Wall.create(wall_squares[2], WallPlacement.TOP, danger_zone_size=100))
+        walls.append(Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=100))
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
                                                    safe_distance=20)
-        walls = []
-        walls.append(Wall.create(wall_squares[0], WallPlacement.LEFT, danger_zone_size=150))
-        walls.append(Wall.create(wall_squares[1], WallPlacement.RIGHT, danger_zone_size=150))
-        walls.append(Wall.create(wall_squares[2], WallPlacement.TOP, danger_zone_size=150))
-        walls.append(Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=150))
+    
 
 
     while running:
@@ -47,26 +49,33 @@ def app(connect_to_robot: bool = False):
             balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
             if balls == []:
                 balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-            if balls == []:
-                robot.mode = RobotMode.ENDPHASE
-                
             robot_square_object = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
             robot_position = robot_square_object.position
             radians = robot_square_object.radians
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
                                        width=30, height=30, radians=radians, suction_height=20, suction_width=20,
                                        suction_offset_y=25)
-
+        
+        #print(len(balls))
+        # print(len(robot.collected_balls))
+        # TODO: Implement the
+        if balls == [] or (isinstance(balls[0], Goal)):
+            balls.append(goal)
+            print(type(balls[0]))
+            robot.mode = RobotMode.ENDPHASE
+            # exit()
+        else:
+            robot.mode = RobotMode.SAFE
 
         def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
             return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
 
         if robot.mode != RobotMode.DANGER and robot.mode != RobotMode.DANGER_REVERSE:
-            focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
+            balls.sort(key=lambda ball: robot.calculate_speed_to_ball(ball))
 
         # Temp solution, just redrawing balls all da time
         if robot.mode != RobotMode.STOP or robot.mode != RobotMode.STOP_DANGER:
-            path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
+            path, checkpoints = path_creation.create_path(balls[0], robot, walls, cross)
             robot.checkpoints = checkpoints
             try:
                 move: Move = path_follow.create_move(robot)
@@ -79,6 +88,7 @@ def app(connect_to_robot: bool = False):
         #print("Bot: ", robot.distance_to_wall_bot)
         #print("Cross: ", robot.distance_to_cross)
         print("Robot Mode:", robot.mode)
+        print("Checkpoint type:", robot.prev_checkpoint.checkpoint_type)
         if connect_to_robot:
             transmission.send_command(move)
 
