@@ -36,40 +36,49 @@ def send_exit_command():
 def prepare_command(move: Move):
     suck = move.suck
     speed = move.speed
+    speed = speed/2
     latch = 0
     lm = 0
     rm = 0
-    if move.radians < 1:
-        lm = (speed)
-        rm = (speed)
-    elif 0.04 < abs(move.radians) < 0.1:
-        if move.radians < 0:
-            lm = (speed) * 1
-            rm = (speed) * 0.5
-        else:
-            lm = (speed) * 0.5
-            rm = (speed) * 1
-    elif 0.08 < abs(move.radians) < 0.3:
-        if move.radians < 0:
-            lm = (speed) * 1
-            rm = (speed) * 0.25
-        else:
-            lm = (speed) * 0.25
-            rm = (speed) * 1
-    elif 0.7 < abs(move.radians) < 0.7:
-        if move.radians < 0:
-            lm = (speed) * 1
-            rm = (speed) * -1
-        else:
-            lm = (speed) * -1
-            rm = (speed) * 1
-    elif abs(move.radians) > 1.56:
-        if move.radians < 0:
-            lm = (speed) * 1
-            rm = (speed) * -1
-        else:
-            lm = (speed) * -1
-            rm = (speed) * 1
+    if speed == 0 and move.radians != 0:
+        if move.radians > 0:
+            lm = 1
+            rm = -1
+        elif move.radians < 0:
+            lm = -1
+            rm = 1
+    else:
+        if abs(move.radians) <= 0.04:
+            lm = (speed)
+            rm = (speed)
+        elif 0.04 < abs(move.radians) < 0.1:
+            if move.radians < 0:
+                lm = (speed) * 1
+                rm = (speed) * 0.5
+            else:
+                lm = (speed) * 0.5
+                rm = (speed) * 1
+        elif 0.08 < abs(move.radians) < 0.3:
+            if move.radians < 0:
+                lm = (speed) * 1
+                rm = (speed) * 0.25
+            else:
+                lm = (speed) * 0.25
+                rm = (speed) * 1
+        elif 0.7 < abs(move.radians) < 0.7:
+            if move.radians < 0:
+                lm = (speed) * 1
+                rm = (speed) * -1
+            else:
+                lm = (speed) * -1
+                rm = (speed) * 1
+        elif abs(move.radians) > 1.56:
+            if move.radians < 0:
+                lm = (speed) * 1
+                rm = (speed) * -1
+            else:
+                lm = (speed) * -1
+                rm = (speed) * 1
 
     # Left motor speed, Right motor speed, fan on/off, latch open/close
     return lm, rm, 1 if suck else 0, 1 if latch else 0
