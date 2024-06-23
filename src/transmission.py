@@ -90,6 +90,7 @@ def goal_command():
 
 def send_command(move: Move):
     command = prepare_command(move)
+    print("command string:", command)
     command_string = f"{command[0]} {command[1]} {command[2]} {command[3]}" #Left motor, Right motor, Fan, latch
     # command_string = f"0 0 {command[2]} {command[3]}"  # Left motor, Right motor, Fan, latch
     print(f'command string: {command_string}')

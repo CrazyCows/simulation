@@ -104,11 +104,10 @@ class RoboVision():
         print("Minimum wall y position: " + str(self._min_y))
         print("Maximum wall y position: " + str(self._max_y))
 
-        self.model = None
         self.ai: bool = ai
 
         if self.ai:
-            self.load_yolo_model(power=power)
+            self.model = self.load_yolo_model(power=power)
 
         self._frame = None
 
@@ -163,7 +162,7 @@ class RoboVision():
     """
 
     _cross_area = 100
-    _vs = cv2.VideoCapture(0)
+    _vs = cv2.VideoCapture(1)
     _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 

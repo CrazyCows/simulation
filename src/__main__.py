@@ -29,7 +29,7 @@ def app(connect_to_robot: bool = False):
     if (connect_to_robot):
         wp = WallPicker()
         wall_squares = [wp.pick_east_wall(), wp.pick_north_wall(),  wp.pick_west_wall(), wp.pick_south_wall()]
-        rv = RoboVision(walls=walls, ai=True, power=1) # power: how strong the model should be (light(1), medium(2), heavy(3))
+        rv = RoboVision(walls=walls, ai=True, power=3) # power: how strong the model should be (light(1), medium(2), heavy(3))
         cross_squares = wp.pick_cross()
         print("Here")
 
@@ -53,8 +53,8 @@ def app(connect_to_robot: bool = False):
             robot_position = robot_square_object.position
             radians = robot_square_object.radians
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                       width=30, height=30, radians=radians, suction_height=20, suction_width=20,
-                                       suction_offset_y=25)
+                                       width=135, height=150, radians=radians, suction_height=30, suction_width=30,
+                                       suction_offset_y=80)
 
         #print(len(balls))
         # print(len(robot.collected_balls))
@@ -89,9 +89,9 @@ def app(connect_to_robot: bool = False):
         #print("Top: ", robot.distance_to_wall_top)
         #print("Bot: ", robot.distance_to_wall_bot)
         #print("Cross: ", robot.distance_to_cross)
-        print("Suck: ", move.suck)
-        print("Latch: ", move.latch)
-        print("Robot Mode:", robot.mode)
+        #print("Suck: ", move.suck)
+        #print("Latch: ", move.latch)
+        #print("Robot Mode:", robot.mode)
         print("Checkpoint type:", robot.prev_checkpoint.checkpoint_type)
         if connect_to_robot:
             transmission.send_command(move)
