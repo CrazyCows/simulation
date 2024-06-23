@@ -21,6 +21,7 @@ class Move(BaseModel):
     speed: float
     radians: float
     suck: bool
+    latch: bool
 
 
 class Paths(BaseModel):
@@ -33,6 +34,7 @@ class CheckpointType(Enum):
     DANGER_CHECKPOINT = 3
     DANGER_REVERSE_CHECKPOINT = 4
     GOAL = 5
+    GOAL_LINEUP = 6
 
 
 class Checkpoint(Position):
@@ -45,6 +47,8 @@ class RobotMode(Enum):
     DANGER_REVERSE = 3
     STOP = 4
     STOP_DANGER = 5
+    DEPOSIT = 6
+    ENDPHASE = 7
 
 
 class Robot(BaseModel):
@@ -130,10 +134,22 @@ class Robot(BaseModel):
 
     def self_reached_checkpoint(self, checkpoint: Checkpoint):
         if (checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT or
-                checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT):
+                checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT or
+                checkpoint.checkpoint_type == CheckpointType.GOAL_LINEUP):
             return True if (
                     self.robot.position.x + 5 > checkpoint.x > self.robot.position.x - 5 and
                     self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+        elif checkpoint.checkpoint_type == CheckpointType.GOAL:
+            if self.distance_to_wall_left < self.distance_to_wall_right:
+                return True if (
+                        self.robot.position.x - 110 < checkpoint.x < self.robot.position.x - 95 and
+                        self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+            else:
+                return True if (
+                        self.robot.position.x + 110 > checkpoint.x > self.robot.position.x + 95 and
+                        self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+        elif checkpoint.checkpoint_type == CheckpointType.BALL:
+            return False
         else:
             return circle_square_touch(CircleObject(radius=10, position=checkpoint), self.suction)
 
@@ -160,13 +176,15 @@ class Robot(BaseModel):
         obstacles_hit_list = []
         obstacles_hit = 0
         previous_path = []
+        cls.line = calculate_coordinates_for_line(
+            radians, position.x, position.y
+        )
 
         return cls(robot=robot, suction=suction, collected_balls=collected_balls,
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit,
                    previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line,
                    prev_checkpoint=Checkpoint(x=position.x, y=position.y,
                                               checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
-
 
     def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
         """
@@ -178,7 +196,7 @@ class Robot(BaseModel):
 
         return LineObject(start_pos=Position(x=start_x, y=start_y), end_pos=Position(x=end_x, y=end_y))
 
-    def is_robot_near_obstacles(self, threshold:float = 30):
+    def is_robot_near_obstacles(self, threshold: float = 30):
         if self.distance_to_cross < threshold:
             return True
         elif self.distance_to_wall_top < threshold:
@@ -190,7 +208,6 @@ class Robot(BaseModel):
         elif self.distance_to_wall_right < threshold:
             return True
         return False
-
 
     def self_to_wall_distance(self, walls: List[Wall], cross: Cross):
         min_distance = float('inf')
@@ -257,15 +274,17 @@ class Robot(BaseModel):
         min_distance = float('inf')
         front_min_distance = float('inf')
         for i in range(num_vertices):
-            next_vertex_i = i+1
+            next_vertex_i = i + 1
             if next_vertex_i == 4:
                 next_vertex_i = 0
             for j in range(len(self.robot.vertices)):
                 next_vertex_j = j + 1
                 if next_vertex_j == 4:
                     next_vertex_j = 0
-                #distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
-                distance = self.segment_to_segment_distance(cross.square_1.vertices[i], cross.square_1.vertices[next_vertex_i], self.robot.vertices[j], self.robot.vertices[next_vertex_j])
+                # distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
+                distance = self.segment_to_segment_distance(cross.square_1.vertices[i],
+                                                            cross.square_1.vertices[next_vertex_i],
+                                                            self.robot.vertices[j], self.robot.vertices[next_vertex_j])
                 if j == 1 or j == 2:
                     front_min_distance = min(front_min_distance, distance)
                 min_distance = min(min_distance, distance)
@@ -273,27 +292,26 @@ class Robot(BaseModel):
             self.distance_to_cross = min_distance
         num_vertices = len(cross.square_2.vertices)
         for i in range(num_vertices):
-            next_vertex_i = i+1
+            next_vertex_i = i + 1
             if next_vertex_i == 4:
                 next_vertex_i = 0
             for j in range(len(self.robot.vertices)):
                 next_vertex_j = j + 1
                 if next_vertex_j == 4:
                     next_vertex_j = 0
-                #distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
-                distance = self.segment_to_segment_distance(cross.square_2.vertices[i], cross.square_2.vertices[next_vertex_i], self.robot.vertices[j], self.robot.vertices[next_vertex_j])
+                # distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
+                distance = self.segment_to_segment_distance(cross.square_2.vertices[i],
+                                                            cross.square_2.vertices[next_vertex_i],
+                                                            self.robot.vertices[j], self.robot.vertices[next_vertex_j])
                 if j == 1 or j == 2:
                     front_min_distance = min(front_min_distance, distance)
                 min_distance = min(min_distance, distance)
             self.front_distance_to_cross = front_min_distance
             self.distance_to_cross = min_distance
 
-
-
     def distance(self, p1, p2):
         """Beregn euklidisk afstand mellem to punkter."""
         return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
-
 
     def point_to_segment_distance(self, px, py, x1, y1, x2, y2):
         """Beregn afstanden fra et punkt til et linjesegment."""
@@ -307,7 +325,6 @@ class Robot(BaseModel):
         projection_y = y1 + t * (y2 - y1)
 
         return self.distance((px, py), (projection_x, projection_y))
-
 
     def segment_to_segment_distance(self, vertex1, vertex2, vertex3, vertex4):
         """Beregn den mindste afstand mellem to linjesegmenter."""

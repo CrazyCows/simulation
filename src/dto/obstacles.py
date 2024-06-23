@@ -85,8 +85,8 @@ class Cross(BaseModel):
             
             # Left and right point
             if i == 0 or i == 4:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.6
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.6
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.75
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.75
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             # Up and down point
@@ -107,7 +107,7 @@ class Cross(BaseModel):
             
         
             
-        return cls(square_1=Wall.create(square_object=square_1, placement=WallPlacement.CROSS, danger_zone_size=60), square_2=Wall.create(square_object=square_2, placement=WallPlacement.CROSS, danger_zone_size=60), safe_zones=safe_zones)
+        return cls(square_1=Wall.create(square_object=square_1, placement=WallPlacement.CROSS, danger_zone_size=40), square_2=Wall.create(square_object=square_2, placement=WallPlacement.CROSS, danger_zone_size=40), safe_zones=safe_zones)
 
 
 if __name__ == '__main__':
