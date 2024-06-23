@@ -349,7 +349,7 @@ class RoboVision():
             return None
         return square
 
-    def get_any_thing(self, min_count=0, max_count=100000, tries=25, thing_to_get=""):
+    def get_any_thing(self, min_count=0, max_count=100000, tries=50, thing_to_get=""):
 
         if thing_to_get == "white_ball":
             func = self._get_white_balls
@@ -361,6 +361,8 @@ class RoboVision():
             func = self._get_cross
         elif thing_to_get == "robot":
             func = self._get_robot_square
+        elif thing_to_get == "all_balls":
+            func = self._get_all_balls
         else:
             raise Exception("Invalid argument")
 
@@ -376,6 +378,88 @@ class RoboVision():
                 robot = func()
                 tries = tries - 1
             return robot
+
+    def _get_all_balls(self):
+        self.commonSetup()
+        ret, frame = self._vs.read()
+        results = self.model.predict(frame, conf=0.4, iou=0.3)
+        orange_balls = []
+        white_balls = []
+        blue_labels = []
+        green_labels = []
+        for result in results:
+            for box in result.boxes:
+                cls = result.names[box.cls[0].item()]
+                if cls == "orange-ball":
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    orange_balls.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+                elif cls == "white-ball":
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    white_balls.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+                elif cls == "green-label":
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    blue_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+                elif cls == "blue-label":
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    green_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+
+        robot_square: SquareObject = self._get_robot_square_ai(green_labels=green_labels, blue_labels=blue_labels)
+
+        if len(orange_balls) != 0:
+            return orange_balls, robot_square
+
+        return white_balls, robot_square
+
+    def _get_robot_square_ai(self, green_labels: [CircleObject], blue_labels: [CircleObject]) -> SquareObject or None:
+        try:
+            circle, angle = self._get_robot_center_ai(green_labels=green_labels, blue_labels=blue_labels)
+            square = SquareObject.create_square(circle.position,
+                                                self._robot_y,
+                                                self._robot_x,
+                                                angle
+                                                )
+        except Exception as e:
+            print("Failed to locate robot: " + str(e))
+            return None
+        return square
+
+    def _get_robot_center_ai(self, green_labels: [CircleObject], blue_labels: [CircleObject]) -> Tuple[CircleObject, float]:
+        green_dots = green_labels
+        blue_dots = blue_labels
+        # TODO: These loops should probably just be removed. I dont want to retry extensively here,
+        # Because retrying 30 times (one second) could cause significant desync between the two dots,
+        # leading to a misrepresented location
+
+        if len(blue_dots) > 1:
+            raise NoRobotException("More than one blue dot")
+        elif len(blue_dots) == 0:
+            raise NoRobotException("No blue dots")
+
+        if len(green_dots) > 1:
+            raise NoRobotException("More than one green dot")
+        elif len(green_dots) == 0:
+            raise NoRobotException("No green dots")
+        green_dot = green_dots[0]
+
+        blue_dot = blue_dots[0]
+        center = CircleObject(radius=1,
+                              position=Position(x=int((green_dot.position.x + blue_dot.position.x) / 2),
+                                                y=int((green_dot.position.y + blue_dot.position.y) / 2)))
+        angle_xy = calculate_positive_angle(green_dot, blue_dot)
+        center = self._correct_robot_location_perspective(center)
+        return center, angle_xy
 
     def detect_with_yolo(self, thing_type: str) -> List[CircleObject]:
         self.commonSetup()
