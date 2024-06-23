@@ -59,12 +59,16 @@ def app(connect_to_robot: bool = False):
         #print(len(balls))
         # print(len(robot.collected_balls))
         # TODO: Implement the
-        if balls == [] or (isinstance(balls[0], Goal)):
+        if balls == []:
             balls.append(goal)
-            print(type(balls[0]))
+            # print(type(balls[0]))
             robot.mode = RobotMode.ENDPHASE
             # exit()
-        else:
+        elif ((isinstance(balls[0], Goal)) and len(balls) == 1):
+            ""
+            # print(len(balls))
+        elif len(balls) > 1 and isinstance(balls[0], Goal):
+            balls.remove(goal)
             robot.mode = RobotMode.SAFE
 
         def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):

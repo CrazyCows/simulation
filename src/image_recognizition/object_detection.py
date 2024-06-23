@@ -129,6 +129,12 @@ class RoboVision():
     _orange_lower_limit = np.array([15, 250, 235])
     _orange_upper_limit = np.array([32, 255, 255])
 
+    _purple_lower_limit = np.array([140, 150, 70])
+    _purple_upper_limit = np.array([160, 255, 255])
+
+    _new_green_lower_limit = np.aray([40, 100, 100])
+    _new_green_upper_limit = np.array([80, 255, 255])
+
     # _orange_lower_limit = np.array([15, 240, 140])
     # _orange_upper_limit = np.array([50, 255, 255])
 
@@ -281,11 +287,34 @@ class RoboVision():
 
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
-        green_dots = []
-        blue_dots = []
+        
+
+        purple_dots = []
+        new_green_dots = []
+
+        purple_dots = self._getBallishThing(self._purple_lower_limit, self._purple_upper_limit, self._dotSizeLower,
+                                             self._dotSizeUpper)
+        if len(purple_dots) != 1:
+            raise NoRobotException("Number of purple dots: " + str(len(purple_dots)))
+        new_green_dots = self._getBallishThing(self._new_green_lower_limit, self._new_green_upper_limit, self._dotSizeLower,
+                                             self._dotSizeUpper)
+        if len(new_green_dot) != 1:
+            raise NoRobotException("Number of new green dots: " + str(len(new_green_dots)))
+        
+        purple_dot = purple_dots[0]
+        new_green_dot = purple_dots[0]
+        center = CircleObject(radius=1,
+                              position=Position(x=int((purple_dot.position.x + new_green_dot.position.x) / 2),
+                                                y=int((new_green_dot.position.y + purple_dot.position.y) / 2)))
+        angle_xy = calculate_positive_angle(purple_dot, new_green_dot)
+        center = self._correct_robot_location_perspective(center)
+        return center, angle_xy
         # TODO: These loops should probably just be removed. I dont want to retry extensively here,
         # Because retrying 30 times (one second) could cause significant desync between the two dots,
         # leading to a misrepresented location
+        """
+        green_dots = []
+        blue_dots = []
         for i in range(2):
             blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
                                              self._dotSizeUpper)
@@ -310,6 +339,7 @@ class RoboVision():
             pass #TODO revert
         elif len(green_dots) == 0:
             raise NoRobotException("No green dots")
+        
         green_dot = green_dots[0]
 
         blue_dot = blue_dots[0]
@@ -319,6 +349,8 @@ class RoboVision():
         angle_xy = calculate_positive_angle(green_dot, blue_dot)
         center = self._correct_robot_location_perspective(center)
         return center, angle_xy
+        """
+        
 
     def _get_white_balls(self) -> List[CircleObject]:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
