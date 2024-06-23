@@ -1,16 +1,11 @@
 import cv2
-from pyzbar import pyzbar
+import numpy as np
 
-# Replace with your phone's IP address and port number
-phone_ip = '192.168.0.206'
-port = '8080'
-url = f'http://{phone_ip}:{port}/video'
-
-# Initialize the video capture with the URL
-cap = cv2.VideoCapture(url)
+# Initialize the video capture with DroidCam's virtual webcam
+cap = cv2.VideoCapture(0)  # Use 0 as the index for DroidCam's virtual webcam
 
 if not cap.isOpened():
-    print("Error: Could not open video stream.")
+    print("Error: Could not open DroidCam.")
 else:
     while True:
         # Capture frame-by-frame
@@ -19,26 +14,37 @@ else:
         if not ret:
             print("Error: Failed to capture image.")
             break
+        
+        # Convert the frame to grayscale
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # Detect QR Codes in the image
-        qr_codes = pyzbar.decode(frame)
+        # Apply threshold to get binary image
+        _, thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY_INV)
 
-        # Process detected QR Codes
-        for qr in qr_codes:
-            # Extract data and rectangle corners of the QR code
-            qr_data = qr.data.decode('utf-8')
-            (x, y, w, h) = qr.rect
-            center_x, center_y = x + w // 2, y + h // 2
-            
-            # Draw rectangle around the QR code
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-            
-            # Draw circle at the center
-            cv2.circle(frame, (center_x, center_y), 5, (255, 0, 0), -1)
+        # Find contours in the image
+        contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-            # Display the QR code data
-            text = f"Data: {qr_data} | Center: ({center_x}, {center_y})"
-            cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        # Process each contour
+        for contour in contours:
+            # Approximate contour with accuracy proportional to the contour perimeter
+            epsilon = 0.02 * cv2.arcLength(contour, True)
+            approx = cv2.approxPolyDP(contour, epsilon, True)
+
+            # Check if the approximated contour has 3 points (triangle)
+            if len(approx) == 3:
+                # Compute the bounding rectangle for the triangle
+                x, y, w, h = cv2.boundingRect(approx)
+                center_x, center_y = x + w // 2, y + h // 2
+
+                # Draw rectangle around the triangle
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                
+                # Draw circle at the center
+                cv2.circle(frame, (center_x, center_y), 5, (255, 0, 0), -1)
+
+                # Display the center coordinates
+                text = f"Center: ({center_x}, {center_y})"
+                cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
         # Display the resulting frame
         cv2.imshow('DroidCam Video', frame)
