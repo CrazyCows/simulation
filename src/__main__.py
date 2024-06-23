@@ -1,7 +1,7 @@
 import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
-from dto.robot import Move, Checkpoint, RobotMode
+from dto.robot import Move, Checkpoint, RobotMode, CheckpointType
 from dto.shapes import Position, CircleObject
 from dto.obstacles import Cross, Wall, WallPlacement
 from image_recognizition.object_detection import RoboVision
@@ -22,12 +22,14 @@ def app(connect_to_robot: bool = False):
     clock = __init__.clock
     cross = __init__.cross
     running = True
+    goal = CircleObject(radius=1, position=Position(x=230, y=screen.get_height()/2))
     if connect_to_robot:
         transmission.connect()
     focused_ball: CircleObject = None
     if (connect_to_robot):
         wp = WallPicker()
-        walls = [wp.pick_east_wall(), wp.pick_north_wall(),  wp.pick_west_wall(), wp.pick_south_wall()]
+        walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_west_wall(), wp.pick_south_wall()]
+        goal = wp.pick_hole()
         rv = RoboVision(walls=walls)
         cross_squares = wp.pick_cross()
         print("Here")
@@ -36,10 +38,15 @@ def app(connect_to_robot: bool = False):
     while running:
         path = []
         if connect_to_robot:
-            #print("WHY THE FUCK AM I RUNNING?")
-            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
+            # print("WHY THE FUCK AM I RUNNING?")
+            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
+            if len(balls) < 1:
+                balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
             temprobo = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
-
+            if len(robot.collected_balls) == 2:
+                balls = []
+                balls.append(goal)
+                robot.mode = RobotMode.ENDPHASE
             robot_position = temprobo.position
             # print(robot_position)
             radians = temprobo.radians
@@ -47,13 +54,18 @@ def app(connect_to_robot: bool = False):
                                        width=30, height=30, radians=radians, suction_height=20, suction_width=20,
                                        suction_offset_y=25)
         tmp_walls = []
-        tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT, danger_zone_size=150))
-        tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT, danger_zone_size=150))
-        tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP, danger_zone_size=150))
-        tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT, danger_zone_size=150))
+        tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT, danger_zone_size=100))
+        tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT, danger_zone_size=100))
+        tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP, danger_zone_size=100))
+        tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT, danger_zone_size=100))
 
         def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
             return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
+
+        if len(robot.collected_balls) == 2:
+            balls = []
+            balls.append(goal)
+            robot.mode = RobotMode.ENDPHASE
 
         walls = tmp_walls
         if robot.mode != RobotMode.DANGER and robot.mode != RobotMode.DANGER_REVERSE:
@@ -69,15 +81,14 @@ def app(connect_to_robot: bool = False):
                     path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
                 except Exception as e:
                     continue
-            #print("Left: ", robot.distance_to_wall_left)
-            #print("Right: ", robot.distance_to_wall_right)
-            #print("Top: ", robot.distance_to_wall_top)
-            #print("Bot: ", robot.distance_to_wall_bot)
-            #print("Cross: ", robot.distance_to_cross)
+            # print("Left: ", robot.distance_to_wall_left)
+            # print("Right: ", robot.distance_to_wall_right)
+            # print("Top: ", robot.distance_to_wall_top)
+            # print("Bot: ", robot.distance_to_wall_bot)
+            # print("Cross: ", robot.distance_to_cross)
             print("Robot Mode:", robot.mode)
             # if connect_to_robot:
-            transmission.send_command(move)
-
+            # transmission.send_command(move)
 
             # NOTE: Updates the visual representation
             visualization.game(screen, robot, walls, balls, path, cross)
@@ -92,12 +103,11 @@ def app(connect_to_robot: bool = False):
 
 
 if __name__ == '__main__':
-    
-    #test_antons_code()
+    # test_antons_code()
     pygame.init()
-    try:
-        transmission.exit_functions()
-    except Exception as e:
-        logging.error(e)
-    app(True)
+    # try:
+    #     transmission.exit_functions()
+    # except Exception as e:
+    #     logging.error(e)
+    app(False)
     pygame.quit()
