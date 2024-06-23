@@ -4,7 +4,6 @@ import numpy as np
 from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
 from dto.shapes import CircleObject, Position, SquareObject
-import pyzbar
 
 class NoRobotException(Exception):
     "Raised when a robot is not found"
@@ -120,12 +119,12 @@ class RoboVision():
     _red2lower_limit = np.array([160, 125, 80])
     _red2upper_limit = np.array([179, 255, 255])
 
-    _green_lower_limit = np.array([50, 180, 45])
+    _green_lower_limit = np.array([50, 30, 45])
     _green_upper_limit = np.array([90, 255, 255])
     # Id like to avoid overlap in these filters
     # IS SET TO BLACC
-    _blue_lower_limit = np.array([90, 180, 60])
-    _blue_upper_limit = np.array([130, 255, 255])
+    _blue_lower_limit = np.array([100, 170, 80])
+    _blue_upper_limit = np.array([125, 255, 255])
 
     _orange_lower_limit = np.array([15, 250, 235])
     _orange_upper_limit = np.array([32, 255, 255])
@@ -154,7 +153,7 @@ class RoboVision():
     """
 
     _cross_area = 100
-    _vs = cv2.VideoCapture(1)
+    _vs = cv2.VideoCapture(0)
     _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -288,25 +287,27 @@ class RoboVision():
         # Because retrying 30 times (one second) could cause significant desync between the two dots,
         # leading to a misrepresented location
         for i in range(2):
-            #blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
-            #                                 self._dotSizeUpper)
-            blue_dots = self._get_robot_center_qr_code(True)
+            blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
+                                             self._dotSizeUpper)
+            #blue_dots = self._get_robot_center_qr_code(True)
             # print("Looking for blue dot. Current number of blue dots: " + str(len(blue_dots)))
             if len(blue_dots) == 1:
                 break
         if len(blue_dots) > 1:
-            raise NoRobotException("More than one blue dot")
+            #raise NoRobotException("More than one blue dot")
+            pass #TODO
         elif len(blue_dots) == 0:
             raise NoRobotException("No blue dots")
         for i in range(2):
-            #green_dots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
-            #                                  self._dotSizeUpper)
-            green_dots = self._get_robot_center_qr_code(False)
+            green_dots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
+                                              self._dotSizeUpper)
+            #green_dots = self._get_robot_center_qr_code(False)
             # print("Looking for green dots. Current number of green dots: " + str(len(green_dots)))
             if len(green_dots) == 1:
                 break
         if len(green_dots) > 1:
-            raise NoRobotException("More than one green dot")
+            #raise NoRobotException("More than one green dot")
+            pass #TODO revert
         elif len(green_dots) == 0:
             raise NoRobotException("No green dots")
         green_dot = green_dots[0]

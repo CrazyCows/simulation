@@ -5,19 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="Merge temp to main">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/face_tracking.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image_recognizition/object_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_recognizition/object_detection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/image_recognizition/wall_picker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_recognizition/wall_picker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/path_follow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_follow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/qr_code_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/transmission.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/transmission.py" afterDir="false" />
     </list>
     <list id="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" name="Changes by ansi1" comment="" />
-    <list id="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" name="Changes by ChristofferFoldager" comment="">
-      <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
-    </list>
+    <list id="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" name="Changes by ChristofferFoldager" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,44 +30,6 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/src/path/path_creation.py">
-      <ranges>
-        <range start1="37" end1="37" start2="37" end2="38" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="47" end1="47" start2="48" end2="49" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="50" end1="51" start2="52" end2="53" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="207" end1="208" start2="209" end2="209" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="234" end1="235" start2="235" end2="235" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/__main__.py">
-      <ranges>
-        <range start1="36" end1="36" start2="36" end2="37" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="62" end1="75" start2="63" end2="77" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="88" end1="100" start2="90" end2="90" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/dto/robot.py">
-      <ranges>
-        <range start1="45" end1="45" start2="45" end2="47" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="63" end1="63" start2="65" end2="66" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="129" end1="130" start2="132" end2="133" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="134" end1="135" start2="137" end2="138" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-        <range start1="165" end1="165" start2="168" end2="169" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="176" end1="181" start2="180" end2="192" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="182" end1="185" start2="193" end2="193" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="189" end1="190" start2="197" end2="197" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="191" end1="196" start2="198" end2="198" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="197" end1="197" start2="199" end2="211" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="199" end1="199" start2="213" end2="225" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="201" end1="201" start2="227" end2="239" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="203" end1="203" start2="241" end2="253" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="204" end1="211" start2="254" end2="286" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="212" end1="212" start2="287" end2="288" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-        <range start1="213" end1="213" start2="289" end2="326" changelist="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" />
-      </ranges>
-    </file>
-  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -77,26 +38,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.pytest in __main__.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.__main__.executor&quot;: &quot;Run&quot;,
-    &quot;Python.transmission.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;final__pathfinding&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ansi1/Desktop/DTU/4. semester/CDIO/simulation/src&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.pytest in __main__.py.executor": "Run",
+    "Python.__main__.executor": "Run",
+    "Python.transmission.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "Merging final__pathfinding",
+    "last_opened_file_path": "C:/Users/ansi1/Desktop/DTU/4. semester/CDIO/simulation/src",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Python.__main__">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="simulation" />
@@ -197,12 +158,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="wall.vertices is None" />
-          <url>file://$PROJECT_DIR$/src/image_recognizition/object_detection.py</url>
-          <line>90</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/path/path_follow.py</url>
           <line>58</line>
