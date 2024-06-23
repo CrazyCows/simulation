@@ -65,27 +65,39 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
         if b and (not robot.prev_checkpoint or (robot.prev_checkpoint.x != p.x and robot.prev_checkpoint.y != p.y)):
             path.append(create_temp_path(robot.robot.position, p))
             path.append(create_temp_path(temp_ball.position, p))
-            checkpoints.append(
-                Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
+            if robot.mode != RobotMode.ENDPHASE:
+                checkpoints.append(
+                    Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
+                checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
+                                          checkpoint_type=CheckpointType.BALL))
+            else:
+                checkpoints.append(
+                    Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.GOAL_LINEUP))
+                checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
+                                          checkpoint_type=CheckpointType.GOAL))
+        elif robot.mode != RobotMode.ENDPHASE:
+            path.append(temp_path)
             checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                           checkpoint_type=CheckpointType.BALL))
         else:
             path.append(temp_path)
+            checkpoints.append(
+                Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.GOAL_LINEUP))
             checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
-                                          checkpoint_type=CheckpointType.BALL))
+                                          checkpoint_type=CheckpointType.GOAL))
 
     return path, checkpoints
 
 
 def check_if_cross_is_touched(cross: Cross, current_path: SquareObject):
-    if square_touching(cross.square_1, current_path) or square_touching(cross.square_2, current_path):
+    if square_touching(cross.square_1.danger_zone, current_path) or square_touching(cross.square_2.danger_zone, current_path):
         return True
     return False
 
 
 def check_if_wall_is_touched(walls: List[SquareObject], current_path: SquareObject):
     for wall in walls:
-        if square_touching(wall, current_path):
+        if square_touching(wall.danger_zone, current_path):
             return True
         return False
 
@@ -195,10 +207,10 @@ def is_ball_close_to_wall(ball: CircleObject, walls: List[Wall]) -> Tuple[Positi
                 y -= 110
                 i += 1
             elif wall.placement == WallPlacement.LEFT:
-                x += 110
+                x += 130
                 i += 1
             elif wall.placement == WallPlacement.RIGHT:
-                x -= 110
+                x -= 130
                 i += 1
     return Position(x=x, y=y), is_in_danger, i
 

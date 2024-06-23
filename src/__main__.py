@@ -1,7 +1,7 @@
 import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
-from dto.robot import Move, Checkpoint, RobotMode
+from dto.robot import Move, Checkpoint, RobotMode, CheckpointType
 from dto.shapes import Position, CircleObject
 from dto.obstacles import Cross, Wall, WallPlacement
 from image_recognizition.object_detection import RoboVision
@@ -22,6 +22,7 @@ def app(connect_to_robot: bool = False):
     clock = __init__.clock
     cross = __init__.cross
     running = True
+    goal = CircleObject(radius=1, position=Position(x=230, y=screen.get_height()/2))
     if connect_to_robot:
         transmission.connect()
     focused_ball: CircleObject = None
@@ -95,12 +96,11 @@ def app(connect_to_robot: bool = False):
 
 
 if __name__ == '__main__':
-    
-    #test_antons_code()
+    # test_antons_code()
     pygame.init()
-    try:
-        transmission.exit_functions()
-    except Exception as e:
-        logging.error(e)
-    app(True)
+    # try:
+    #     transmission.exit_functions()
+    # except Exception as e:
+    #     logging.error(e)
+    app(False)
     pygame.quit()
