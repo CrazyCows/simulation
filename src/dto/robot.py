@@ -139,6 +139,17 @@ class Robot(BaseModel):
             return True if (
                     self.robot.position.x + 5 > checkpoint.x > self.robot.position.x - 5 and
                     self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+        elif checkpoint.checkpoint_type == CheckpointType.GOAL:
+            if self.distance_to_wall_left < self.distance_to_wall_right:
+                return True if (
+                        self.robot.position.x - 110 < checkpoint.x < self.robot.position.x - 95 and
+                        self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+            else:
+                return True if (
+                        self.robot.position.x + 110 > checkpoint.x > self.robot.position.x + 95 and
+                        self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+        elif checkpoint.checkpoint_type == CheckpointType.BALL:
+            return False
         else:
             return circle_square_touch(CircleObject(radius=10, position=checkpoint), self.suction)
 
