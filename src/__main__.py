@@ -22,22 +22,22 @@ def app(connect_to_robot: bool = False):
     clock = __init__.clock
     cross = __init__.cross
     running = True
-    # if connect_to_robot:
-    #    transmission.connect
+    if connect_to_robot:
+        transmission.connect()
     focused_ball: CircleObject = None
     if (connect_to_robot):
         wp = WallPicker()
-        walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_south_wall(), wp.pick_west_wall()]
-        rv = RoboVision()
-        cross_squares = wp.click_cross()
+        walls = [wp.pick_east_wall(), wp.pick_north_wall(),  wp.pick_west_wall(), wp.pick_south_wall()]
+        rv = RoboVision(walls=walls)
+        cross_squares = wp.pick_cross()
         print("Here")
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
                                                    safe_distance=20)
     while running:
         if connect_to_robot:
-            print("WHY THE FUCK AM I RUNNING?")
-            balls = RoboVision().get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-            temprobo = RoboVision().get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
+            #print("WHY THE FUCK AM I RUNNING?")
+            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
+            temprobo = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
 
             robot_position = temprobo.position
             # print(robot_position)
@@ -69,12 +69,12 @@ def app(connect_to_robot: bool = False):
             except Exception as e:
                 continue
             # print("Left: ", robot.distance_to_wall_left)
-            print("Right: ", robot.distance_to_wall_right)
+            #print("Right: ", robot.distance_to_wall_right)
             # print("Top: ", robot.distance_to_wall_top)
             # print("Bot: ", robot.distance_to_wall_bot)
             # print("Cross: ", robot.distance_to_cross)
-            # if connect_to_robot:
-            #    transmission.send_command(move)
+            #if connect_to_robot:
+            transmission.send_command(move)
 
             # NOTE: Updates the visual representation
             visualization.game(screen, robot, walls, balls, path, cross)

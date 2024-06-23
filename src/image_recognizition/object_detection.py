@@ -294,7 +294,8 @@ class RoboVision():
             if len(blue_dots) == 1:
                 break
         if len(blue_dots) > 1:
-            raise NoRobotException("More than one blue dot")
+            #raise NoRobotException("More than one blue dot")
+            pass #TODO
         elif len(blue_dots) == 0:
             raise NoRobotException("No blue dots")
         for i in range(2):
@@ -305,7 +306,8 @@ class RoboVision():
             if len(green_dots) == 1:
                 break
         if len(green_dots) > 1:
-            raise NoRobotException("More than one green dot")
+            #raise NoRobotException("More than one green dot")
+            pass #TODO revert
         elif len(green_dots) == 0:
             raise NoRobotException("No green dots")
         green_dot = green_dots[0]

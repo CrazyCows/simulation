@@ -205,7 +205,7 @@ def is_ball_close_to_cross(ball: CircleObject, cross: Cross) -> Tuple[Position, 
     x = ball.position.x
     y = ball.position.y
     is_in_danger = False
-    print("LOOK HERE::", cross)
+    #print("LOOK HERE::", cross)
     i = 0
     walls = [cross.square_1, cross.square_2]
     if circle_square_touch(ball, cross.square_1.danger_zone):
