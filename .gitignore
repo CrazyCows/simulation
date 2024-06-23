@@ -51,14 +51,14 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-/.idea/misc.xml
-/.idea/inspectionProfiles/profiles_settings.xml
-/.idea/inspectionProfiles/Project_Default.xml
-/.idea/simulation.iml
-/.idea/shelf/Uncommitted_changes_before_Update_at_20-06-2024_13_33__Changes_.xml
-/.idea/shelf/Uncommitted_changes_before_Update_at_20-06-2024_13_33__Changes_1.xml
-/.idea/vcs.xml
-/.idea/workspace.xml
+.idea/misc.xml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/simulation.iml
+.idea/shelf/Uncommitted_changes_before_Update_at_20-06-2024_13_33__Changes_.xml
+.idea/shelf/Uncommitted_changes_before_Update_at_20-06-2024_13_33__Changes_1.xml
+.idea/vcs.xml
+.idea/workspace.xml
 src/__pycache__/__init__.cpython-312.pyc
 src/__pycache__/transmission.cpython-312.pyc
 src/__pycache__/transmission.cpython-312.pyc
