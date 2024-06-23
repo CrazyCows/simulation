@@ -1,17 +1,14 @@
-import cv2
-import numpy as np
 import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
 from dto.robot import Move, Checkpoint, RobotMode
-from dto.shapes import Position, CircleObject, SquareObject
+from dto.shapes import Position, CircleObject
 from dto.obstacles import Cross, Wall, WallPlacement
 from image_recognizition.object_detection import RoboVision
 from image_recognizition.wall_picker import WallPicker
 import pygame
 import __init__
 from math import dist
-import logging
 
 from typing import List
 from image_recognizition import wall_picker
@@ -25,56 +22,82 @@ def app(connect_to_robot: bool = False):
     clock = __init__.clock
     cross = __init__.cross
     running = True
-    #if connect_to_robot:
+    # if connect_to_robot:
     #    transmission.connect
     focused_ball: CircleObject = None
-    if connect_to_robot:
-        transmission.connect()
+    if (connect_to_robot):
         wp = WallPicker()
-        walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_west_wall(), wp.pick_south_wall()]
-        rv = RoboVision(walls)
-        cross_squares = wp.pick_cross()
-        cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls, safe_distance=20)
+        walls = [wp.pick_east_wall(), wp.pick_north_wall(), wp.pick_south_wall(), wp.pick_west_wall()]
+        rv = RoboVision()
+        cross_squares = wp.click_cross()
+        print("Here")
+        cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
+                                                   safe_distance=20)
     while running:
         if connect_to_robot:
-            #print("WHY THE FUCK AM I RUNNING?")
-            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
-            if len(balls) == 0:
-                balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-            robot_square: SquareObject = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
-            
-            robot = robot.create_robot(position=Position(x=robot_square.position.x, y=robot_square.position.y),
-                            width=135, height=150, radians=robot_square.radians, suction_height=25, suction_width=25,
-                            suction_offset_y=80)
+            print("WHY THE FUCK AM I RUNNING?")
+            balls = RoboVision().get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
+            temprobo = RoboVision().get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")
 
+            robot_position = temprobo.position
+            # print(robot_position)
+            radians = temprobo.radians
+            robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
+                                       width=30, height=30, radians=radians, suction_height=20, suction_width=20,
+                                       suction_offset_y=25)
+        tmp_walls = []
+        tmp_walls.append(Wall.create(walls[0], WallPlacement.LEFT, danger_zone_size=150))
+        tmp_walls.append(Wall.create(walls[1], WallPlacement.RIGHT, danger_zone_size=150))
+        tmp_walls.append(Wall.create(walls[2], WallPlacement.TOP, danger_zone_size=150))
+        tmp_walls.append(Wall.create(walls[3], WallPlacement.BOT, danger_zone_size=150))
 
-        path, checkpoints = path_creation.create_path(balls[0], robot, walls, cross)
-        checkpoints = [Checkpoint(x=ball.position.x, y=ball.position.y, is_ball=True) for ball in balls]
+        def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
+            return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
 
-        robot.checkpoints = checkpoints
-        try:
-            move: Move = path_follow.create_move(robot)
-            path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
-        except Exception as e:
-            print("Here in main" + str(e))
-        if connect_to_robot:
-            transmission.send_command(move)
+        walls = tmp_walls
+        if robot.mode != RobotMode.DANGER and robot.mode != RobotMode.DANGER_REVERSE:
+            focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
-            # NOTE: Updates the visual representation (?)
-            # TODO: Move into propper classes if this is to stay. Remove otherwise.
-            cam_frame = rv.get_flipped_frame()
-            cam_frame = cv2.cvtColor(cam_frame, cv2.COLOR_BGR2RGB)
-            frame = pygame.surfarray.make_surface(np.rot90(cam_frame))
-            screen.blit(frame, (0, 0))
-        #pygame.display.flip()
-        visualization.game(screen, robot, walls, balls, path, cross)
+        # Temp solution, just redrawing balls all da time
+        if len(balls) > 0:
 
-        # Tickrate, frames/sec.
-        clock.tick(60) / 1000
+            path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
+            robot.checkpoints = checkpoints
+            try:
+                move: Move = path_follow.create_move(robot)
+                path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
+            except Exception as e:
+                continue
+            # print("Left: ", robot.distance_to_wall_left)
+            print("Right: ", robot.distance_to_wall_right)
+            # print("Top: ", robot.distance_to_wall_top)
+            # print("Bot: ", robot.distance_to_wall_bot)
+            # print("Cross: ", robot.distance_to_cross)
+            # if connect_to_robot:
+            #    transmission.send_command(move)
 
+            # NOTE: Updates the visual representation
+            visualization.game(screen, robot, walls, balls, path, cross)
+
+            # Tickrate, frames/sec.
+            clock.tick(60) / 1000
+
+        # Hello
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+
+def test_antons_code():
+    robo = RoboVision()
+    while True:
+        thing = robo.get_any_thing(min_count=1, max_count=1, tries=10, thing_to_get="robot")
+        thing = robo.get_any_thing(min_count=1, max_count=1, tries=10, thing_to_get="robot")
+        if thing is not None:
+            pass
+        print("retrying")
+
+    print(thing)
 
 
 if __name__ == '__main__':
