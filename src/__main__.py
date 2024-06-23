@@ -62,7 +62,8 @@ def app(connect_to_robot: bool = False):
         if balls == [] or (isinstance(balls[0], Goal)):
             balls.append(goal)
             print(type(balls[0]))
-            robot.mode = RobotMode.ENDPHASE
+            if robot.mode != RobotMode.DEPOSIT:
+                robot.mode = RobotMode.ENDPHASE
             # exit()
         else:
             robot.mode = RobotMode.SAFE
@@ -75,8 +76,9 @@ def app(connect_to_robot: bool = False):
 
         # Temp solution, just redrawing balls all da time
         if robot.mode != RobotMode.STOP or robot.mode != RobotMode.STOP_DANGER:
-            path, checkpoints = path_creation.create_path(balls[0], robot, walls, cross)
-            robot.checkpoints = checkpoints
+            if robot.prev_checkpoint.checkpoint_type != CheckpointType.GOAL:
+                path, checkpoints = path_creation.create_path(balls[0], robot, walls, cross)
+                robot.checkpoints = checkpoints
             try:
                 move: Move = path_follow.create_move(robot)
                 path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
@@ -87,6 +89,8 @@ def app(connect_to_robot: bool = False):
         #print("Top: ", robot.distance_to_wall_top)
         #print("Bot: ", robot.distance_to_wall_bot)
         #print("Cross: ", robot.distance_to_cross)
+        print("Suck: ", move.suck)
+        print("Latch: ", move.latch)
         print("Robot Mode:", robot.mode)
         print("Checkpoint type:", robot.prev_checkpoint.checkpoint_type)
         if connect_to_robot:

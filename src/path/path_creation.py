@@ -70,19 +70,24 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
                     Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
                 checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                           checkpoint_type=CheckpointType.BALL))
-            else:
+            elif robot.prev_checkpoint.checkpoint_type != CheckpointType.GOAL_LINEUP:
                 checkpoints.append(
                     Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.GOAL_LINEUP))
+                checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
+                                          checkpoint_type=CheckpointType.GOAL))
+            else:
                 checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                           checkpoint_type=CheckpointType.GOAL))
         elif robot.mode != RobotMode.ENDPHASE:
             path.append(temp_path)
             checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                           checkpoint_type=CheckpointType.BALL))
-        else:
-            path.append(temp_path)
+        elif robot.prev_checkpoint.checkpoint_type != CheckpointType.GOAL_LINEUP:
             checkpoints.append(
                 Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.GOAL_LINEUP))
+            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
+                                          checkpoint_type=CheckpointType.GOAL))
+        else:
             checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                           checkpoint_type=CheckpointType.GOAL))
 
@@ -226,15 +231,15 @@ def is_ball_close_to_cross(ball: CircleObject, cross: Cross) -> Tuple[Position, 
         theta = cross.square_1.danger_zone.radians
         perp_x = -math.sin(theta)
         perp_y = math.cos(theta)
-        x += perp_x * 50
-        y += perp_y * 50
+        x += perp_x * 80
+        y += perp_y * 80
     if circle_square_touch(ball, cross.square_2.danger_zone):
         is_in_danger = True
         theta = cross.square_2.danger_zone.radians
         perp_x = -math.sin(theta)
         perp_y = math.cos(theta)
-        x += perp_x * 50
-        y += perp_y * 50
+        x += perp_x * 80
+        y += perp_y * 80
 
     return Position(x=x, y=y), is_in_danger, i
 

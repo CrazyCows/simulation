@@ -38,7 +38,7 @@ def create_move(robot: Robot) -> Move:
     elif robot.mode == RobotMode.DANGER_REVERSE:
         speed = -1
         radians = 0
-    elif robot.mode == RobotMode.DEPOSIT and robot.prev_checkpoint.checkpoint_type == CheckpointType.GOAL:
+    if robot.mode == RobotMode.DEPOSIT:
         speed = 0
         radians = 0
         latch = True
@@ -64,6 +64,7 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
             return
             exit()
     if robot.self_reached_checkpoint(robot.checkpoints[0]):
+        print("Previous checkpoint before being updated: ", robot.prev_checkpoint)
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:
             robot.mode = RobotMode.DANGER
@@ -78,7 +79,7 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
             elif robot.mode == RobotMode.STOP:
                 robot.mode = RobotMode.SAFE
         elif robot.prev_checkpoint.checkpoint_type == CheckpointType.GOAL:
-            if robot.mode == RobotMode.ENDPHASE:
+            if robot.mode == RobotMode.ENDPHASE or robot.mode == RobotMode.DEPOSIT:
                 robot.mode = RobotMode.DEPOSIT
     if not robot.is_robot_near_obstacles(50) and robot.mode == RobotMode.DANGER_REVERSE:
         robot.ignore_danger_in_corner = False
