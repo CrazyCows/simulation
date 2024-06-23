@@ -28,7 +28,7 @@ def app(connect_to_robot: bool = False):
     if (connect_to_robot):
         wp = WallPicker()
         walls = [wp.pick_east_wall(), wp.pick_north_wall(),  wp.pick_west_wall(), wp.pick_south_wall()]
-        rv = RoboVision(walls=walls)
+        rv = RoboVision(walls=walls, ai=True, power=1) # power: how strong the model should be (light(1), medium(2), heavy(3))
         cross_squares = wp.pick_cross()
         print("Here")
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
