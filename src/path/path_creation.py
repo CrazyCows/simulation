@@ -35,6 +35,7 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
         robot.ignore_danger_in_corner = True
 
     # Create Checkpoint to reverse to when robot has picked up a ball that was in danger zone
+    """
     if robot.mode == RobotMode.DANGER_REVERSE and robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and len(
             robot.collected_balls) != 0:
         p, b, i = is_ball_close_to_obstacle(robot.collected_balls[-1], walls, cross)
@@ -45,10 +46,11 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
         checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                       checkpoint_type=CheckpointType.BALL))
         return path, checkpoints
+   """
     # If path collides with obstacles, recalculate route.
     # Else:
     # If ball is in danger zone, create
-    elif (check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path)) and not robot.ignore_danger_in_corner:
+    if (check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path)) and not robot.ignore_danger_in_corner:
         additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_ball.position,
                                                                    robot)
         if len(additional_checkpoints) > 1:
@@ -205,7 +207,6 @@ def is_ball_close_to_cross(ball: CircleObject, cross: Cross) -> Tuple[Position, 
     x = ball.position.x
     y = ball.position.y
     is_in_danger = False
-    print("LOOK HERE::", cross)
     i = 0
     walls = [cross.square_1, cross.square_2]
     if circle_square_touch(ball, cross.square_1.danger_zone):
@@ -232,6 +233,5 @@ def is_ball_close_to_obstacle(ball: CircleObject, walls: List[Wall], cross: Cros
         return dzwc, True, dzwc_i
     dzcc, dzcc_danger, dzcc_i = is_ball_close_to_cross(ball, cross)
     if dzcc_danger:
-        print("DZCC DANGER", dzcc)
         return dzcc, True, 0
     return ball.position, False, 0

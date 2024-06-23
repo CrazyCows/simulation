@@ -34,6 +34,7 @@ def app(connect_to_robot: bool = False):
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
                                                    safe_distance=20)
     while running:
+        path = []
         if connect_to_robot:
             print("WHY THE FUCK AM I RUNNING?")
             balls = RoboVision().get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
@@ -60,19 +61,20 @@ def app(connect_to_robot: bool = False):
 
         # Temp solution, just redrawing balls all da time
         if len(balls) > 0:
-
-            path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
-            robot.checkpoints = checkpoints
-            try:
-                move: Move = path_follow.create_move(robot)
-                path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
-            except Exception as e:
-                continue
-            # print("Left: ", robot.distance_to_wall_left)
-            print("Right: ", robot.distance_to_wall_right)
-            # print("Top: ", robot.distance_to_wall_top)
-            # print("Bot: ", robot.distance_to_wall_bot)
-            # print("Cross: ", robot.distance_to_cross)
+            if robot.mode != RobotMode.STOP or robot.mode != RobotMode.STOP_DANGER:
+                path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
+                robot.checkpoints = checkpoints
+                try:
+                    move: Move = path_follow.create_move(robot)
+                    path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
+                except Exception as e:
+                    continue
+            #print("Left: ", robot.distance_to_wall_left)
+            #print("Right: ", robot.distance_to_wall_right)
+            #print("Top: ", robot.distance_to_wall_top)
+            #print("Bot: ", robot.distance_to_wall_bot)
+            #print("Cross: ", robot.distance_to_cross)
+            print("Robot Mode:", robot.mode)
             # if connect_to_robot:
             #    transmission.send_command(move)
 
@@ -86,18 +88,6 @@ def app(connect_to_robot: bool = False):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
-
-def test_antons_code():
-    robo = RoboVision()
-    while True:
-        thing = robo.get_any_thing(min_count=1, max_count=1, tries=10, thing_to_get="robot")
-        thing = robo.get_any_thing(min_count=1, max_count=1, tries=10, thing_to_get="robot")
-        if thing is not None:
-            pass
-        print("retrying")
-
-    print(thing)
 
 
 if __name__ == '__main__':

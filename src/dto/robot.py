@@ -43,6 +43,8 @@ class RobotMode(Enum):
     SAFE = 1
     DANGER = 2
     DANGER_REVERSE = 3
+    STOP = 4
+    STOP_DANGER = 5
 
 
 class Robot(BaseModel):
@@ -61,6 +63,7 @@ class Robot(BaseModel):
     distance_to_wall_top: float = 0
     distance_to_wall_bot: float = 0
     distance_to_cross: float = 0
+    front_distance_to_cross: float = 0
     ignore_danger_in_corner: bool = False
 
     def suck(self, balls: List[CircleObject]):
@@ -127,12 +130,12 @@ class Robot(BaseModel):
 
     def self_reached_checkpoint(self, checkpoint: Checkpoint):
         if (checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT or
-                checkpoint.checkpoint_type == CheckpointType.DANGER_REVERSE_CHECKPOINT):
+                checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT):
             return True if (
                     self.robot.position.x + 4 > checkpoint.x > self.robot.position.x - 4 and
                     self.robot.position.y + 4 > checkpoint.y > self.robot.position.y - 4) else False
         else:
-            return circle_square_touch(CircleObject(radius=10, position=checkpoint), self.robot)
+            return circle_square_touch(CircleObject(radius=10, position=checkpoint), self.suction)
 
     @classmethod
     def create_robot(cls, position: Position, width: int, height: int, radians: float,
@@ -164,6 +167,7 @@ class Robot(BaseModel):
                    prev_checkpoint=Checkpoint(x=position.x, y=position.y,
                                               checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
 
+
     def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
         """
             Calculates a straight line from coordiantes with a chosen length and angle.
@@ -174,40 +178,149 @@ class Robot(BaseModel):
 
         return LineObject(start_pos=Position(x=start_x, y=start_y), end_pos=Position(x=end_x, y=end_y))
 
-    def _point_to_line_distance(self, px: float, py: float, x1: float, y1: float, x2: float, y2: float) -> float:
-        # Line equation coefficients A, B, and C
-        A = y2 - y1
-        B = x1 - x2
-        C = x2 * y1 - x1 * y2
+    def is_robot_near_obstacles(self, threshold:float = 30):
+        if self.distance_to_cross < threshold:
+            return True
+        elif self.distance_to_wall_top < threshold:
+            return True
+        elif self.distance_to_wall_bot < threshold:
+            return True
+        elif self.distance_to_wall_left < threshold:
+            return True
+        elif self.distance_to_wall_right < threshold:
+            return True
+        return False
 
-        # Distance from point (px, py) to the line (Ax + By + C = 0)
-        distance = abs(A * px + B * py + C) / math.sqrt(A ** 2 + B ** 2)
-        return distance
 
     def self_to_wall_distance(self, walls: List[Wall], cross: Cross):
         min_distance = float('inf')
         for wall in walls:
-            num_vertices = len(wall.vertices)
             min_distance = float('inf')
-            for i in range(num_vertices):
-                x1, y1 = wall.vertices[i]
-                x2, y2 = wall.vertices[(i + 1) % num_vertices]
-                distance = self._point_to_line_distance(self.robot.position.x, self.robot.position.y, x1, y1, x2, y2)
-                min_distance = min(min_distance, distance)
             if wall.placement == WallPlacement.LEFT:
+                v1 = wall.vertices[2]
+                v2 = wall.vertices[3]
+                for j in range(len(self.robot.vertices)):
+                    next_vertex_j = j + 1
+                    if next_vertex_j == 4:
+                        next_vertex_j = 0
+                    # distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
+                    distance = self.segment_to_segment_distance(v1,
+                                                                v2,
+                                                                self.robot.vertices[j],
+                                                                self.robot.vertices[next_vertex_j])
+                    min_distance = min(min_distance, distance)
                 self.distance_to_wall_left = min_distance
             elif wall.placement == WallPlacement.RIGHT:
+                v1 = wall.vertices[0]
+                v2 = wall.vertices[1]
+                for j in range(len(self.robot.vertices)):
+                    next_vertex_j = j + 1
+                    if next_vertex_j == 4:
+                        next_vertex_j = 0
+                    # distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
+                    distance = self.segment_to_segment_distance(v1,
+                                                                v2,
+                                                                self.robot.vertices[j],
+                                                                self.robot.vertices[next_vertex_j])
+                    min_distance = min(min_distance, distance)
                 self.distance_to_wall_right = min_distance
             elif wall.placement == WallPlacement.TOP:
+                v1 = wall.vertices[1]
+                v2 = wall.vertices[2]
+                for j in range(len(self.robot.vertices)):
+                    next_vertex_j = j + 1
+                    if next_vertex_j == 4:
+                        next_vertex_j = 0
+                    # distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
+                    distance = self.segment_to_segment_distance(v1,
+                                                                v2,
+                                                                self.robot.vertices[j],
+                                                                self.robot.vertices[next_vertex_j])
+                    min_distance = min(min_distance, distance)
                 self.distance_to_wall_top = min_distance
             elif wall.placement == WallPlacement.BOT:
+                v1 = wall.vertices[0]
+                v2 = wall.vertices[3]
+                for j in range(len(self.robot.vertices)):
+                    next_vertex_j = j + 1
+                    if next_vertex_j == 4:
+                        next_vertex_j = 0
+                    # distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
+                    distance = self.segment_to_segment_distance(v1,
+                                                                v2,
+                                                                self.robot.vertices[j],
+                                                                self.robot.vertices[next_vertex_j])
+                    min_distance = min(min_distance, distance)
                 self.distance_to_wall_bot = min_distance
-        for wall in cross:
-            min_distance = float('inf')
-            num_vertices = len(wall.vertices)
-            for i in range(num_vertices):
-                x1, y1 = wall.vertices[i]
-                x2, y2 = wall.vertices[(i + 1) % num_vertices]
-                distance = self._point_to_line_distance(self.robot.position.x, self.robot.position.y, x1, y1, x2, y2)
+
+        num_vertices = len(cross.square_1.vertices)
+        min_distance = float('inf')
+        front_min_distance = float('inf')
+        for i in range(num_vertices):
+            next_vertex_i = i+1
+            if next_vertex_i == 4:
+                next_vertex_i = 0
+            for j in range(len(self.robot.vertices)):
+                next_vertex_j = j + 1
+                if next_vertex_j == 4:
+                    next_vertex_j = 0
+                #distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
+                distance = self.segment_to_segment_distance(cross.square_1.vertices[i], cross.square_1.vertices[next_vertex_i], self.robot.vertices[j], self.robot.vertices[next_vertex_j])
+                if j == 1 or j == 2:
+                    front_min_distance = min(front_min_distance, distance)
                 min_distance = min(min_distance, distance)
+            self.front_distance_to_cross = front_min_distance
             self.distance_to_cross = min_distance
+        num_vertices = len(cross.square_2.vertices)
+        for i in range(num_vertices):
+            next_vertex_i = i+1
+            if next_vertex_i == 4:
+                next_vertex_i = 0
+            for j in range(len(self.robot.vertices)):
+                next_vertex_j = j + 1
+                if next_vertex_j == 4:
+                    next_vertex_j = 0
+                #distance = self._point_to_line_distance(vertex[0], vertex[1], x1, y1, x2, y2)
+                distance = self.segment_to_segment_distance(cross.square_2.vertices[i], cross.square_2.vertices[next_vertex_i], self.robot.vertices[j], self.robot.vertices[next_vertex_j])
+                if j == 1 or j == 2:
+                    front_min_distance = min(front_min_distance, distance)
+                min_distance = min(min_distance, distance)
+            self.front_distance_to_cross = front_min_distance
+            self.distance_to_cross = min_distance
+
+
+
+    def distance(self, p1, p2):
+        """Beregn euklidisk afstand mellem to punkter."""
+        return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
+
+
+    def point_to_segment_distance(self, px, py, x1, y1, x2, y2):
+        """Beregn afstanden fra et punkt til et linjesegment."""
+        segment_length = self.distance((x1, y1), (x2, y2))
+        if segment_length == 0:
+            return self.distance((px, py), (x1, y1))
+
+        # Projektion af punktet på linjesegmentet
+        t = max(0, min(1, ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / (segment_length ** 2)))
+        projection_x = x1 + t * (x2 - x1)
+        projection_y = y1 + t * (y2 - y1)
+
+        return self.distance((px, py), (projection_x, projection_y))
+
+
+    def segment_to_segment_distance(self, vertex1, vertex2, vertex3, vertex4):
+        """Beregn den mindste afstand mellem to linjesegmenter."""
+        p1 = vertex1
+        p2 = vertex2
+        p3 = vertex3
+        p4 = vertex4
+
+        distances = [
+            self.point_to_segment_distance(p1[0], p1[1], p3[0], p3[1], p4[0], p4[1]),
+            self.point_to_segment_distance(p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]),
+            self.point_to_segment_distance(p3[0], p3[1], p1[0], p1[1], p2[0], p2[1]),
+            self.point_to_segment_distance(p4[0], p4[1], p1[0], p1[1], p2[0], p2[1])
+        ]
+
+        return min(distances)

@@ -6,13 +6,12 @@ from helper import overlap_detection
 import math
 import numpy as np
 
-
 # TODO: Move this somewhere else. Idk where, but somewhere!
 def create_move(robot: Robot) -> Move:
     """
     Moves the robot closer to the first checkpoint in the robots list of checkpoints.
     """
-    radians = calculate_radians_to_turn(robot)  # We already calculated the checkpoint to go to elsewhere...
+    radians = calculate_radians_to_turn(robot) # We already calculated the checkpoint to go to elsewhere...
     if robot.mode == RobotMode.DANGER:
         if robot.mode == RobotMode.DANGER and radians != 0.0 and robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT:
             speed = 0
@@ -30,6 +29,9 @@ def create_move(robot: Robot) -> Move:
     elif robot.mode == RobotMode.DANGER_REVERSE:
         speed = -1
         radians = 0
+    if robot.mode == RobotMode.STOP_DANGER or robot.mode == RobotMode.STOP:
+        speed = 0
+        radians = 0
 
     suck = suck_if_small(robot)
     move = Move(speed=speed, radians=radians, suck=suck)
@@ -41,20 +43,25 @@ def create_move(robot: Robot) -> Move:
 def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleObject], cross: Cross,
                sim_only: bool = True):
     robot.move(move, walls, balls, cross)
-
     if sim_only is False:
         [balls.remove(ball) for ball in balls if ball in robot.collected_balls]
     if robot.self_reached_checkpoint(robot.checkpoints[0]):
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:
             robot.mode = RobotMode.DANGER
-        elif robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL and robot.mode == RobotMode.DANGER:
-            robot.mode = RobotMode.DANGER_REVERSE
-            robot.ignore_danger_in_corner = False
-        elif robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_REVERSE_CHECKPOINT and robot.mode == RobotMode.DANGER_REVERSE:
-            robot.ignore_danger_in_corner = False
-            robot.mode = RobotMode.SAFE
-
+        elif robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL:
+            if robot.mode == RobotMode.SAFE:
+                robot.mode = RobotMode.STOP
+            elif robot.mode == RobotMode.DANGER:
+                robot.mode = RobotMode.STOP_DANGER
+                robot.ignore_danger_in_corner = False
+            elif robot.mode == RobotMode.STOP_DANGER:
+                robot.mode = RobotMode.DANGER_REVERSE
+            elif robot.mode == RobotMode.STOP:
+                robot.mode = RobotMode.SAFE
+    if not robot.is_robot_near_obstacles(50) and robot.mode == RobotMode.DANGER_REVERSE:
+        robot.ignore_danger_in_corner = False
+        robot.mode = RobotMode.SAFE
 
 def calculate_radians_to_turn(robot: Robot) -> float:
     """
@@ -115,7 +122,8 @@ def suck_if_small(robot: Robot) -> bool:
     suck = False
     robot_pos = (robot.robot.position.x, robot.robot.position.y)
     distance_to_ball = math.dist(robot_pos, (robot.checkpoints[0].x, robot.checkpoints[0].y))
-    if (distance_to_ball < 100 and robot.ignore_danger_in_corner == False) or (robot.ignore_danger_in_corner and distance_to_ball < 200):
+    if (distance_to_ball < 100 and robot.ignore_danger_in_corner == False) or (
+            robot.ignore_danger_in_corner and distance_to_ball < 200):
         suck = True
 
     return suck
