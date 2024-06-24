@@ -171,8 +171,9 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
 
     # Debugging output
     if check_if_cross_is_touched(cross, path[-1]):
-        print("Cross is touched at the last segment of the path.")
-    print("Checkpoints:", checkpoints)
+        #print("Cross is touched at the last segment of the path.")
+        ""
+    #print("Checkpoints:", checkpoints)
 
     return path, checkpoints
 

@@ -18,53 +18,55 @@ def detect_triangles(frame, lower_bound, upper_bound):
     # Find contours
     contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-    # List to store center coordinates of triangles
-    triangle_centers = []
-    
     # Minimum contour area to filter small objects
     min_contour_area = 500
-    
+    object_centers = []
     # Process each contour
     for contour in contours:
-        if cv2.contourArea(contour) > min_contour_area:
-            epsilon = 0.03 * cv2.arcLength(contour, True)
-            approx = cv2.approxPolyDP(contour, epsilon, True)
-            
-            if len(approx) == 3:  # Check for triangles
-                center_x = sum([point[0][0] for point in approx]) // 3
-                center_y = sum([point[0][1] for point in approx]) // 3
-                triangle_centers.append((center_x, center_y))
-    
-    return binary, triangle_centers
+        if cv2.contourArea(contour) >= min_contour_area:
+            M = cv2.moments(contour)
+            if M["m00"] != 0:
+                center_x = int(M["m10"] / M["m00"])
+                center_y = int(M["m01"] / M["m00"])
+                object_centers.append((center_x, center_y))
+    #print(len(object_centers))
+    return binary, object_centers
 
 def main():
-    ip_camera_url = 'http://10.209.177.243:8080/video'
+    ip_camera_url = 'http://192.168.0.206:8080/video'
     cap = cv2.VideoCapture(ip_camera_url)
+    
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
     if not cap.isOpened():
-        print("Error: Could not open video stream.")
+        #print("Error: Could not open video stream.")
         return
-
+    _whiteLower = np.array([0, 0, 160])
+    _whiteUpper = np.array([255, 50, 255])
     # Define different color bounds for each window
     bounds = [
-        (np.array([140, 150, 50]), np.array([160, 255, 255])),  # Purple
-        (np.array([150, 75, 125]), np.array([170, 255, 255])),  # Rosa
-        (np.array([40, 100, 100]), np.array([80, 255, 255]))  # Green
+        #(np.array([140, 150, 50]), np.array([160, 255, 255])),  # Purple
+        #(np.array([150, 75, 125]), np.array([170, 255, 255])),  # Rosa
+        #(np.array([40, 100, 100]), np.array([80, 255, 255]))  # Green
+        (_whiteLower, _whiteUpper) # white
+
     ]
     
-    window_titles = ['Purple', 'Rosa', 'Green']
-
+    window_titles = ['white']
+    #window_titles = ['Purple']
     try:
         while True:
             ret, frame = cap.read()
             if not ret:
-                print("Error: Failed to capture image.")
+                #print("Error: Failed to capture image.")
                 break
 
             for (lower, upper), title in zip(bounds, window_titles):
                 processed_binary, triangles = detect_triangles(frame, lower, upper)
                 for triangle in triangles:
-                    print(triangle)
+                    ""
+                    #print(triangle)
 
                 cv2.imshow(title, processed_binary)
 

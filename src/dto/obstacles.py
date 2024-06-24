@@ -121,4 +121,4 @@ if __name__ == '__main__':
         SquareObject.create_square(position=Position(x=0, y=-20), width=5, height=5, radians=0)
     ]
     cross = Cross.create_cross_with_safe_zones(square_1=square1, square_2=square2, walls=walls, safe_distance=2)
-    print(cross)
+    # print(cross)

@@ -52,7 +52,7 @@ def create_move(robot: Robot) -> Move:
 
     suck = False if robot.mode == RobotMode.DEPOSIT else suck_if_small(robot)
     move = Move(speed=speed, radians=radians, suck=suck, latch=latch)
-    print(move)
+    #print(move)
     return move
 
 
@@ -68,7 +68,7 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
             return
             exit()
     if robot.self_reached_checkpoint(robot.checkpoints[0]):
-        print("Previous checkpoint before being updated: ", robot.prev_checkpoint)
+        #print("Previous checkpoint before being updated: ", robot.prev_checkpoint)
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:
             robot.mode = RobotMode.DANGER

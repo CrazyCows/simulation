@@ -88,12 +88,12 @@ class WallPicker:
             cv2.imshow(self.frame_name, self.frame)
 
             if not ret:
-                print("Error: Could not read frame.")
+                #print("Error: Could not read frame.")
                 break
 
             if cv2.waitKey(1) & 0xFF == ord('q') or len(self.points) >= num_points:
                 break
-        print(self.points)
+        #print(self.points)
 
         p1 = CircleObject(radius=1, position=Position(x=self.points[0][0], y=self.points[0][1]))
         p2 = CircleObject(radius=1, position=Position(x=self.points[1][0], y=self.points[1][1]))
@@ -101,7 +101,7 @@ class WallPicker:
         width = int(euclidean_distance(self.points[0], self.points[1]))
         height = int(euclidean_distance(self.points[1], self.points[2]))
         x, y = calculate_centroid(self.points)
-        print(x,y)
+        #print(x,y)
 
 
 
@@ -114,34 +114,34 @@ class WallPicker:
                             offset_y=0)
 
     def pick_north_wall(self):
-        print("Click 4 points for the North Wall")
+        #print("Click 4 points for the North Wall")
         square = self._pick_points("North", 4)
         wall = Wall.create(square, WallPlacement.TOP)
         return wall
 
     def pick_east_wall(self):
-        print("Click 4 points for the East Wall")
+        #print("Click 4 points for the East Wall")
         square = self._pick_points("East", 4)
         wall = Wall.create(square, WallPlacement.LEFT)
         return wall
 
     def pick_south_wall(self):
-        print("Click 4 points for the South Wall")
+        #print("Click 4 points for the South Wall")
         square = self._pick_points("South", 4)
         wall = Wall.create(square, WallPlacement.BOT)
         return wall
     def pick_west_wall(self):
-        print("Click 4 points for the West Wall")
+        #print("Click 4 points for the West Wall")
         square = self._pick_points("West", 4)
         wall = Wall.create(square, WallPlacement.RIGHT)
         return wall
 
     def _click_cross_one(self):
-        print("Click 4 points for Cross One")
+        #print("Click 4 points for Cross One")
         return self._pick_points("One rectangle from cross", 4)
 
     def pick_hole(self):
-        print("Click the two of the hole")
+        #print("Click the two of the hole")
         points = self._pick_points("Hole", 2)
         x, y = calculate_centroid(points)
         return CircleObject(radius=1, position=Position(x=x, y=y))

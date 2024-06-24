@@ -4,11 +4,11 @@ import numpy as np
 from cv2.gapi.wip.draw import Circle
 from typing import List, Tuple
 from dto.shapes import CircleObject, Position, SquareObject
+from kk import detect_triangles
 
 class NoRobotException(Exception):
     "Raised when a robot is not found"
     pass
-
 
 def increase_vibrance(image, vibrance_scale=20, threshold_low=64, threshold_high=255):
     """
@@ -75,7 +75,7 @@ def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> fl
 class RoboVision():
     # at a camera height of 202cm with
     _whiteSizeLower = 7
-    _whiteSizeUpper = 12
+    _whiteSizeUpper = 50
     _eggSizeLower = _whiteSizeUpper + 1
     _eggSizeUpper = 50
     _dotSizeLower = 5
@@ -97,10 +97,10 @@ class RoboVision():
                     self._max_y = vertex[1]
                 if vertex[1] < self._min_y:
                     self._min_y = vertex[1]
-        print("Minimum wall x position: " + str(self._min_x))
-        print("Maximum wall x position: " + str(self._max_x))
-        print("Minimum wall y position: " + str(self._min_y))
-        print("Maximum wall y position: " + str(self._max_y))
+        #print("Minimum wall x position: " + str(self._min_x))
+        #print("Maximum wall x position: " + str(self._max_x))
+        #print("Minimum wall y position: " + str(self._min_y))
+        #print("Maximum wall y position: " + str(self._max_y))
 
     _robot_y = 100
     _robot_x = 100
@@ -110,7 +110,7 @@ class RoboVision():
     _camera_y: int = None
     _z_factor = 1 - (_camera_z_cm - _robot_z_cm) / _camera_z_cm
 
-    _whiteLower = np.array([0, 0, 220])
+    _whiteLower = np.array([0, 0, 160])
     _whiteUpper = np.array([255, 50, 255])
 
     _red1lower_limit = np.array([0, 125, 80])
@@ -129,10 +129,11 @@ class RoboVision():
     _orange_lower_limit = np.array([15, 250, 235])
     _orange_upper_limit = np.array([32, 255, 255])
 
-    _purple_lower_limit = np.array([140, 150, 70])
+    _purple_lower_limit = np.array([140, 150, 50])
     _purple_upper_limit = np.array([160, 255, 255])
 
-    _new_green_lower_limit = np.aray([40, 100, 100])
+
+    _new_green_lower_limit = np.array([40, 100, 100])
     _new_green_upper_limit = np.array([80, 255, 255])
 
     # _orange_lower_limit = np.array([15, 240, 140])
@@ -158,8 +159,12 @@ class RoboVision():
     _orange_upper_limit = np.array([25, 255, 255])
     """
 
+    stream_url = 'http://192.168.0.206:8080/video'
     _cross_area = 100
-    _vs = cv2.VideoCapture(0)
+    
+    _vs = cv2.VideoCapture(stream_url)
+    
+    #_vs = cv2.VideoCapture(0)
     _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -223,12 +228,12 @@ class RoboVision():
                 epsilon = 0.0125 * cv2.arcLength(cnt, True)
                 approx = cv2.approxPolyDP(cnt, epsilon, True, cv2.CHAIN_APPROX_SIMPLE)
                 approximations.append(approx)
-        print(approximations)
+        # print(approximations)
         for approx in approximations:
             for thing in approx:
-                print("x: " + str(thing[0][0]))
-                print("y: " + str(thing[0][1]))
-
+                #print("x: " + str(thing[0][0]))
+                #print("y: " + str(thing[0][1]))
+                ""
         return approximations
 
     def _correct_robot_location_perspective(self, before_center: CircleObject) -> CircleObject:
@@ -244,70 +249,99 @@ class RoboVision():
         before_center.position.y = before_center.position.y + self._z_factor * (
                 self._camera_y - before_center.position.y)
         return before_center
+    
+    def _get_robot_emil_test(self, frame, lower_bound, upper_bound):
+        # Convert frame to HSV color space
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        
+        # Threshold the HSV image to get only specified colors
+        mask = cv2.inRange(hsv, lower_bound, upper_bound)
+        
+        # Bitwise-AND mask and original image to extract specified areas
+        color_extract = cv2.bitwise_and(frame, frame, mask=mask)
+        
+        # Convert extracted image to grayscale then to binary
+        gray = cv2.cvtColor(color_extract, cv2.COLOR_BGR2GRAY)
+        _, binary = cv2.threshold(gray, 20, 255, cv2.THRESH_BINARY)
+        
+        # Find contours
+        contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        # Minimum contour area to filter small objects
+        min_contour_area = 500
+        object_centers = []
+        this_circles = []
+        # Process each contour
+        for contour in contours:
+            if cv2.contourArea(contour) >= min_contour_area:
+                M = cv2.moments(contour)
+                if M["m00"] != 0:
+                    center_x = int(M["m10"] / M["m00"])
+                    center_y = int(M["m01"] / M["m00"])
+                    # object_centers.append((center_x, center_y))
+                    this_circles.append(CircleObject(radius=10, position=Position(x=center_x,y=center_y)))
+        #print(f'len i wanna see is: {len(this_circles)}')
+        #this_circles = [CircleObject(radius=10, position=Position(x=300,y=300))]
+        return this_circles
+    
 
-    def _get_robot_center_qr_code(self, backward: bool):
-        qr_codes_final = []
-        if not self._vs.isOpened():
-            print("Error: Could not open video stream.")
-        else:
-            # Capture frame-by-frame
-            ret, frame = self._vs.read()
-            
-
-            # Detect QR Codes in the image
-            qr_codes = pyzbar.decode(frame)
-
-            # Process detected QR Codes
-            for qr in qr_codes:
-                # Extract data and rectangle corners of the QR code
-                qr_data = qr.data.decode('utf-8')
-                if qr_data.lower() == "FREMAD".lower() and backward:
-                    continue
-                elif qr_data.lower() == "TILBAGE".lower() and not backward:
-                    continue
-
-                (x, y, w, h) = qr.rect
-                center_x, center_y = x + w // 2, y + h // 2
-                
-                # Draw rectangle around the QR code
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                
-                # Draw circle at the center
-                cv2.circle(frame, (center_x, center_y), 5, (255, 0, 0), -1)
-
-                # Display the QR code data
-                text = f"Data: {qr_data} | Center: ({center_x}, {center_y})"
-                cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                qr_codes_final.append(CircleObject(radius=30, position=Position(x=center_x, y=center_y)))
-            # Display the resulting frame
-            cv2.imshow('DroidCam Video', frame)
-
-            return qr_codes_final
-                
+    def detect_form_with_center(frame, lower_bound, upper_bound):
+        # Convert frame to HSV color space
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        
+        # Threshold the HSV image to get only specified colors
+        mask = cv2.inRange(hsv, lower_bound, upper_bound)
+        
+        # Bitwise-AND mask and original image to extract specified areas
+        color_extract = cv2.bitwise_and(frame, frame, mask=mask)
+        
+        # Convert extracted image to grayscale then to binary
+        gray = cv2.cvtColor(color_extract, cv2.COLOR_BGR2GRAY)
+        _, binary = cv2.threshold(gray, 20, 255, cv2.THRESH_BINARY)
+        
+        # Find contours
+        contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        # Minimum contour area to filter small objects
+        min_contour_area = 500
+        object_centers = []
+        circles = [CircleObject(radius=10, position=Position(x=1, y=2))]
+        # Process each contour
+        for contour in contours:
+            if cv2.contourArea(contour) >= min_contour_area:
+                M = cv2.moments(contour)
+                if M["m00"] != 0:
+                    center_x = int(M["m10"] / M["m00"])
+                    center_y = int(M["m01"] / M["m00"])
+                    object_centers.append((center_x, center_y))
+        #print(len(object_centers))
+        
+        return circles
 
 
     def _get_robot_center(self) -> Tuple[CircleObject, float]:
-        
 
+        ret, frame = self._vs.read()
         purple_dots = []
         new_green_dots = []
+        
 
-        purple_dots = self._getBallishThing(self._purple_lower_limit, self._purple_upper_limit, self._dotSizeLower,
-                                             self._dotSizeUpper)
+        purple_dots = self._get_robot_emil_test(frame, self._purple_lower_limit, self._purple_upper_limit)
         if len(purple_dots) != 1:
             raise NoRobotException("Number of purple dots: " + str(len(purple_dots)))
-        new_green_dots = self._getBallishThing(self._new_green_lower_limit, self._new_green_upper_limit, self._dotSizeLower,
-                                             self._dotSizeUpper)
-        if len(new_green_dot) != 1:
+        
+        ret, frame = self._vs.read()
+        new_green_dots = self._get_robot_emil_test(frame, self._new_green_lower_limit, self._new_green_upper_limit)
+        if len(new_green_dots) != 1:
             raise NoRobotException("Number of new green dots: " + str(len(new_green_dots)))
         
         purple_dot = purple_dots[0]
-        new_green_dot = purple_dots[0]
+        new_green_dot = new_green_dots[0]
         center = CircleObject(radius=1,
                               position=Position(x=int((purple_dot.position.x + new_green_dot.position.x) / 2),
                                                 y=int((new_green_dot.position.y + purple_dot.position.y) / 2)))
         angle_xy = calculate_positive_angle(purple_dot, new_green_dot)
-        center = self._correct_robot_location_perspective(center)
+        # center = self._correct_robot_location_perspective(center)
         return center, angle_xy
         # TODO: These loops should probably just be removed. I dont want to retry extensively here,
         # Because retrying 30 times (one second) could cause significant desync between the two dots,
@@ -363,7 +397,7 @@ class RoboVision():
     def _get_egg(self) -> List[CircleObject]:
         return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
 
-    def _get_robot_square(self) -> SquareObject or None:
+    def _get_robot_square(self) -> SquareObject:
         try:
             circle, angle = self._get_robot_center()
             square = SquareObject.create_square(circle.position,
@@ -372,7 +406,7 @@ class RoboVision():
                                                 angle
                                                 )
         except Exception as e:
-            print("Failed to locate robot: " + str(e))
+            #print("Failed to locate robot: " + str(e))
             return None
         return square
 
@@ -396,7 +430,7 @@ class RoboVision():
                 list_of_thing = func()
                 if min_count <= len(list_of_thing) <= max_count:
                     return list_of_thing
-            print(thing_to_get + " not found within parameters")
+            #print(thing_to_get + " not found within parameters")
         else:
             robot = func()
             while not robot and tries > 0:

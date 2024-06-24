@@ -17,11 +17,13 @@ class MoveCommand(Enum):
     SUCK = True
 
 
+
 class Move(BaseModel):
     speed: float
     radians: float
     suck: bool
     latch: bool
+
 
 
 class Paths(BaseModel):
@@ -107,10 +109,10 @@ class Robot(BaseModel):
 
         if self.obstacle_detection(obstacles=obstacles) or self.obstacle_detection(
                 obstacles=[cross.square_1, cross.square_2]):
-            radians = 0
+            #radians = 0
             # NOTE: This is pretty jank.....
-            dx = self.start_position.x - self.robot.position.x
-            dy = self.start_position.y - self.robot.position.y
+            #dx = self.start_position.x - self.robot.position.x
+            #dy = self.start_position.y - self.robot.position.y
             logging.warning('robot touched a wall - resetting position')
 
         robot_dx = self.robot.position.x + dx
@@ -176,7 +178,7 @@ class Robot(BaseModel):
         obstacles_hit_list = []
         obstacles_hit = 0
         previous_path = []
-        cls.line = calculate_coordinates_for_line(
+        line = calculate_coordinates_for_line(
             radians, position.x, position.y
         )
 

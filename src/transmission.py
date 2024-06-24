@@ -40,6 +40,7 @@ def prepare_command(move: Move):
     latch = 0
     lm = 0
     rm = 0
+    print(move.radians)
     if speed == 0 and move.radians != 0:
         if move.radians > 0:
             lm = 1
@@ -51,28 +52,28 @@ def prepare_command(move: Move):
         if abs(move.radians) <= 0.04:
             lm = (speed)
             rm = (speed)
-        elif 0.04 < abs(move.radians) < 0.1:
+        elif 0 < abs(move.radians) < 0.025:
             if move.radians < 0:
                 lm = (speed) * 1
                 rm = (speed) * 0.5
             else:
                 lm = (speed) * 0.5
                 rm = (speed) * 1
-        elif 0.08 < abs(move.radians) < 0.3:
+        elif 0.025 <= abs(move.radians) < 0.05:
             if move.radians < 0:
                 lm = (speed) * 1
                 rm = (speed) * 0.25
             else:
                 lm = (speed) * 0.25
                 rm = (speed) * 1
-        elif 0.7 < abs(move.radians) < 0.7:
+        elif 0.05 <= abs(move.radians) < 0.1:
             if move.radians < 0:
                 lm = (speed) * 1
                 rm = (speed) * -1
             else:
                 lm = (speed) * -1
                 rm = (speed) * 1
-        elif abs(move.radians) > 1.56:
+        elif abs(move.radians) >= 0.1:
             if move.radians < 0:
                 lm = (speed) * 1
                 rm = (speed) * -1
@@ -89,16 +90,18 @@ def goal_command():
     send_command(move)
 
 def send_command(move: Move):
+    #print(move)
     command = prepare_command(move)
     command_string = f"{command[0]} {command[1]} {command[2]} {command[3]}" #Left motor, Right motor, Fan, latch
     # command_string = f"0 0 {command[2]} {command[3]}"  # Left motor, Right motor, Fan, latch
     print(f'command string: {command_string}')
+    return
     client_socket.send(command_string.encode())
     client_socket.recv(1024)
 
 
 def signal_handler(sig, frame):
-    print("Signal received, shutting down...")
+    #print("Signal received, shutting down...")
     disconnect()
     sys.exit(0)
 
