@@ -159,7 +159,7 @@ class WallPicker:
                 print("Error: Could not read frame.")
                 break
 
-            if cv2.waitKey(1) & 0xFF == ord('q') or len(self.points) >= 2:
+            if cv2.waitKey(1) & 0xFF == ord('q') or len(self.points) >= 1:
                 break
 
         return self.points[0]
