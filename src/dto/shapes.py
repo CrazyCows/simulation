@@ -52,7 +52,7 @@ class SquareObject(BaseModel):
         ]
         vertices = rotate_square(vertices=vertices, center=position, radians=radians)
             
-        return cls(position=position, 
+        return cls(position=position,
                    width=width, 
                    height=height, 
                    radians=radians, 

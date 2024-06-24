@@ -7,7 +7,7 @@ import atexit
 import sys
 import numpy as np
 
-server_ip = '192.168.137.241'  # Erstat med IP-adressen til din EV3
+server_ip = '192.168.103.77'  # Erstat med IP-adressen til din EV3
 port = 5000
 client_socket = socket.socket # Modified to not crash program on launch... Can't instantiate if no robot.
 
@@ -40,7 +40,7 @@ def prepare_command(move: Move):
     suck = move.suck
     speed = move.speed / 2 # WE PUT IT DOWN, TOO FAST FOR NOW!
 
-    latch = 0
+    latch = 0#move.latch
     lm = 0
     rm = 0
 
@@ -48,6 +48,8 @@ def prepare_command(move: Move):
 
     abs_radians = abs(radians)
     if abs_radians <= 0.1:
+        if speed == 0:
+            speed = 0.2
         rm = speed
         lm = speed
     elif 0.1 < abs_radians <= 0.4:
@@ -79,15 +81,17 @@ def prepare_command(move: Move):
             rm = -0.9
             lm = 0.9
     else:
+        speed = 0.5
         if radians < 0:
             rm = speed
             lm = -speed
         else:
             rm = -speed
             lm = speed
-
+    suck = True
     # Left motor speed, Right motor speed, fan on/off, latch open/close
-    return lm, rm, 1 if suck else 0, 1 if latch else 0
+    print(f"Left motor: {lm}, Right motor: {rm}, Suck: {1 if suck else 0}, Latch: {1 if latch else 0}")
+    return lm, rm, 1, 1 if latch else 0
 
 
 

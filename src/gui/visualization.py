@@ -13,6 +13,7 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
             return False
     
     screen.fill("purple")
+
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "orange", obstacle.danger_zone.vertices)
     for obstacle in obstacles:
@@ -39,7 +40,7 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
                 current_pos_y = position.y
                 prev_pos_x = prev_pos.x
                 prev_pos_y = prev_pos.y
-                pygame.draw.line(screen, color, (prev_pos_x, prev_pos_y), (current_pos_x, current_pos_y))
+                #pygame.draw.line(screen, color, (prev_pos_x, prev_pos_y), (current_pos_x, current_pos_y))
 
     for ball in balls:
         pygame.draw.circle(screen, "green", (ball.position.x, ball.position.y), 4)

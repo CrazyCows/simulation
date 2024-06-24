@@ -174,6 +174,7 @@ class RoboVision():
     # Variables to be updated every darn iteration
     _blurred = None
     _hsv = None
+    _last_frame = None
 
     def load_yolo_model(self, power: int):
         if torch.cuda.is_available():
@@ -197,16 +198,26 @@ class RoboVision():
             model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\heavy.pt").to(device)
         return model
 
+
     def get_flipped_frame(self):
         ret, frame = self._vs.read()
         cv2.flip(frame, 1, frame)
         return frame
+
+    """
+    def get_flipped_frame(self):
+        new_frame = self._last_frame.copy()
+        cv2.flip(new_frame, 1, new_frame)
+        return new_frame
+    
+    """
 
     def commonSetup(self):
         ret, frame = self._vs.read()
 
         if frame is None:
             raise Exception("Camera error")
+        self._last_frame = frame
         # print(type(frame))
         # print("Dimensions:" + str(frame.shape))
         # frame = frame[int(self._min_y):int(self._max_y), int(self._min_x):int(self._max_x)]

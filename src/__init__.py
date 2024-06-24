@@ -1,7 +1,7 @@
 import pygame
 from dto.shapes import SquareObject, CircleObject, Position
 from dto.obstacles import Cross, Wall, WallPlacement
-from dto.robot import Robot
+from dto.robot import Robot, Checkpoint, CheckpointType
 import image_recognizition.object_detection
 
 screen = pygame.display.set_mode((1280, 720))
@@ -66,4 +66,5 @@ balls = [
          #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
 """
 robot = Robot.create_robot(position=Position(x=screen.get_width() / 3, y=500),
-                width=40, height=40, radians=3.14, suction_height=15, suction_width=15, suction_offset_y=35)
+                width=40, height=40, radians=3.14, suction_height=15, suction_width=15, suction_offset_y=35,
+                           previous_checkpoint=Checkpoint(x=screen.get_width() / 3, y=500, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))

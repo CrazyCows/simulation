@@ -39,7 +39,7 @@ def create_move(robot: Robot) -> Move:
             #print("robot is not moving 1")
         # Tilføjet så roboten stopper foran bolden
         # TODO: Måde at håndtere hvis roboten ikke får bolden op
-        elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 20 and radians == 0 and robot.checkpoints[0].checkpoint_type == CheckpointType.BALL:
+        elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 180 and abs(radians) < 0.15 and robot.checkpoints[0].checkpoint_type == CheckpointType.BALL:
             #print("robot is not moving 2")
             speed = 0
         else:

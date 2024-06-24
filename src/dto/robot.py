@@ -61,7 +61,7 @@ class Robot(BaseModel):
     checkpoints: List[Checkpoint]
     start_position: Position
     line: LineObject
-    mode: RobotMode = RobotMode.SAFE
+    mode: RobotMode
     distance_to_wall_left: float = 0
     distance_to_wall_right: float = 0
     distance_to_wall_top: float = 0
@@ -135,7 +135,7 @@ class Robot(BaseModel):
         return math.dist((self.robot.position.x, self.robot.position.y), (ball.position.x, ball.position.y))
 
     def self_reached_checkpoint(self, checkpoint: Checkpoint):
-        size = 7
+        size = 10
         if (checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT or
                 checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT or
                 checkpoint.checkpoint_type == CheckpointType.GOAL_LINEUP):
@@ -152,14 +152,15 @@ class Robot(BaseModel):
                         self.robot.position.x + 110 > checkpoint.x > self.robot.position.x + 95 and
                         self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
         elif checkpoint.checkpoint_type == CheckpointType.BALL:
-            return False
+            return circle_square_touch(CircleObject(radius=50, position=checkpoint), self.suction)
         else:
             return circle_square_touch(CircleObject(radius=10, position=checkpoint), self.suction)
 
     @classmethod
     def create_robot(cls, position: Position, width: int, height: int, radians: float,
-                     suction_width: int, suction_height: int, suction_offset_x: int = 0,
-                     suction_offset_y: int = 0, checkpoints=[],
+                     suction_width: int, suction_height: int, previous_checkpoint: Checkpoint,
+                     suction_offset_x: int = 0,
+                     suction_offset_y: int = 0, checkpoints=[], mode=RobotMode.SAFE,
                      line=LineObject(start_pos=Position(x=0, y=0), end_pos=Position(x=0, y=0))):
         if not 0 <= radians <= 2 * math.pi:
             raise Exception("Number must be within range 0 to 2 * pi")
@@ -179,9 +180,9 @@ class Robot(BaseModel):
         obstacles_hit_list = []
         obstacles_hit = 0
         previous_path = []
-        cls.line = calculate_coordinates_for_line(
-            radians, position.x, position.y
-        )
+        #cls.line = calculate_coordinates_for_line(
+        #    radians, position.x, position.y
+        #)
 
         line = calculate_coordinates_for_line(
             radians, robot.position.x, robot.position.y
@@ -190,8 +191,7 @@ class Robot(BaseModel):
         return cls(robot=robot, suction=suction, collected_balls=collected_balls,
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit,
                    previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line,
-                   prev_checkpoint=Checkpoint(x=position.x, y=position.y,
-                                              checkpoint_type=CheckpointType.SAFE_CHECKPOINT))
+                   prev_checkpoint=previous_checkpoint, mode=mode)
 
     def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
         """
@@ -205,7 +205,6 @@ class Robot(BaseModel):
 
     def set_line(self):
         calculate_coordinates_for_line(self.robot.radians, self.robot.position.x, self.robot.position.y)
-
 
     def is_robot_near_obstacles(self, threshold: float = 30):
         if self.distance_to_cross < threshold:
