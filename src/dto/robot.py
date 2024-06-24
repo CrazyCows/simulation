@@ -69,6 +69,7 @@ class Robot(BaseModel):
     distance_to_cross: float = 0
     front_distance_to_cross: float = 0
     ignore_danger_in_corner: bool = False
+    previous_move: Move = Move(speed=0, radians=0, suck=False, latch=False)
 
     def suck(self, balls: List[CircleObject]):
         for ball in balls:
@@ -118,8 +119,8 @@ class Robot(BaseModel):
         robot_dx = self.robot.position.x + dx
         robot_dy = self.robot.position.y + dy
         self.previous_path.append(self.robot.position)
-        self.robot.update_square(Position(x=robot_dx, y=robot_dy), radians)
-        self.suction.update_square(Position(x=robot_dx, y=robot_dy), radians)
+        #self.robot.update_square(Position(x=robot_dx, y=robot_dy), radians)
+        #self.suction.update_square(Position(x=robot_dx, y=robot_dy), radians)
         self.self_to_wall_distance(obstacles, cross)
         if suck:
             self.suck(balls=balls)
@@ -152,7 +153,12 @@ class Robot(BaseModel):
                         self.robot.position.x + 110 > checkpoint.x > self.robot.position.x + 95 and
                         self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
         elif checkpoint.checkpoint_type == CheckpointType.BALL:
-            return circle_square_touch(CircleObject(radius=50, position=checkpoint), self.suction)
+            if self.calculate_dist_to_checkpoint(checkpoint) < 120 and abs(self.previous_move.radians) < 0.1:
+                return True
+            # elif self.mode == RobotMode.DANGER and abs(self.previous_move.radians) < 0.1 and self.is_robot_near_obstacles(80):
+            #     return True
+            else:
+                return False
         else:
             return circle_square_touch(CircleObject(radius=10, position=checkpoint), self.suction)
 

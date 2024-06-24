@@ -94,7 +94,7 @@ def app(connect_to_robot: bool = False):
                     mode = robot.mode
                     previous_checkpoint = robot.prev_checkpoint
                     robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                            width=140, height=140, radians=radians, suction_height=30, suction_width=30,
+                                            width=130, height=130, radians=radians, suction_height=30, suction_width=30,
                                             suction_offset_y=80, previous_checkpoint=previous_checkpoint, mode=mode)
                 except Exception as e:
                     print(str(e))
@@ -105,7 +105,7 @@ def app(connect_to_robot: bool = False):
         # TODO: Implement the
         if len(balls) > 0:
             focused_ball = balls[0]
-        if balls == []:
+        if balls == [] and robot.mode != RobotMode.DANGER_REVERSE and robot.mode != RobotMode.STOP_DANGER:
             focused_ball = goal
             robot.mode = RobotMode.ENDPHASE
         elif robot.mode == RobotMode.ENDPHASE:
@@ -118,8 +118,6 @@ def app(connect_to_robot: bool = False):
             if len(balls) > 0:
                 focused_ball = balls[0]
         # Temp solution, just redrawing balls all da time
-        if robot.mode == RobotMode.STOP or robot.mode == RobotMode.STOP_DANGER:
-            sleep(1)
         if robot.prev_checkpoint.checkpoint_type != CheckpointType.GOAL:
             path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
             robot.checkpoints = checkpoints
@@ -142,6 +140,9 @@ def app(connect_to_robot: bool = False):
         #print("3   robot radians says:", robot.robot.radians, "and path_follow says:", path_follow.calculate_radians_to_turn(robot))
         #print("4   yet_another_calculate_radians_to_turn", path_follow.yet_another_calculate_radians_to_turn(robot), "another_calculate_radians_to_turn", path_follow.another_calculate_radians_to_turn(robot))
         #print("5   THE MOVE IS:", move)
+        if robot.mode == RobotMode.STOP or robot.mode == RobotMode.STOP_DANGER:
+            #sleep(3)
+            pass
         if connect_to_robot:
             transmission.send_command(move)
         print("Current mode: ", robot.mode)
