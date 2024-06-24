@@ -16,8 +16,8 @@ def create_move(robot: Robot) -> Move:
 
     speed = 0
     latch = False
-    print("rad_________________________________________________", radians)
-    print("my checkpOINTS:", robot.checkpoints)
+    #print("rad_________________________________________________", radians)
+    #print("my checkpOINTS:", robot.checkpoints)
     if robot.mode == RobotMode.DANGER or robot.mode == RobotMode.ENDPHASE:
         if radians != 0.0 and (
                 robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT or
@@ -36,11 +36,11 @@ def create_move(robot: Robot) -> Move:
             speed = 1
         elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 20 and radians != 0:
             speed = 0
-            print("robot is not moving 1")
+            #print("robot is not moving 1")
         # Tilføjet så roboten stopper foran bolden
         # TODO: Måde at håndtere hvis roboten ikke får bolden op
         elif robot.calculate_dist_to_checkpoint(robot.checkpoints[0]) < 20 and radians == 0 and robot.checkpoints[0].checkpoint_type == CheckpointType.BALL:
-            print("robot is not moving 2")
+            #print("robot is not moving 2")
             speed = 0
         else:
             speed = MoveCommand.FORWARD.value  # TODO: Implement logic for slowing down/stopping.
@@ -57,7 +57,7 @@ def create_move(robot: Robot) -> Move:
 
     suck = False if robot.mode == RobotMode.DEPOSIT else suck_if_small(robot)
     move = Move(speed=speed, radians=radians, suck=suck, latch=latch)
-    print(move)
+    #print(move)
 
     return move
 
@@ -151,7 +151,7 @@ def yet_another_calculate_radians_to_turn(robot: Robot) -> float:
     angle_difference = (angle_difference + np.pi) % (2 * np.pi) - np.pi
 
     direction = 0.0
-    print("angle difference calculated:", angle_difference)
+    #print("angle difference calculated:", angle_difference)
     """if angle_difference < 0:
         direction += MoveCommand.LEFT.value
         for i in range(round(distance / 100)):
@@ -208,7 +208,7 @@ def yet_again_another_calculate_radians_to_turn(robot: Robot) -> float:
     else:
         direction = MoveCommand.RIGHT.value
 
-    print("NEW FUNC SAYS:", direction * abs(angle))
+    #print("NEW FUNC SAYS:", direction * abs(angle))
 
     return direction * abs(angle)  # Scale direction by angle magnitude
 
@@ -237,12 +237,12 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     point = np.array(coordinate)
 
     # prints all above
-    print("start_pos:", start_pos)
-    print("end_pos:", end_pos)
-    print("coordinate:", coordinate)
-    print("start:", start)
-    print("end:", end)
-    print("point:", point)
+    #print("start_pos:", start_pos)
+    #print("end_pos:", end_pos)
+    #print("coordinate:", coordinate)
+    #print("start:", start)
+    #print("end:", end)
+    #print("point:", point)
 
 
     # Calculate the line vector and the point vector
@@ -252,9 +252,9 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     # Calculate the projection of the point vector onto the line vector
     line_length_squared = np.dot(line_vector, line_vector)
     if line_length_squared == 0:
-        print("line length is 0_______________________")
+        #print("line length is 0_______________________")
         ##return 0.0  # The start and end positions are the same
-
+        ""
     t = max(0, min(1, np.dot(point_vector, line_vector) / line_length_squared))
 
     # Calculate the nearest point on the line segment to the point
@@ -263,7 +263,8 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     # Calculate the distance from the point to the nearest point on the line segment
     distance = np.linalg.norm(point - nearest_point)
     if distance < 5:
-        print("distance is less than 5")
+        ""
+        #print("distance is less than 5")
         #return 0.0
 
     # Determine the direction to turn (left or right)
@@ -272,16 +273,16 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     dot_product = np.dot(line_vector, point_vector)
     angle = np.arctan2(cross_product, dot_product)  # Calculate the angle in radians
 
-    print("cross_product calculated:", cross_product)
-    print("dot_product calculated:", dot_product)
-    print("angle calculated (in radians):", angle)
+    #print("cross_product calculated:", cross_product)
+    #print("dot_product calculated:", dot_product)
+    #print("angle calculated (in radians):", angle)
 
     # Ensure the angle is between -2π and 2π
     if angle > 2 * np.pi:
         angle -= 2 * np.pi
     elif angle < -2 * np.pi:
         angle += 2 * np.pi
-    print("GOD HELP US:", angle)
+    #print("GOD HELP US:", angle)
     return angle
 
 

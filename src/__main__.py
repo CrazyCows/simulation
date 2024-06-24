@@ -66,32 +66,40 @@ def app(connect_to_robot: bool = False):
                                                    walls=walls)"""
         #for cross in cross_squares:
         #    print(cross)
-        print("Here")
+        #print("Here")
 
 
     while running:
         path = []
         ai: bool = True
+        i = 1
+        found_robot_init = False
         if connect_to_robot:
             #if ai:
-            balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="all_balls")
-            """else:
-                balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
-                if balls == []:
-                    balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-                robot_square_object: SquareObject = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")"""
+            while i < 100 and not found_robot_init:
+                try:
+                    balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="all_balls")
+                    """else:
+                        balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
+                        if balls == []:
+                            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
+                        robot_square_object: SquareObject = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")"""
 
-            robot_position: Position = robot_square_object.position
-            radians = rv.orientation
-            robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                       width=135, height=150, radians=radians, suction_height=30, suction_width=30,
-                                       suction_offset_y=80)
+                    robot_position: Position = robot_square_object.position
+                    radians = rv.orientation
+                    robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
+                                            width=40, height=40, radians=radians, suction_height=30, suction_width=30,
+                                            suction_offset_y=80)
+                except Exception as e:
+                    continue
+                finally:
+                    found_robot_init = True
         #print(len(balls))
         # print(len(robot.collected_balls))
         # TODO: Implement the
         if balls == [] or (isinstance(balls[0], Goal)):
             balls.append(goal)
-            print(type(balls[0]))
+            # print(type(balls[0]))
             if robot.mode != RobotMode.DEPOSIT:
                 robot.mode = RobotMode.ENDPHASE
             # exit()
@@ -144,7 +152,7 @@ def app(connect_to_robot: bool = False):
 
 if __name__ == '__main__':
     # test_antons_code()
-    pygame.init()
+    # pygame.init()
     # try:
     #     transmission.exit_functions()
     # except Exception as e:

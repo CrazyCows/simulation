@@ -51,7 +51,7 @@ def detect_triangles(frame):
 
 def main():
     ip_camera_url = 'http://10.209.177.243:8080/video'  # Change this to your IP camera's stream URL
-    cap = cv2.VideoCapture(ip_camera_url)
+    cap = cv2.VideoCapture(2)
 
     if not cap.isOpened():
         print("Error: Could not open video stream.")
@@ -70,7 +70,8 @@ def main():
             processed_binary, triangles = detect_triangles(frame)
             
             for triangle in triangles:
-                print(triangle)
+                ""
+                #print(triangle)
 
             # Display the resulting binary frame
             cv2.imshow('Frame', processed_binary)

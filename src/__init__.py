@@ -9,14 +9,14 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-left_wall_square = SquareObject.create_square(position=Position(x=230, y=screen.get_height() / 2),
+left_wall_square = SquareObject.create_square(position=Position(x=596, y=252.5),
                     width=20, height=590, radians=0)
-right_wall_square = SquareObject.create_square(position=Position(x=1050, y=screen.get_height() / 2),
+right_wall_square = SquareObject.create_square(position=Position(x=147.5, y=246.5),
                     width=20, height=590, radians=0)
-top_wall_square = SquareObject.create_square(position=Position(x=screen.get_width() - screen.get_width() / 2, y=65),
-                    width=840, height=20, radians=0)
-bot_wall_square = SquareObject.create_square(position=Position(x=screen.get_width() - screen.get_width() / 2, y=655),
-                    width=840, height=20, radians=0)
+top_wall_square = SquareObject.create_square(position=Position(x=381.75, y=84.25),
+                    width=1100, height=20, radians=0)
+bot_wall_square = SquareObject.create_square(position=Position(x=366.75, y=413.75),
+                    width=1100, height=20, radians=0)
 left_wall = Wall.create(left_wall_square, WallPlacement.LEFT, 100)
 right_wall = Wall.create(right_wall_square, WallPlacement.RIGHT, 100)
 top_wall = Wall.create(top_wall_square, WallPlacement.TOP, 100)
@@ -26,9 +26,9 @@ bot_wall = Wall.create(bot_wall_square, WallPlacement.BOT, 100)
 walls = [left_wall, right_wall, top_wall, bot_wall]
 
 cross = Cross.create_cross_with_safe_zones(
-    SquareObject.create_square(position=Position(x=screen.get_width() - screen.get_width() / 2, y=screen.get_height() / 2), 
+    SquareObject.create_square(position=Position(x=-200, y=-200), 
                     width=45, height=5, radians=0.785398),
-    SquareObject.create_square(position=Position(x=screen.get_width() - screen.get_width() / 2, y=screen.get_height() / 2), 
+    SquareObject.create_square(position=Position(x=-200, y=-200), 
                     width=45, height=5, radians=2.35619),
                     walls,
                     150            
@@ -66,4 +66,4 @@ balls = [
          #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
 """
 robot = Robot.create_robot(position=Position(x=screen.get_width() / 3, y=500),
-                width=100, height=80, radians=3.14, suction_height=30, suction_width=30, suction_offset_y=50)
+                width=40, height=40, radians=3.14, suction_height=15, suction_width=15, suction_offset_y=35)

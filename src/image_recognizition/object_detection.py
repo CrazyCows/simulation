@@ -91,7 +91,7 @@ class RoboVision():
 
     def __init__(self, walls: List[SquareObject], ai: bool = False, power: int = 1):
         for wall in walls:
-            print("")
+            #print("")
             for vertex in wall.vertices:  # Not very pythonic
                 if vertex[0] > self._max_x:
                     self._max_x = vertex[0]
@@ -167,7 +167,7 @@ class RoboVision():
     """
 
     _cross_area = 100
-    _vs = cv2.VideoCapture(1)
+    _vs = cv2.VideoCapture(2)
     _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -188,13 +188,13 @@ class RoboVision():
         # How powerful the model running on the computer should be
         # Light
         if (power == 1):
-            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\light.pt").to(device)
+            model = YOLO(r"C:\programming\simulation\src\image_recognizition\models\light.pt").to(device)
         # Medium
         elif power == 2:
-            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\medium.pt").to(device)
+            model = YOLO(r"C:\programming\simulation\src\image_recognizition\models\medium.pt").to(device)
         # Heavy ()
         elif power == 3:
-            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\heavy.pt").to(device)
+            model = YOLO(r"C:\programming\simulation\src\image_recognizition\models\heavy.pt").to(device)
         return model
 
     def get_flipped_frame(self):
@@ -254,11 +254,12 @@ class RoboVision():
                 epsilon = 0.0125 * cv2.arcLength(cnt, True)
                 approx = cv2.approxPolyDP(cnt, epsilon, True, cv2.CHAIN_APPROX_SIMPLE)
                 approximations.append(approx)
-        print(approximations)
+        #print(approximations)
         for approx in approximations:
             for thing in approx:
-                print("x: " + str(thing[0][0]))
-                print("y: " + str(thing[0][1]))
+                ""
+                #print("x: " + str(thing[0][0]))
+                #print("y: " + str(thing[0][1]))
 
         return approximations
 
@@ -376,7 +377,7 @@ class RoboVision():
                 list_of_thing = func()
                 if min_count <= len(list_of_thing) <= max_count:
                     return list_of_thing
-            print(thing_to_get + " not found within parameters")
+            # print(thing_to_get + " not found within parameters")
         else:
             robot = func()
             while not robot and tries > 0:
@@ -437,7 +438,7 @@ class RoboVision():
                                                 )
             self.last_robot_square = square
         except Exception as e:
-            print("Failed to locate robot: " + str(e))
+            # print("Failed to locate robot: " + str(e))
             if self.last_robot_square == None:
                 return SquareObject.create_square(Position(x=0, y=0), 0, 0, 0)
             return self.last_robot_square
