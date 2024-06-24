@@ -167,7 +167,7 @@ class RoboVision():
     """
 
     _cross_area = 100
-    _vs = cv2.VideoCapture(2)
+    _vs = cv2.VideoCapture(1)
     _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -188,13 +188,13 @@ class RoboVision():
         # How powerful the model running on the computer should be
         # Light
         if (power == 1):
-            model = YOLO(r"C:\programming\simulation\src\image_recognizition\models\light.pt").to(device)
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\light.pt").to(device)
         # Medium
         elif power == 2:
-            model = YOLO(r"C:\programming\simulation\src\image_recognizition\models\medium.pt").to(device)
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\medium.pt").to(device)
         # Heavy ()
         elif power == 3:
-            model = YOLO(r"C:\programming\simulation\src\image_recognizition\models\heavy.pt").to(device)
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\heavy.pt").to(device)
         return model
 
     def get_flipped_frame(self):
@@ -285,7 +285,7 @@ class RoboVision():
         # leading to a misrepresented location
         for i in range(2):
             if self.ai:
-                blue_dots = self.detect_with_yolo("blue-label")
+                blue_dots = self.detect_with_yolo("purple_back")
             else:
                 blue_dots = self._getBallishThing(self._blue_lower_limit, self._blue_upper_limit, self._dotSizeLower,
                                                   self._dotSizeUpper)
@@ -299,7 +299,7 @@ class RoboVision():
             raise NoRobotException("No blue dots")
         for i in range(2):
             if self.ai:
-                green_dots = self.detect_with_yolo("green-label")
+                green_dots = self.detect_with_yolo("green_front")
             else:
                 green_dots = self._getBallishThing(self._green_lower_limit, self._green_upper_limit, self._dotSizeLower,
                                                    self._dotSizeUpper)
@@ -323,14 +323,14 @@ class RoboVision():
 
     def _get_white_balls(self) -> List[CircleObject]:
         if self.ai:
-            return self.detect_with_yolo("white-ball")
+            return self.detect_with_yolo("white_ball")
         else:
             return self._getBallishThing(self._whiteLower, self._whiteUpper, self._whiteSizeLower, self._whiteSizeUpper)
 
 
     def _get_orange_ball(self, decrease_tolerance=False) -> List[CircleObject]:
         if self.ai:
-            return self.detect_with_yolo("orange-ball")
+            return self.detect_with_yolo("orange_ball")
         else:
             return self._getBallishThing(self._orange_lower_limit, self._orange_upper_limit,
                                                  self._whiteSizeLower,
@@ -338,7 +338,7 @@ class RoboVision():
 
     def _get_egg(self) -> List[CircleObject]:
         if self.ai:
-            return self.detect_with_yolo("white-egg")
+            return self.detect_with_yolo("egg")
         else:
             return self._getBallishThing(self._whiteLower, self._whiteUpper, self._eggSizeLower, self._eggSizeUpper)
 
@@ -396,25 +396,25 @@ class RoboVision():
         for result in results:
             for box in result.boxes:
                 cls = result.names[box.cls[0].item()]
-                if cls == "orange-ball":
+                if cls == "orange_ball":
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
                     orange_balls.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
-                elif cls == "white-ball":
+                elif cls == "white_ball":
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
                     white_balls.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
-                elif cls == "green-label":
+                elif cls == "green_front":
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
                     green_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
-                elif cls == "blue-label":
+                elif cls == "purple_back":
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
                     center_x = (x1 + x2) // 2

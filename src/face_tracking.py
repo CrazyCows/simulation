@@ -28,7 +28,7 @@ def click_event(event, x, y, flags, params):
 
 # Connect to the DroidCam feed (assuming it is accessible via IP address)
 droidcam_url = "http://your_droidcam_ip:4747/video"
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(1)
 
 if not cap.isOpened():
     print("Error: Could not open video stream.")

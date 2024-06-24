@@ -135,12 +135,13 @@ class Robot(BaseModel):
         return math.dist((self.robot.position.x, self.robot.position.y), (ball.position.x, ball.position.y))
 
     def self_reached_checkpoint(self, checkpoint: Checkpoint):
+        size = 7
         if (checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT or
                 checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT or
                 checkpoint.checkpoint_type == CheckpointType.GOAL_LINEUP):
             return True if (
-                    self.robot.position.x + 5 > checkpoint.x > self.robot.position.x - 5 and
-                    self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+                    self.robot.position.x + size > checkpoint.x > self.robot.position.x - size and
+                    self.robot.position.y + size > checkpoint.y > self.robot.position.y - size) else False
         elif checkpoint.checkpoint_type == CheckpointType.GOAL:
             if self.distance_to_wall_left < self.distance_to_wall_right:
                 return True if (

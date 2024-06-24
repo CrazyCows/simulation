@@ -51,7 +51,7 @@ def detect_triangles(frame):
 
 def main():
     ip_camera_url = 'http://10.209.177.243:8080/video'  # Change this to your IP camera's stream URL
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(1)
 
     if not cap.isOpened():
         print("Error: Could not open video stream.")

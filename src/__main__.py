@@ -57,7 +57,8 @@ def app(connect_to_robot: bool = False):
 
 
 
-        rv = RoboVision(walls=walls, ai=True, power=3)  # power: how strong the model should be (light(1), medium(2), heavy(3))
+        rv = RoboVision(walls=walls, ai=True,
+                        power=2)  # power: how strong the model should be (light(1), medium(2), heavy(3))
         #cross_squares = wp.pick_cross()
         #cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
         #                                           safe_distance=20)
@@ -88,7 +89,7 @@ def app(connect_to_robot: bool = False):
                     robot_position: Position = robot_square_object.position
                     radians = rv.orientation
                     robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                            width=40, height=40, radians=radians, suction_height=30, suction_width=30,
+                                            width=80, height=80, radians=radians, suction_height=30, suction_width=30,
                                             suction_offset_y=80)
                 except Exception as e:
                     continue
@@ -96,15 +97,16 @@ def app(connect_to_robot: bool = False):
                     found_robot_init = True
         #print(len(balls))
         # print(len(robot.collected_balls))
+
         # TODO: Implement the
         if balls == [] or (isinstance(balls[0], Goal)):
             balls.append(goal)
+            robot.mode = RobotMode.ENDPHASE
             # print(type(balls[0]))
-            if robot.mode != RobotMode.DEPOSIT:
-                robot.mode = RobotMode.ENDPHASE
+            # if robot.mode != RobotMode.DEPOSIT:
             # exit()
-        else:
-            robot.mode = RobotMode.SAFE
+        #else:
+        #    robot.mode = RobotMode.SAFE
         def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
             return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
 
