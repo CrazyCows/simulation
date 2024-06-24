@@ -285,14 +285,14 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     return angle
 
 
-def suck_if_small(robot: Robot) -> bool:
+def suck_if_small(robot: Robot, distance: int = 100) -> bool:
     """
     Sucks if the distance to the ball is too small.
     """
     suck = False
     robot_pos = (robot.robot.position.x, robot.robot.position.y)
     distance_to_ball = math.dist(robot_pos, (robot.checkpoints[0].x, robot.checkpoints[0].y))
-    if (distance_to_ball < 100 and robot.ignore_danger_in_corner == False) or (
+    if (distance_to_ball < distance and robot.ignore_danger_in_corner == False) or (
             robot.ignore_danger_in_corner and distance_to_ball < 200):
         suck = True
 

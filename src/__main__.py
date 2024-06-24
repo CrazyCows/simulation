@@ -88,7 +88,7 @@ def app(connect_to_robot: bool = False):
                     if (len(balls) == 0):
                         balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
                                                                thing_to_get="all_balls")
-                    elif path_follow.suck_if_small(robot):
+                    elif path_follow.suck_if_small(robot=robot, distance=20):
                         sleep(2)
                         balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
                                                                thing_to_get="all_balls")
