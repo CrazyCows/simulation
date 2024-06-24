@@ -17,10 +17,12 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
         pygame.draw.polygon(screen, "orange", obstacle.danger_zone.vertices)
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "red", obstacle.vertices)
-    pygame.draw.polygon(screen, "orange", cross.square_1.danger_zone.vertices)
+
+
+    """pygame.draw.polygon(screen, "orange", cross.square_1.danger_zone.vertices)
     pygame.draw.polygon(screen, "orange", cross.square_2.danger_zone.vertices)
     pygame.draw.polygon(screen, "red", cross.square_1.vertices)
-    pygame.draw.polygon(screen, "red", cross.square_2.vertices)
+    pygame.draw.polygon(screen, "red", cross.square_2.vertices)"""
 
     for path in calculated_path:
         pygame.draw.polygon(screen, "grey", path.vertices)
@@ -60,9 +62,9 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
         else:
             pygame.draw.circle(screen, "purple", (checkpoint.x, checkpoint.y), 5)
 
-
-    for zone in cross.safe_zones:
-        pygame.draw.circle(screen, "pink", (zone.x, zone.y), 5)
+    if cross != None:
+        for zone in cross.safe_zones:
+            pygame.draw.circle(screen, "pink", (zone.x, zone.y), 5)
 
 
     create_trail(robot.previous_path, color="white")

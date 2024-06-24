@@ -7,6 +7,10 @@ from pydantic import BaseModel
 import math
 
 
+def temp_create_path(start_point: Position, end_point: Position):
+    return Checkpoint(x=end_point.x, y=end_point.y, checkpoint_type=CheckpointType.BALL)
+
+
 def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross: Cross) -> Tuple[
     List[SquareObject], List[Checkpoint]]:
     """

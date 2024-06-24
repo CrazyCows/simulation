@@ -13,7 +13,7 @@ def create_move(robot: Robot) -> Move:
     Moves the robot closer to the first checkpoint in the robots list of checkpoints.
     """
     radians = calculate_radians_to_turn(robot)  # We already calculated the checkpoint to go to elsewhere...
-    speed = 0
+    """speed = 0
     latch = False
     if robot.mode == RobotMode.DANGER or robot.mode == RobotMode.ENDPHASE:
         if radians != 0.0 and (
@@ -50,7 +50,11 @@ def create_move(robot: Robot) -> Move:
         speed = 0
         radians = 0
 
-    suck = False if robot.mode == RobotMode.DEPOSIT else suck_if_small(robot)
+    suck = False if robot.mode == RobotMode.DEPOSIT else suck_if_small(robot)"""
+
+    speed = 0
+    latch = False
+    suck = False
     move = Move(speed=speed, radians=radians, suck=suck, latch=latch)
     print(move)
     return move

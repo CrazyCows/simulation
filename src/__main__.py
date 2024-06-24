@@ -18,38 +18,45 @@ def app(connect_to_robot: bool = False):
     screen = __init__.screen
     robot = __init__.robot
     balls = __init__.balls
-    walls = __init__.walls
+    #walls = __init__.walls
+    walls = []
+    cross = None
     clock = __init__.clock
-    cross = __init__.cross
+    #cross = __init__.cross
     running = True
-    goal = Goal(radius=1, position=Position(x=230, y=screen.get_height()/2))
+    #goal = Goal(radius=1, position=Position(x=230, y=screen.get_height()/2))
     if connect_to_robot:
         transmission.connect()
-    focused_ball: CircleObject = None
+        print("Connected to robot")
+    #focused_ball: CircleObject = None
     if (connect_to_robot):
-        wp = WallPicker()
-        wall_squares = [wp.pick_east_wall(), wp.pick_north_wall(),  wp.pick_west_wall(), wp.pick_south_wall()]
+        #wp = WallPicker()
+        #wall_squares = [wp.pick_east_wall(), wp.pick_north_wall(),  wp.pick_west_wall(), wp.pick_south_wall()]
 
-        walls = []
+        """walls = []
         walls.append(Wall.create(wall_squares[0], WallPlacement.LEFT, danger_zone_size=100))
         walls.append(Wall.create(wall_squares[1], WallPlacement.RIGHT, danger_zone_size=100))
         walls.append(Wall.create(wall_squares[2], WallPlacement.TOP, danger_zone_size=100))
-        walls.append(Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=100))
+        walls.append(Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=100))"""
 
         rv = RoboVision(walls=walls, ai=True,
                         power=2)  # power: how strong the model should be (light(1), medium(2), heavy(3))
-        cross_squares = wp.pick_cross()
+        """cross_squares = wp.pick_cross()
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
-                                                   safe_distance=20)
-        print("Here")
+                                                   safe_distance=20)"""
+        print("Connected to vision system")
 
+        balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
+                                                              thing_to_get="all_balls_and_robot")
 
     while running:
         path = []
         ai: bool = True
         if connect_to_robot:
             if ai:
-                balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="all_balls")
+                #balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="all_balls_and_robot")
+                robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
+                                                              thing_to_get="robot")
             else:
                 balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
                 if balls == []:
@@ -59,13 +66,24 @@ def app(connect_to_robot: bool = False):
             robot_position = robot_square_object.position
             radians = robot_square_object.radians
             robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                       width=135, height=150, radians=radians, suction_height=30, suction_width=30,
-                                       suction_offset_y=80)
+                                       width=135,
+                                       height=150,
+                                       radians=3.14,
+                                       suction_height=50,
+                                       suction_width=25,
+                                       suction_offset_y=105)
+
+
+        checkpoint_to_visit: Checkpoint = path_creation.temp_create_path(start_point=robot.robot.position, end_point=balls[0].position)
+        robot.checkpoints.append(checkpoint_to_visit)
+        move: Move = path_follow.create_move(robot)
+        robot.move(move=move)
+
 
         #print(len(balls))
         # print(len(robot.collected_balls))
         # TODO: Implement the
-        if balls == [] or (isinstance(balls[0], Goal)):
+        """if balls == [] or (isinstance(balls[0], Goal)):
             balls.append(goal)
             print(type(balls[0]))
             if robot.mode != RobotMode.DEPOSIT:
@@ -99,8 +117,11 @@ def app(connect_to_robot: bool = False):
         #print("Latch: ", move.latch)
         #print("Robot Mode:", robot.mode)
         print("Checkpoint type:", robot.prev_checkpoint.checkpoint_type)
-        if connect_to_robot:
-            transmission.send_command(move)
+        
+        """
+
+        #if connect_to_robot:
+        #    transmission.send_command(move)
 
 
         # NOTE: Updates the visual representation
@@ -122,5 +143,5 @@ if __name__ == '__main__':
     #     transmission.exit_functions()
     # except Exception as e:
     #     logging.error(e)
-    app(True)
+    app(False)
     pygame.quit()

@@ -88,21 +88,22 @@ class RoboVision():
     _max_y = 0
 
     def __init__(self, walls: List[SquareObject], ai: bool = False, power: int = 1):
-        for wall in walls:
-            print("")
-            for vertex in wall.vertices:  # Not very pythonic
-                if vertex[0] > self._max_x:
-                    self._max_x = vertex[0]
-                if vertex[0] < self._min_x:
-                    self._min_x = vertex[0]
-                if vertex[1] > self._max_y:
-                    self._max_y = vertex[1]
-                if vertex[1] < self._min_y:
-                    self._min_y = vertex[1]
-        print("Minimum wall x position: " + str(self._min_x))
-        print("Maximum wall x position: " + str(self._max_x))
-        print("Minimum wall y position: " + str(self._min_y))
-        print("Maximum wall y position: " + str(self._max_y))
+        if len(walls) > 0:
+            for wall in walls:
+                print("")
+                for vertex in wall.vertices:  # Not very pythonic
+                    if vertex[0] > self._max_x:
+                        self._max_x = vertex[0]
+                    if vertex[0] < self._min_x:
+                        self._min_x = vertex[0]
+                    if vertex[1] > self._max_y:
+                        self._max_y = vertex[1]
+                    if vertex[1] < self._min_y:
+                        self._min_y = vertex[1]
+            print("Minimum wall x position: " + str(self._min_x))
+            print("Maximum wall x position: " + str(self._max_x))
+            print("Minimum wall y position: " + str(self._min_y))
+            print("Maximum wall y position: " + str(self._max_y))
 
         self.last_robot_square = SquareObject
 
@@ -346,9 +347,10 @@ class RoboVision():
                                                 self._robot_x,
                                                 angle
                                                 )
+            self.last_robot_square = square
         except Exception as e:
             print("Failed to locate robot: " + str(e))
-            return None
+            return self.last_robot_square
         return square
 
     def get_any_thing(self, min_count=0, max_count=100000, tries=50, thing_to_get=""):
@@ -363,6 +365,8 @@ class RoboVision():
             func = self._get_cross
         elif thing_to_get == "robot":
             func = self._get_robot_square
+        elif thing_to_get == "all_balls_and_robot":
+            func = self._get_all_balls_and_robot
         elif thing_to_get == "all_balls":
             func = self._get_all_balls
         else:
@@ -381,7 +385,7 @@ class RoboVision():
                 tries = tries - 1
             return robot
 
-    def _get_all_balls(self):
+    def _get_all_balls_and_robot(self):
         self.commonSetup()
         ret, frame = self._vs.read()
         results = self.model.predict(frame, conf=0.4, iou=0.3)
@@ -423,6 +427,36 @@ class RoboVision():
             return orange_balls, robot_square
 
         return white_balls, robot_square
+
+
+    def _get_all_balls(self):
+        self.commonSetup()
+        ret, frame = self._vs.read()
+        results = self.model.predict(frame, conf=0.4, iou=0.3)
+        orange_balls = []
+        white_balls = []
+        blue_labels = []
+        green_labels = []
+        for result in results:
+            for box in result.boxes:
+                cls = result.names[box.cls[0].item()]
+                if cls == "orange-ball":
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    orange_balls.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+                elif cls == "white-ball":
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
+                    center_x = (x1 + x2) // 2
+                    center_y = (y1 + y2) // 2
+                    white_balls.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+
+        if len(orange_balls) != 0:
+            return orange_balls
+
+        return white_balls
 
     def _get_robot_square_ai(self, green_labels: [CircleObject], blue_labels: [CircleObject]) -> SquareObject or None:
         try:

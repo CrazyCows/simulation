@@ -105,20 +105,20 @@ class Robot(BaseModel):
         dy = math.cos(radians) * speed
         dx = math.sin(radians) * speed
 
-        if self.obstacle_detection(obstacles=obstacles) or self.obstacle_detection(
+        """if self.obstacle_detection(obstacles=obstacles) or self.obstacle_detection(
                 obstacles=[cross.square_1, cross.square_2]):
             radians = 0
             # NOTE: This is pretty jank.....
             dx = self.start_position.x - self.robot.position.x
             dy = self.start_position.y - self.robot.position.y
-            logging.warning('robot touched a wall - resetting position')
+            logging.warning('robot touched a wall - resetting position')"""
 
         robot_dx = self.robot.position.x + dx
         robot_dy = self.robot.position.y + dy
         self.previous_path.append(self.robot.position)
-        self.robot.update_square(Position(x=robot_dx, y=robot_dy), radians)
-        self.suction.update_square(Position(x=robot_dx, y=robot_dy), radians)
-        self.self_to_wall_distance(obstacles, cross)
+        #self.robot.update_square(Position(x=robot_dx, y=robot_dy), radians)
+        #self.suction.update_square(Position(x=robot_dx, y=robot_dy), radians)
+        #self.self_to_wall_distance(obstacles, cross)
         if suck:
             self.suck(balls=balls)
         self.line = calculate_coordinates_for_line(

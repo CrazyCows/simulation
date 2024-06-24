@@ -50,8 +50,7 @@ balls = [
          #CircleObject(radius=5, position=Position(x=300, y=300)),
          #CircleObject(radius=5, position=Position(x=250, y=240)),
          #CircleObject(radius=5, position=Position(x=250, y=90))
-         CircleObject(radius=5, position=Position(x=350, y=200)),
-         CircleObject(radius=5, position=Position(x=620, y=360))]
+         CircleObject(radius=5, position=Position(x=200, y=200)),]
          # CircleObject(radius=5, position=Position(x=750, y=300))]
 
 """balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
