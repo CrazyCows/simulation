@@ -20,10 +20,11 @@ def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> fl
     if angle < 0:
         angle += 2 * np.pi
 
-    #Error checking for float inaccuracies
+    # Error checking for float inaccuracies
     elif angle > 2 * np.pi:
         angle = angle - 2 * np.pi
     return angle
+
 
 def calculate_centroid(points):
     if not points:
@@ -56,7 +57,6 @@ class WallPicker:
     max_points = 0
     points = []
 
-
     def __init__(self):
         self.points = []
         self.frame = None
@@ -82,7 +82,6 @@ class WallPicker:
             cv2.namedWindow(self.frame_name)
             cv2.setMouseCallback(self.frame_name, self._click_event)
 
-
             while True:
 
                 ret, self.frame = self.cap.read()
@@ -102,17 +101,15 @@ class WallPicker:
             width = int(euclidean_distance(self.points[0], self.points[1]))
             height = int(euclidean_distance(self.points[1], self.points[2]))
             x, y = calculate_centroid(self.points)
-            print(x,y)
-
-
+            print(x, y)
 
             return SquareObject.create_square(
-                                position=Position(x=x, y=y),
-                                width=width,
-                                height=height,
-                                radians=angle,
-                                offset_x=0,
-                                offset_y=0)
+                position=Position(x=x, y=y),
+                width=width,
+                height=height,
+                radians=angle,
+                offset_x=0,
+                offset_y=0)
 
         else:
             raise ValueError("Only 4 implemented ")
@@ -134,6 +131,7 @@ class WallPicker:
         square = self._pick_four_points("South", 4)
         wall = Wall.create(square, WallPlacement.BOT)
         return wall
+
     def pick_west_wall(self):
         print("Click 4 points for the West Wall")
         square = self._pick_four_points("West", 4)
@@ -148,7 +146,7 @@ class WallPicker:
         print("Click the two of the hole")
 
         self.points = []
-        self.max_points = 2
+        self.max_points = 1
         self.frame_name = "goal hole"
         cv2.namedWindow("goal hole")
         cv2.setMouseCallback("goal hole", self._click_event)
@@ -164,27 +162,20 @@ class WallPicker:
             if cv2.waitKey(1) & 0xFF == ord('q') or len(self.points) >= 2:
                 break
 
-        # Very python
-        p1 = CircleObject(radius=1, position=Position(x=self.points[0][0], y=self.points[0][1]))
-        p2 = CircleObject(radius=1, position=Position(x=self.points[1][0], y=self.points[1][1]))
-        x,y = calculate_centroid([(p1.position.x, p1.position.y), (p2.position.x, p2.position.y)])
-        circle = CircleObject(radius=1, position=Position(x=x,y=y))
-        return circle
+        return self.points[0]
 
     def pick_cross(self):
         cross_part_one: SquareObject = self._click_cross_one()
         cross_part_two: SquareObject = deepcopy(cross_part_one)
-        cross_part_two.update_square(position=cross_part_two.position, radians=cross_part_two.radians+np.pi/2)
-        if cross_part_two.radians > 2*np.pi:
-            cross_part_two.radians = cross_part_two.radians - 2*np.pi
-        #cross = Cross.create_cross_with_safe_zones(cross_part_one, cross_part_two, walls)
+        cross_part_two.update_square(position=cross_part_two.position, radians=cross_part_two.radians + np.pi / 2)
+        if cross_part_two.radians > 2 * np.pi:
+            cross_part_two.radians = cross_part_two.radians - 2 * np.pi
+        # cross = Cross.create_cross_with_safe_zones(cross_part_one, cross_part_two, walls)
         return [cross_part_one, cross_part_two]
 
     def release(self):
         self.cap.release()
         cv2.destroyAllWindows()
-
-
 
 
 if __name__ == "__main__":
