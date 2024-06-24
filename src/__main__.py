@@ -1,3 +1,5 @@
+import math
+
 import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
@@ -74,48 +76,48 @@ def app(connect_to_robot: bool = False):
         print("Cross")
 
 
-    balls: [CircleObject] = []
+    balls = []
     while running:
         path = []
         ai: bool = True
         i = 1
-        found_robot_init = False
         if connect_to_robot:
             print("heeere")
             #if ai:
-            while i < 100 and not found_robot_init:
-                try:
-                    if (len(balls) == 0):
-                        balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
-                                                               thing_to_get="all_balls")
-                    elif path_follow.suck_if_small(robot=robot, distance=20):
-                        sleep(2)
-                        balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
-                                                               thing_to_get="all_balls")
-                    else:
-                        robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
-                                                               thing_to_get="get_robot_ai")
+            robot_exists = False
+            while True:
+                if (len(balls) == 0):
+                    balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
+                                                           thing_to_get="all_balls")
+                    print("I ran 1")
+
+                elif math.dist((robot.robot.position.x, robot.robot.position.y), (balls[0].position.x, balls[0].position.y)) < 40:
+                    balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
+                                                        thing_to_get="all_balls")
+                    print("I ran 2")
+                else:
+                    robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
+                                                           thing_to_get="get_robot_ai")[0]
+                    print("I ran 3")
 
 
 
 
-                    """else:
-                        balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
-                        if balls == []:
-                            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-                        robot_square_object: SquareObject = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")"""
+                """else:
+                    balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
+                    if balls == []:
+                        balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
+                    robot_square_object: SquareObject = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")"""
 
-                    robot_position: Position = robot_square_object.position
-                    radians = rv.orientation
-                    mode = robot.mode
-                    previous_checkpoint = robot.prev_checkpoint
-                    robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
-                                            width=130, height=130, radians=radians, suction_height=30, suction_width=30,
-                                            suction_offset_y=80, previous_checkpoint=previous_checkpoint, mode=mode)
-                except Exception as e:
-                    print(str(e))
-                finally:
-                    found_robot_init = True
+                robot_position: Position = robot_square_object.position
+                radians = rv.orientation
+                mode = robot.mode
+                previous_checkpoint = robot.prev_checkpoint
+                robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
+                                        width=130, height=130, radians=radians, suction_height=30, suction_width=30,
+                                        suction_offset_y=80, previous_checkpoint=previous_checkpoint, mode=mode)
+                robot_exists = True
+
         #print(len(balls))
         # print(len(robot.collected_balls))
         # TODO: Implement the

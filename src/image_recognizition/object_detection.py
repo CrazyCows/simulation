@@ -421,8 +421,9 @@ class RoboVision():
                     blue_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
 
         robot_square: SquareObject = self._get_robot_square_ai(green_labels=green_labels, blue_labels=blue_labels)
-
-        return robot_square
+        robot_squares = []
+        robot_squares.append(robot_square)
+        return robot_squares
 
     def _get_all_balls(self):
         self.commonSetup()
