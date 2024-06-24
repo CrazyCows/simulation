@@ -15,7 +15,24 @@ from typing import List
 from image_recognizition import wall_picker
 from time import sleep
 
+def find_focused_ball(focused_ball, balls):
+    for ball in balls:
+        if euclidean_distance((focused_ball.position.x, focused_ball.y), (b.x, b.y)) < 5:
+            return ball
+    return None
 
+def euclidean_distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float:
+    # Unpack the points
+    x1, y1 = point1
+    x2, y2 = point2
+
+    # Calculate the difference in x and y coordinates
+    dx = x2 - x1
+    dy = y2 - y1
+
+    # Calculate the Euclidean distance
+    distance = math.sqrt(dx * dx + dy * dy)
+    return distance
 def app(connect_to_robot: bool = False):
     screen = __init__.screen
     robot = __init__.robot
@@ -100,6 +117,14 @@ def app(connect_to_robot: bool = False):
                     print(str(e))
                 finally:
                     found_robot_init = True
+        if not focused_ball and len(balls) > 0:
+            temp_focused_ball = find_focused_ball(focused_ball, balls)
+            if temp_focused_ball:
+                focused_ball = temp_focused_ball
+            else:
+                temp_focused_ball = balls.sort(key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
+
+
         #print(len(balls))
         # print(len(robot.collected_balls))
         # TODO: Implement the
@@ -113,10 +138,10 @@ def app(connect_to_robot: bool = False):
         def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
             return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
 
-        if robot.mode != RobotMode.DANGER and robot.mode != RobotMode.DANGER_REVERSE:
-            balls.sort(key=lambda ball: robot.calculate_speed_to_ball(ball))
-            if len(balls) > 0:
-                focused_ball = balls[0]
+        #if robot.mode != RobotMode.DANGER and robot.mode != RobotMode.DANGER_REVERSE:
+        #    balls.sort(key=lambda ball: robot.calculate_speed_to_ball(ball))
+        #    if len(balls) > 0:
+        #        focused_ball = balls[0]
         # Temp solution, just redrawing balls all da time
         if robot.prev_checkpoint.checkpoint_type != CheckpointType.GOAL:
             path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
@@ -176,3 +201,4 @@ if __name__ == '__main__':
     #     logging.error(e)
     app(True)
     pygame.quit()
+
