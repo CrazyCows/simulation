@@ -24,7 +24,7 @@ def app(connect_to_robot: bool = False):
     clock = __init__.clock
     cross = __init__.cross
     running = True
-    goal = Goal(radius=1, position=Position(x=230, y=screen.get_height()/2))
+    goal = Goal(radius=1, position=Position(x=256, y=screen.get_height()/2))
     if connect_to_robot:
         transmission.connect()
     focused_ball: CircleObject = None
@@ -61,9 +61,9 @@ def app(connect_to_robot: bool = False):
 
         rv = RoboVision(walls=walls, ai=True,
                         power=2)  # power: how strong the model should be (light(1), medium(2), heavy(3))
-        cross_squares = wp.pick_cross()
-        cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
-                                                   safe_distance=20)
+        #cross_squares = wp.pick_cross()
+        #cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
+        #                                           safe_distance=20)
         #goal = wp.pick_hole()
         """cross = Cross.create_cross_with_safe_zones(square_1=SquareObject(position=Position(x=278.0, y=149.25), width=23, height=102, radians=5.588447030982883, vertices=[(301.81485966751865, 102.70859414439232), (236.51605090174172, 181.06716466332466), (254.18514033248135, 195.79140585560768), (319.4839490982583, 117.43283533667535)], offset_x=0, offset_y=0),
                                                    square_2=SquareObject(position=Position(x=278.0, y=149.25), width=23, height=102, radians=0.8760580505981936, vertices=[231.46, 125.44]),
@@ -105,7 +105,7 @@ def app(connect_to_robot: bool = False):
         # TODO: Implement the
         if len(balls) > 0:
             focused_ball = balls[0]
-        if balls == [] and robot.mode != RobotMode.DANGER_REVERSE and robot.mode != RobotMode.STOP_DANGER:
+        if balls == [] and robot.mode != RobotMode.DANGER_REVERSE and robot.mode != RobotMode.STOP_DANGER and robot.mode != RobotMode.DANGER:
             focused_ball = goal
             robot.mode = RobotMode.ENDPHASE
         elif robot.mode == RobotMode.ENDPHASE:
@@ -144,17 +144,18 @@ def app(connect_to_robot: bool = False):
             #sleep(3)
             pass
         if connect_to_robot:
-            transmission.send_command(move)
+            transmission.send_command(move, robot.mode)
         print("Current mode: ", robot.mode)
         print("previous CheckpointType: ", robot.prev_checkpoint.checkpoint_type)
         print("Next CheckpointType: ", robot.checkpoints[0].checkpoint_type)
         print("Move: ", move)
+        print("Robotposition: x=", robot.robot.position.x, "y= ", robot.robot.position.y)
 
         # NOTE: Updates the visual representation
-        #frame = rv.get_flipped_frame()
-        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        #frame = pygame.surfarray.make_surface(np.rot90(frame))
-        #screen.fill(frame)
+        # frame = rv.get_flipped_frame()
+        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # frame = pygame.surfarray.make_surface(np.rot90(frame))
+        # screen.fill(frame)
         visualization.game(screen, robot, walls, balls, path, cross)
 
         # Tickrate, frames/sec.

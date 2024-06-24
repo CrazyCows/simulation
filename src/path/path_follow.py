@@ -90,7 +90,7 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
         elif robot.prev_checkpoint.checkpoint_type == CheckpointType.GOAL:
             if robot.mode == RobotMode.ENDPHASE or robot.mode == RobotMode.DEPOSIT:
                 robot.mode = RobotMode.DEPOSIT
-    if not robot.is_robot_near_obstacles(80) and robot.mode == RobotMode.DANGER_REVERSE:
+    if overlap_detection.distance_to_wall_from_straight_line(robot.line, walls) > 120 and robot.mode == RobotMode.DANGER_REVERSE:
         robot.ignore_danger_in_corner = False
         robot.mode = RobotMode.SAFE
 
