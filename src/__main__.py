@@ -72,6 +72,9 @@ def app(connect_to_robot: bool = False):
         #    print(cross)
         #print("Here")
         print("Cross")
+
+
+    balls: [CircleObject] = []
     while running:
         path = []
         ai: bool = True
@@ -82,7 +85,20 @@ def app(connect_to_robot: bool = False):
             #if ai:
             while i < 100 and not found_robot_init:
                 try:
-                    balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="all_balls")
+                    if (len(balls) == 0):
+                        balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
+                                                               thing_to_get="all_balls")
+                    elif path_follow.suck_if_small(robot):
+                        sleep(2)
+                        balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
+                                                               thing_to_get="all_balls")
+                    else:
+                        robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100,
+                                                               thing_to_get="get_robot_ai")
+
+
+
+
                     """else:
                         balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
                         if balls == []:
