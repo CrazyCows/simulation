@@ -1,13 +1,13 @@
 import socket
 from typing import List
-from dto.robot import Move, Move
+from dto.robot import Move, Move, RobotMode
 import math
 import signal
 import atexit
 import sys
 import numpy as np
 
-server_ip = '192.168.103.77'  # Erstat med IP-adressen til din EV3
+server_ip = '192.168.78.77'  # Erstat med IP-adressen til din EV3
 port = 5000
 client_socket = socket.socket # Modified to not crash program on launch... Can't instantiate if no robot.
 
@@ -34,7 +34,7 @@ def send_exit_command():
             print(f"Error sending 'exit' command: {e}")
 
 
-def prepare_command(move: Move):
+def prepare_command(move: Move, robot_mode: RobotMode):
 
     radians = move.radians
     suck = move.suck
@@ -43,7 +43,6 @@ def prepare_command(move: Move):
     latch = 0#move.latch
     lm = 0
     rm = 0
-
 
 
     abs_radians = abs(radians)
@@ -88,10 +87,16 @@ def prepare_command(move: Move):
         else:
             rm = -speed
             lm = speed
+
     suck = True
+    if robot_mode == RobotMode.DEPOSIT:
+        suck = False
+        lm = 0
+        rm = 0
+        latch = True
     # Left motor speed, Right motor speed, fan on/off, latch open/close
     print(f"Left motor: {lm}, Right motor: {rm}, Suck: {1 if suck else 0}, Latch: {1 if latch else 0}")
-    return lm, rm, 1, 1 if latch else 0
+    return lm, rm, 1 if suck else -1, 1 if latch else 0
 
 
 
@@ -100,8 +105,8 @@ def goal_command():
     move: Move = Move(speed=0, radians=0, suck=False, latch=True)
     send_command(move)
 
-def send_command(move: Move):
-    command = prepare_command(move)
+def send_command(move: Move, robot_mode: RobotMode):
+    command = prepare_command(move, robot_mode)
     #print("command string:", command)
     command_string = f"{command[0]} {command[1]} {command[2]} {command[3]}" #Left motor, Right motor, Fan, latch
     # command_string = f"0 0 {command[2]} {command[3]}"  # Left motor, Right motor, Fan, latch

@@ -146,14 +146,14 @@ class Robot(BaseModel):
         elif checkpoint.checkpoint_type == CheckpointType.GOAL:
             if self.distance_to_wall_left < self.distance_to_wall_right:
                 return True if (
-                        self.robot.position.x - 110 < checkpoint.x < self.robot.position.x - 95 and
-                        self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+                        self.robot.position.x - 107 < checkpoint.x < self.robot.position.x - 93 and
+                        self.robot.position.y + 7 > checkpoint.y > self.robot.position.y - 7) else False
             else:
                 return True if (
                         self.robot.position.x + 110 > checkpoint.x > self.robot.position.x + 95 and
                         self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
         elif checkpoint.checkpoint_type == CheckpointType.BALL:
-            if self.calculate_dist_to_checkpoint(checkpoint) < 120 and abs(self.previous_move.radians) < 0.1:
+            if self.calculate_dist_to_checkpoint(checkpoint) < 115 and abs(self.previous_move.radians) < 0.1:
                 return True
             # elif self.mode == RobotMode.DANGER and abs(self.previous_move.radians) < 0.1 and self.is_robot_near_obstacles(80):
             #     return True
@@ -357,3 +357,6 @@ class Robot(BaseModel):
         ]
 
         return min(distances)
+
+
+

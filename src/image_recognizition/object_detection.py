@@ -432,6 +432,8 @@ class RoboVision():
         white_balls = []
         blue_labels = []
         green_labels = []
+        num_white_balls = 0
+        num_orange_balls = 0
         for result in results:
             for box in result.boxes:
                 cls = result.names[box.cls[0].item()]
@@ -441,12 +443,14 @@ class RoboVision():
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
                     orange_balls.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+                    num_orange_balls += 1
                 elif cls == "white_ball":
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
                     white_balls.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+                    num_white_balls += 1
                 elif cls == "green_front":
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
@@ -460,12 +464,15 @@ class RoboVision():
                     center_y = (y1 + y2) // 2
                     blue_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
 
+        print("num_white_balls in image:", num_orange_balls)
+        print("num_orange_balls in image:", num_orange_balls)
+
         robot_square: SquareObject = self._get_robot_square_ai(green_labels=green_labels, blue_labels=blue_labels)
 
         if len(orange_balls) != 0:
             return orange_balls, robot_square
-
-        return white_balls, robot_square
+        else:
+            return white_balls, robot_square
 
     def _get_robot_square_ai(self, green_labels: [CircleObject], blue_labels: [CircleObject]) -> SquareObject or None:
         try:

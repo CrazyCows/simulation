@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="nope">
+    <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="pushing this">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/obstacles.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/obstacles.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/shapes.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/shapes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gui/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/helper/overlap_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/helper/overlap_detection.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/image_recognizition/object_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/image_recognizition/object_detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/kk.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kk.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/path/path_follow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_follow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/transmission.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/transmission.py" afterDir="false" />
     </list>
@@ -34,14 +30,6 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/src/dto/shapes.py">
-      <ranges>
-        <range start1="30" end1="31" start2="30" end2="31" changelist="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" />
-        <range start1="54" end1="55" start2="54" end2="55" changelist="d14e9409-f597-44c7-8de6-1781a20ee4f0" />
-      </ranges>
-    </file>
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -234,7 +222,23 @@
       <option name="project" value="LOCAL" />
       <updated>1719235900231</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="bugged code">
+      <option name="closed" value="true" />
+      <created>1719250056487</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1719250056487</updated>
+    </task>
+    <task id="LOCAL-00008" summary="pushing this">
+      <option name="closed" value="true" />
+      <created>1719260097186</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1719260097186</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -270,7 +274,9 @@
     <MESSAGE value="added yolo thingy to main" />
     <MESSAGE value="save" />
     <MESSAGE value="nope" />
-    <option name="LAST_COMMIT_MESSAGE" value="nope" />
+    <MESSAGE value="bugged code" />
+    <MESSAGE value="pushing this" />
+    <option name="LAST_COMMIT_MESSAGE" value="pushing this" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -278,7 +284,7 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <condition expression="robot.checkpoints[0].checkpoint_type == CheckpointType.GOAL" language="Python" />
           <url>file://$PROJECT_DIR$/src/path/path_follow.py</url>
-          <line>75</line>
+          <line>79</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
@@ -292,7 +298,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1719249544363" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/simulation$__main__.coverage" NAME="__main__ Coverage Results" MODIFIED="1719267206791" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/simulation$path_follow.coverage" NAME="path_follow Coverage Results" MODIFIED="1718967678356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/path" />
     <SUITE FILE_PATH="coverage/simulation$object_detection.coverage" NAME="object_detection Coverage Results" MODIFIED="1718731129244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/simulation$pytest_in___main___py.coverage" NAME="pytest in __main__.py Coverage Results" MODIFIED="1718805991821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
