@@ -28,7 +28,7 @@ class SquareObject(BaseModel):
         self.position = position_with_offset
         half_width = self.width / 2
         half_height = self.height / 2
-        self.radians = radians
+        #self.radians = radians
         self.vertices = [
             (position_with_offset.x - half_width, position_with_offset.y - half_height),
             (position_with_offset.x - half_width, position_with_offset.y + half_height),
@@ -36,7 +36,7 @@ class SquareObject(BaseModel):
             (position_with_offset.x + half_width, position_with_offset.y - half_height)
         ]
 
-        self.vertices = rotate_square(vertices=self.vertices, center=position, radians=radians)
+        self.vertices = rotate_square(vertices=self.vertices, center=position, radians=self.radians)
     
     @classmethod
     def create_square(cls, position: Position, width: int, height: int, radians: float, offset_x=0, offset_y=0):
@@ -76,6 +76,22 @@ class SquareObject(BaseModel):
                 longest_side_center = ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
 
         return longest_side_center
+
+    def calculate_orientation(self) -> float:
+        # Use the first side (vertex 0 to vertex 1) as the reference side
+        p1 = self.vertices[0]
+        p2 = self.vertices[1]
+
+        # Calculate the angle of the side with respect to the horizontal axis
+        delta_x = p2[0] - p1[0]
+        delta_y = p2[1] - p1[1]
+        angle = math.atan2(delta_y, delta_x)
+
+        # Normalize the angle to be within the range [0, 2*pi]
+        if angle < 0:
+            angle += 2 * math.pi
+
+        return angle
 
     
 class CircleObject(BaseModel):

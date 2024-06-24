@@ -97,20 +97,22 @@ class Robot(BaseModel):
         # print(move)
         speed = move.speed
         radians = move.radians
+
         suck = move.suck
         # print(speed)
         # print(radians)
         # print(suck)
-        radians += self.robot.radians
+        #radians += self.robot.radians
+        #radians += 0.785 * 2
         dy = math.cos(radians) * speed
         dx = math.sin(radians) * speed
 
         if self.obstacle_detection(obstacles=obstacles) or self.obstacle_detection(
                 obstacles=[cross.square_1, cross.square_2]):
-            radians = 0
+            # radians = 0
             # NOTE: This is pretty jank.....
-            dx = self.start_position.x - self.robot.position.x
-            dy = self.start_position.y - self.robot.position.y
+            # dx = self.start_position.x - self.robot.position.x
+            # dy = self.start_position.y - self.robot.position.y
             logging.warning('robot touched a wall - resetting position')
 
         robot_dx = self.robot.position.x + dx
@@ -121,9 +123,9 @@ class Robot(BaseModel):
         self.self_to_wall_distance(obstacles, cross)
         if suck:
             self.suck(balls=balls)
-        self.line = calculate_coordinates_for_line(
-            radians, self.robot.position.x, self.robot.position.y
-        )
+        #self.line = calculate_coordinates_for_line(
+        #    self.robot.radians, self.robot.position.x, self.robot.position.y
+        #)
 
     def set_robot(self, position: Position, radians: float):
         self.robot.position = position
@@ -180,6 +182,10 @@ class Robot(BaseModel):
             radians, position.x, position.y
         )
 
+        line = calculate_coordinates_for_line(
+            radians, robot.position.x, robot.position.y
+        )
+
         return cls(robot=robot, suction=suction, collected_balls=collected_balls,
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit,
                    previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line,
@@ -195,6 +201,10 @@ class Robot(BaseModel):
         end_y = start_y + length * math.cos(direction)
 
         return LineObject(start_pos=Position(x=start_x, y=start_y), end_pos=Position(x=end_x, y=end_y))
+
+    def set_line(self):
+        calculate_coordinates_for_line(self.robot.radians, self.robot.position.x, self.robot.position.y)
+
 
     def is_robot_near_obstacles(self, threshold: float = 30):
         if self.distance_to_cross < threshold:

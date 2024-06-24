@@ -1,3 +1,5 @@
+import math
+
 import cv2
 import imutils
 import numpy as np
@@ -112,6 +114,7 @@ class RoboVision():
             self.model = self.load_yolo_model(power=power)
 
         self._frame = None
+        self.orientation: float = 0.0
 
     _robot_y = 100
     _robot_x = 100
@@ -185,13 +188,13 @@ class RoboVision():
         # How powerful the model running on the computer should be
         # Light
         if (power == 1):
-            model = YOLO(r"C:\Users\antho\simulation\src\image_recognizition\models\light.pt").to(device)
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\light.pt").to(device)
         # Medium
         elif power == 2:
-            model = YOLO(r"C:\Users\antho\simulation\src\image_recognizition\models\medium.pt").to(device)
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\medium.pt").to(device)
         # Heavy ()
         elif power == 3:
-            model = YOLO(r"C:\Users\antho\simulation\src\image_recognizition\models\heavy.pt").to(device)
+            model = YOLO(r"C:\Users\LuucM\PycharmProjects\simulation\src\image_recognizition\models\heavy.pt").to(device)
         return model
 
     def get_flipped_frame(self):
@@ -384,7 +387,7 @@ class RoboVision():
     def _get_all_balls(self):
         self.commonSetup()
         ret, frame = self._vs.read()
-        results = self.model.predict(frame, conf=0.4, iou=0.3)
+        results = self.model.predict(frame, conf=0.3, iou=0.3)
         orange_balls = []
         white_balls = []
         blue_labels = []
@@ -409,13 +412,13 @@ class RoboVision():
                     radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
-                    blue_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+                    green_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
                 elif cls == "blue-label":
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     radius = (x2 - x1 + y2 - y1) // 4  # Approximate radius
                     center_x = (x1 + x2) // 2
                     center_y = (y1 + y2) // 2
-                    green_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
+                    blue_labels.append(CircleObject(radius=radius, position=Position(x=center_x, y=center_y)))
 
         robot_square: SquareObject = self._get_robot_square_ai(green_labels=green_labels, blue_labels=blue_labels)
 
@@ -435,6 +438,8 @@ class RoboVision():
             self.last_robot_square = square
         except Exception as e:
             print("Failed to locate robot: " + str(e))
+            if self.last_robot_square == None:
+                return SquareObject.create_square(Position(x=0, y=0), 0, 0, 0)
             return self.last_robot_square
         return square
 
@@ -460,14 +465,28 @@ class RoboVision():
         center = CircleObject(radius=1,
                               position=Position(x=int((green_dot.position.x + blue_dot.position.x) / 2),
                                                 y=int((green_dot.position.y + blue_dot.position.y) / 2)))
-        angle_xy = calculate_positive_angle(green_dot, blue_dot)
+        self.orientation = calculate_positive_angle(green_dot, blue_dot)
+        angle_xy = calculate_positive_angle(green_dot, blue_dot) # (math.pi * 2) -
         center = self._correct_robot_location_perspective(center)
         return center, angle_xy
+
+    def calculate_angle(self, dot1: CircleObject, dot2: CircleObject) -> float:
+        delta_x = dot2.position.x - dot1.position.x
+        delta_y = dot2.position.y - dot1.position.y
+        angle = math.atan2(delta_y, delta_x)
+
+        # Ensure the angle is within the range [-2*pi, 2*pi]
+        if angle < -2 * math.pi:
+            angle += 2 * math.pi
+        elif angle > 2 * math.pi:
+            angle -= 2 * math.pi
+
+        return angle
 
     def detect_with_yolo(self, thing_type: str) -> List[CircleObject]:
         self.commonSetup()
         ret, frame = self._vs.read()
-        results = self.model.predict(frame, conf=0.4, iou=0.3)
+        results = self.model.predict(frame, conf=0.3, iou=0.3)
         detected_objects = []
         for result in results:
             for box in result.boxes:

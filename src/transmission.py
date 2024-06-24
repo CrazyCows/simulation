@@ -5,6 +5,7 @@ import math
 import signal
 import atexit
 import sys
+import numpy as np
 
 server_ip = '192.168.137.241'  # Erstat med IP-adressen til din EV3
 port = 5000
@@ -34,54 +35,61 @@ def send_exit_command():
 
 
 def prepare_command(move: Move):
+
+    radians = move.radians
     suck = move.suck
-    speed = move.speed
-    speed = speed/2
+    speed = move.speed / 2 # WE PUT IT DOWN, TOO FAST FOR NOW!
+
     latch = 0
     lm = 0
     rm = 0
-    if speed == 0 and move.radians != 0:
-        if move.radians > 0:
-            lm = 1
-            rm = -1
-        elif move.radians < 0:
-            lm = -1
-            rm = 1
+
+
+
+    abs_radians = abs(radians)
+    if abs_radians <= 0.1:
+        rm = speed
+        lm = speed
+    elif 0.1 < abs_radians <= 0.4:
+        if radians < 0:
+            rm = 0.1
+            lm = -0.1
+        else:
+            rm = -0.1
+            lm = 0.1
+    elif 0.4 < abs_radians <= 0.8:
+        if radians < 0:
+            rm = 0.5
+            lm = -0.5
+        else:
+            rm = -0.5
+            lm = 0.5
+    elif 0.8 < abs_radians <= 1:
+        if radians < 0:
+            rm = 0.7
+            lm = -0.7
+        else:
+            rm = -0.7
+            lm = 0.7
+    elif 1 < abs_radians <= 1.2:
+        if radians < 0:
+            rm = 0.9
+            lm = -0.9
+        else:
+            rm = -0.9
+            lm = 0.9
     else:
-        if abs(move.radians) <= 0.04:
-            lm = (speed)
-            rm = (speed)
-        elif 0.04 < abs(move.radians) < 0.1:
-            if move.radians < 0:
-                lm = (speed) * 1
-                rm = (speed) * 0.5
-            else:
-                lm = (speed) * 0.5
-                rm = (speed) * 1
-        elif 0.08 < abs(move.radians) < 0.3:
-            if move.radians < 0:
-                lm = (speed) * 1
-                rm = (speed) * 0.25
-            else:
-                lm = (speed) * 0.25
-                rm = (speed) * 1
-        elif 0.7 < abs(move.radians) < 0.7:
-            if move.radians < 0:
-                lm = (speed) * 1
-                rm = (speed) * -1
-            else:
-                lm = (speed) * -1
-                rm = (speed) * 1
-        elif abs(move.radians) > 1.56:
-            if move.radians < 0:
-                lm = (speed) * 1
-                rm = (speed) * -1
-            else:
-                lm = (speed) * -1
-                rm = (speed) * 1
+        if radians < 0:
+            rm = speed
+            lm = -speed
+        else:
+            rm = -speed
+            lm = speed
 
     # Left motor speed, Right motor speed, fan on/off, latch open/close
     return lm, rm, 1 if suck else 0, 1 if latch else 0
+
+
 
 
 def goal_command():
