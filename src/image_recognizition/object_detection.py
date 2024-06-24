@@ -74,7 +74,7 @@ def calculate_positive_angle(circle1: CircleObject, circle2: CircleObject) -> fl
 
 class RoboVision():
     # at a camera height of 202cm with
-    _whiteSizeLower = 7
+    _whiteSizeLower = 2
     _whiteSizeUpper = 50
     _eggSizeLower = _whiteSizeUpper + 1
     _eggSizeUpper = 50
@@ -110,7 +110,7 @@ class RoboVision():
     _camera_y: int = None
     _z_factor = 1 - (_camera_z_cm - _robot_z_cm) / _camera_z_cm
 
-    _whiteLower = np.array([0, 0, 160])
+    _whiteLower = np.array([0, 0, 200])
     _whiteUpper = np.array([255, 50, 255])
 
     _red1lower_limit = np.array([0, 125, 80])
@@ -159,14 +159,14 @@ class RoboVision():
     _orange_upper_limit = np.array([25, 255, 255])
     """
 
-    stream_url = 'http://192.168.0.206:8080/video'
+    stream_url = 'http://192.168.137.15:8080/video'
     _cross_area = 100
     
     _vs = cv2.VideoCapture(stream_url)
     
     #_vs = cv2.VideoCapture(0)
-    _vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-    _vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+    #_vs.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    #_vs.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
     # Variables to be updated every darn iteration
     _blurred = None

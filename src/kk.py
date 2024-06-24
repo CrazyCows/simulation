@@ -33,7 +33,7 @@ def detect_triangles(frame, lower_bound, upper_bound):
     return binary, object_centers
 
 def main():
-    ip_camera_url = 'http://192.168.0.206:8080/video'
+    ip_camera_url = 'http://192.168.137.15:8080/video'
     cap = cv2.VideoCapture(ip_camera_url)
     
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
@@ -42,7 +42,7 @@ def main():
     if not cap.isOpened():
         #print("Error: Could not open video stream.")
         return
-    _whiteLower = np.array([0, 0, 160])
+    _whiteLower = np.array([0, 0, 200])
     _whiteUpper = np.array([255, 50, 255])
     # Define different color bounds for each window
     bounds = [
