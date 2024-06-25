@@ -23,6 +23,11 @@ def find_focused_ball(focused_ball, balls):
             return ball
     return None
 
+def ball_in_list(ball: CircleObject, list_of_balls: List[CircleObject]):
+    for list_ball in list_of_balls:
+        if euclidean_distance((list_ball, ball)) < 5:
+            return True
+    return False
 def euclidean_distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float:
     # Unpack the points
     return math.dist(point1, point2)
@@ -35,6 +40,9 @@ def app(connect_to_robot: bool = False):
     #cross = __init__.cross
     running = True
     first_iteration = True
+
+    dead_balls = []
+    dead_ball_tick_counter = 0
     #goal = Goal(radius=1, position=Position(x=256, y=screen.get_height()/2))
     if connect_to_robot:
         transmission.connect()
@@ -123,6 +131,13 @@ def app(connect_to_robot: bool = False):
                     print(str(e))
                 finally:
                     found_robot_init = True
+        if previous_checkpoint is not None:
+            abstract_ball_removal_ai_dependency_injection_factory_with_crypto_final = balls #A list of balls
+            for ball in abstract_ball_removal_ai_dependency_injection_factory_with_crypto_final:
+                if ball_in_list(ball, dead_balls):
+                    balls.remove(ball)
+
+        previous_focused_ball = focused_ball
         if focused_ball and len(balls) > 0 and robot.mode != RobotMode.DANGER:
             temp_focused_ball = find_focused_ball(focused_ball, balls)
             if temp_focused_ball:
@@ -130,6 +145,12 @@ def app(connect_to_robot: bool = False):
             else:
                 focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
+        if not first_iteration and focused_ball and euclidean_distance((focused_ball.position.x, focused_ball.position.y), (previous_focused_ball.position.x, previous_focused_ball.position.y)) < 5:
+            dead_ball_tick_counter += 1
+        elif euclidean_distance((focused_ball.position.x, focused_ball.position.y), (previous_focused_ball.position.x, previous_focused_ball.position.y)) >= 5:
+            dead_ball_tick_counter = 0
+        if dead_ball_tick_counter > (30 * 60) - 1:
+            dead_balls.append(focused_ball) # New ball wil be chosen at next frame
 
 
         if len(balls) > 0 and first_iteration:
