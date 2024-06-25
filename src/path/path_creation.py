@@ -50,17 +50,22 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
     # If path collides with obstacles, recalculate route.
     # Else:
     # If ball is in danger zone, create
-    if (check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path)) and not robot.ignore_danger_in_corner:
+    if (check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path)) and not robot.ignore_danger_in_corner and not robot.mode == RobotMode.DANGER:
         additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_ball.position,
                                                                    robot)
         if len(additional_checkpoints) > 1:
             path.append(create_temp_path(temp_ball.position, additional_checkpoints[1]))
         else:
-
             path.append(create_temp_path(robot.robot.position, additional_checkpoints[0]))
             path.append(create_temp_path(temp_ball.position, additional_checkpoints[0]))
         path.extend(additional_path)
         checkpoints.extend(additional_checkpoints)
+        if b:
+            checkpoints.append(
+                Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
+            checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
+                                          checkpoint_type=CheckpointType.BALL))
+
     else:
         if b and (not robot.prev_checkpoint or (robot.prev_checkpoint.x != p.x and robot.prev_checkpoint.y != p.y)):
             path.append(create_temp_path(robot.robot.position, p))
