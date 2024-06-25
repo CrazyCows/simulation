@@ -42,16 +42,27 @@ def app(connect_to_robot: bool = False):
     if (connect_to_robot):
         wp = WallPicker()
         goal = wp.pick_hole()
-        #wall_squares = [wp.pick_west_wall(), wp.pick_north_wall(),  wp.pick_east_wall(), wp.pick_south_wall()]
+        wall_squares = [wp.pick_west_wall(), wp.pick_north_wall(),  wp.pick_east_wall(), wp.pick_south_wall()]
 
-        #walls = []
-        #walls.append(Wall.create(wall_squares[0], WallPlacement.LEFT, danger_zone_size=5))
-        #walls.append(Wall.create(wall_squares[1], WallPlacement.TOP, danger_zone_size=5))
-        #walls.append(Wall.create(wall_squares[2], WallPlacement.RIGHT, danger_zone_size=5))
-        #walls.append(Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=5))
+        walls = []
+        left = Wall.create(wall_squares[0], WallPlacement.LEFT, danger_zone_size=5)
+        walls.append(left)
+        top = Wall.create(wall_squares[1], WallPlacement.TOP, danger_zone_size=5)
+        walls.append(top)
+        right = Wall.create(wall_squares[2], WallPlacement.RIGHT, danger_zone_size=5)
+        walls.append(right)
+        bot = Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=5)
+        walls.append(bot)
 
-        #for wall in walls:
-        #    print(walls)
+        #Print til at indsætte i init. DO NOT DELETE OK THANK YOU
+        print("left_wall_square = SquareObject.create_square(position=Position(x=" + str(left.position.x) + ", y=" + str(left.position.y) + "),\n" +
+        "width=" + str(left.width) + ", height=" + str(left.height) + ", radians=" + str(left.radians) + ")")
+        print("right_wall_square = SquareObject.create_square(position=Position(x=" + str(right.position.x) + ", y=" + str(right.position.y) + "),\n" +
+        "width=" + str(right.width) + ", height=" + str(right.height) + ", radians=" + str(right.radians) + ")")
+        print("top_wall_square = SquareObject.create_square(position=Position(x=" + str(top.position.x) + ", y=" + str(top.position.y) + "),\n" +
+        "width=" + str(top.width) + ", height=" + str(top.height) + ", radians=" + str(top.radians) + ")")
+        print("bot_wall_square = SquareObject.create_square(position=Position(x=" + str(bot.position.x) + ", y=" + str(bot.position.y) + "),\n" +
+        "width=" + str(bot.width) + ", height=" + str(bot.height) + ", radians=" + str(bot.radians) + ")")
 
 
         """walls.append(Wall.create(
