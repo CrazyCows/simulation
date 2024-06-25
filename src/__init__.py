@@ -9,14 +9,14 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-left_wall_square = SquareObject.create_square(position=Position(x=224, y=337.25),
-                    width=635, height=22, radians=4.71553857)
-right_wall_square = SquareObject.create_square(position=Position(x=1077.5, y=346.25),
-                    width=655, height=24, radians=4.7070475)
-top_wall_square = SquareObject.create_square(position=Position(x=651.5, y=34.25),
-                    width=881, height=21, radians=0.00794)
-bot_wall_square = SquareObject.create_square(position=Position(x=650, y=658.75),
-                    width=873, height=19, radians=3.129)
+left_wall_square = SquareObject.create_square(position=Position(x=230.0, y=336.75),
+                    width=640, height=25, radians=4.679)
+right_wall_square = SquareObject.create_square(position=Position(x=1088.75, y=343.5),
+                    width=659, height=22, radians=4.679)
+top_wall_square = SquareObject.create_square(position=Position(x=669.25, y=25.5),
+                    width=885, height=21, radians=0.00451)
+bot_wall_square = SquareObject.create_square(position=Position(x=648.75, y=654.75),
+                    width=883, height=21, radians=6.2605)
 left_wall = Wall.create(left_wall_square, WallPlacement.LEFT, 100)
 right_wall = Wall.create(right_wall_square, WallPlacement.RIGHT, 100)
 top_wall = Wall.create(top_wall_square, WallPlacement.TOP, 100)
