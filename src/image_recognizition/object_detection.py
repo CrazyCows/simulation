@@ -200,7 +200,10 @@ class RoboVision():
 
 
     def get_flipped_frame(self):
-        ret, frame = self._vs.read()
+        if self._last_frame is None:
+            ret, frame = self._vs.read()
+        else:
+            frame = self._last_frame.copy()
         cv2.flip(frame, 1, frame)
         return frame
 
@@ -399,7 +402,7 @@ class RoboVision():
     def _get_all_balls(self):
         self.commonSetup()
         ret, frame = self._vs.read()
-        results = self.model.predict(frame, conf=0.3, iou=0.3)
+        results = self.model.predict(frame, conf=0.4, iou=0.45)
         orange_balls = []
         white_balls = []
         blue_labels = []
@@ -505,7 +508,7 @@ class RoboVision():
     def detect_with_yolo(self, thing_type: str) -> List[CircleObject]:
         self.commonSetup()
         ret, frame = self._vs.read()
-        results = self.model.predict(frame, conf=0.3, iou=0.3)
+        results = self.model.predict(frame, conf=0.4, iou=0.45)
         detected_objects = []
         for result in results:
             for box in result.boxes:

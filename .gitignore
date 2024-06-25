@@ -1,3 +1,5 @@
+src/image_recognizition/models/medium.pt
+
 venv
 /.venv/
 
@@ -73,3 +75,5 @@ src/helper/__pycache__/overlap_detection.cpython-312.pyc
 src/image_recognizition/__pycache__/object_detection.cpython-312.pyc
 src/path/__pycache__/path_creation.cpython-312.pyc
 src/path/__pycache__/path_follow.cpython-312.pyc
+/src/image_recognizition/models_old/
+/src/image_recognizition/models/

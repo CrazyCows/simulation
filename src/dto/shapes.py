@@ -28,7 +28,7 @@ class SquareObject(BaseModel):
         self.position = position_with_offset
         half_width = self.width / 2
         half_height = self.height / 2
-        #self.radians = radians
+        self.radians = radians
         self.vertices = [
             (position_with_offset.x - half_width, position_with_offset.y - half_height),
             (position_with_offset.x - half_width, position_with_offset.y + half_height),

@@ -152,7 +152,6 @@ class WallPicker:
         cv2.setMouseCallback("goal hole", self._click_event)
 
         while True:
-
             ret, self.frame = self.cap.read()
             cv2.imshow(self.frame_name, self.frame)
             if not ret:
@@ -162,7 +161,9 @@ class WallPicker:
             if cv2.waitKey(1) & 0xFF == ord('q') or len(self.points) >= self.max_points:
                 break
 
-        return self.points[0]
+        goalball = CircleObject(position=Position(x=self.points[0][0], y=self.points[0][1]), radius=1)
+
+        return goalball
 
     def pick_cross(self):
         cross_part_one: SquareObject = self._click_cross_one()

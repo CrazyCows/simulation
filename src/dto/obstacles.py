@@ -91,18 +91,18 @@ class Cross(BaseModel):
             
             # Up and down point
             if i == 2 or i == 6:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.8
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.8
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.7
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.7
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             if i == 3 or i == 7:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.75
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.75
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.7
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.7
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             if i== 1 or i == 5:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.75
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.75
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.7
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.7
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
         

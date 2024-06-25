@@ -1,3 +1,5 @@
+import math
+
 import gui.visualization as visualization
 import transmission
 from path import path_creation, path_follow
@@ -11,48 +13,41 @@ import __init__
 from math import dist
 import numpy as np
 import cv2
-from typing import List
+from typing import List, Tuple
 from image_recognizition import wall_picker
 from time import sleep
 
 def find_focused_ball(focused_ball, balls):
     for ball in balls:
-        if euclidean_distance((focused_ball.position.x, focused_ball.y), (b.x, b.y)) < 5:
+        if euclidean_distance((focused_ball.position.x, focused_ball.position.y), (ball.position.x, ball.position.y)) < 5:
             return ball
     return None
 
 def euclidean_distance(point1: Tuple[float, float], point2: Tuple[float, float]) -> float:
     # Unpack the points
-    x1, y1 = point1
-    x2, y2 = point2
-
-    # Calculate the difference in x and y coordinates
-    dx = x2 - x1
-    dy = y2 - y1
-
-    # Calculate the Euclidean distance
-    distance = math.sqrt(dx * dx + dy * dy)
-    return distance
+    return math.dist(point1, point2)
 def app(connect_to_robot: bool = False):
     screen = __init__.screen
     robot = __init__.robot
     balls = __init__.balls
     walls = __init__.walls
     clock = __init__.clock
-    cross = __init__.cross
+    #cross = __init__.cross
     running = True
-    goal = Goal(radius=1, position=Position(x=256, y=screen.get_height()/2))
+    first_iteration = True
+    #goal = Goal(radius=1, position=Position(x=256, y=screen.get_height()/2))
     if connect_to_robot:
         transmission.connect()
     focused_ball: CircleObject = None
     if (connect_to_robot):
         wp = WallPicker()
-        #wall_squares = [wp.pick_east_wall(), wp.pick_north_wall(),  wp.pick_west_wall(), wp.pick_south_wall()]
+        goal = wp.pick_hole()
+        #wall_squares = [wp.pick_west_wall(), wp.pick_north_wall(),  wp.pick_east_wall(), wp.pick_south_wall()]
 
         #walls = []
         #walls.append(Wall.create(wall_squares[0], WallPlacement.LEFT, danger_zone_size=5))
-        #walls.append(Wall.create(wall_squares[1], WallPlacement.RIGHT, danger_zone_size=5))
-        #walls.append(Wall.create(wall_squares[2], WallPlacement.TOP, danger_zone_size=5))
+        #walls.append(Wall.create(wall_squares[1], WallPlacement.TOP, danger_zone_size=5))
+        #walls.append(Wall.create(wall_squares[2], WallPlacement.RIGHT, danger_zone_size=5))
         #walls.append(Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=5))
 
         #for wall in walls:
@@ -78,9 +73,9 @@ def app(connect_to_robot: bool = False):
 
         rv = RoboVision(walls=walls, ai=True,
                         power=2)  # power: how strong the model should be (light(1), medium(2), heavy(3))
-        #cross_squares = wp.pick_cross()
-        #cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
-        #                                           safe_distance=20)
+        cross_squares = wp.pick_cross()
+        cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
+                                                   safe_distance=20)
         #goal = wp.pick_hole()
         """cross = Cross.create_cross_with_safe_zones(square_1=SquareObject(position=Position(x=278.0, y=149.25), width=23, height=102, radians=5.588447030982883, vertices=[(301.81485966751865, 102.70859414439232), (236.51605090174172, 181.06716466332466), (254.18514033248135, 195.79140585560768), (319.4839490982583, 117.43283533667535)], offset_x=0, offset_y=0),
                                                    square_2=SquareObject(position=Position(x=278.0, y=149.25), width=23, height=102, radians=0.8760580505981936, vertices=[231.46, 125.44]),
@@ -117,18 +112,17 @@ def app(connect_to_robot: bool = False):
                     print(str(e))
                 finally:
                     found_robot_init = True
-        if not focused_ball and len(balls) > 0:
+        if focused_ball and len(balls) > 0 and robot.mode != RobotMode.DANGER:
             temp_focused_ball = find_focused_ball(focused_ball, balls)
             if temp_focused_ball:
                 focused_ball = temp_focused_ball
             else:
-                temp_focused_ball = balls.sort(key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
+                focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
 
 
-        #print(len(balls))
-        # print(len(robot.collected_balls))
-        # TODO: Implement the
-        if len(balls) > 0:
+
+        if len(balls) > 0 and first_iteration:
+            first_iteration = False
             focused_ball = balls[0]
         if balls == [] and robot.mode != RobotMode.DANGER_REVERSE and robot.mode != RobotMode.STOP_DANGER and robot.mode != RobotMode.DANGER:
             focused_ball = goal
@@ -177,10 +171,10 @@ def app(connect_to_robot: bool = False):
         print("Robotposition: x=", robot.robot.position.x, "y= ", robot.robot.position.y)
 
         # NOTE: Updates the visual representation
-        # frame = rv.get_flipped_frame()
-        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        # frame = pygame.surfarray.make_surface(np.rot90(frame))
-        # screen.fill(frame)
+        frame = rv.get_flipped_frame()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = pygame.surfarray.make_surface(np.rot90(frame))
+        screen.blit(frame, (0,0))
         visualization.game(screen, robot, walls, balls, path, cross)
 
         # Tickrate, frames/sec.

@@ -147,11 +147,11 @@ class Robot(BaseModel):
             if self.distance_to_wall_left < self.distance_to_wall_right:
                 return True if (
                         self.robot.position.x - 107 < checkpoint.x < self.robot.position.x - 93 and
-                        self.robot.position.y + 7 > checkpoint.y > self.robot.position.y - 7) else False
+                        self.robot.position.y + 7 > checkpoint.y > self.robot.position.y - 7) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 3  else False
             else:
                 return True if (
                         self.robot.position.x + 110 > checkpoint.x > self.robot.position.x + 95 and
-                        self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) else False
+                        self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 3  else False
         elif checkpoint.checkpoint_type == CheckpointType.BALL:
             if self.calculate_dist_to_checkpoint(checkpoint) < 115 and abs(self.previous_move.radians) < 0.1:
                 return True
