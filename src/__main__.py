@@ -51,7 +51,7 @@ def app(connect_to_robot: bool = False):
         #walls.append(Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=5))
 
         #for wall in walls:
-        #    print(wall)
+        #    print(walls)
 
 
         """walls.append(Wall.create(
