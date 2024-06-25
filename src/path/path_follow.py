@@ -72,7 +72,7 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
         if balls == []:
             return
             exit()
-    if robot.mode == RobotMode.STOP_DANGER:
+    if robot.mode == RobotMode.DANGER and overlap_detection.distance_to_wall_from_straight_line(robot.line, walls)  < 80:
         robot.mode = RobotMode.DANGER_REVERSE
     elif robot.mode == RobotMode.STOP:
         robot.mode = RobotMode.SAFE
