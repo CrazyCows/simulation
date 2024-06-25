@@ -155,12 +155,12 @@ class Robot(BaseModel):
         elif checkpoint.checkpoint_type == CheckpointType.GOAL:
             if self.distance_to_wall_left < self.distance_to_wall_right:
                 return True if (
-                        self.robot.position.x - 107 < checkpoint.x < self.robot.position.x - 93 and
-                        self.robot.position.y + 7 > checkpoint.y > self.robot.position.y - 7) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 3  else False
+                        self.robot.position.x - 110 < checkpoint.x < self.robot.position.x - 95 and
+                        self.robot.position.y + 7 > checkpoint.y > self.robot.position.y - 7) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 5  else False
             else:
                 return True if (
                         self.robot.position.x + 110 > checkpoint.x > self.robot.position.x + 95 and
-                        self.robot.position.y + 5 > checkpoint.y > self.robot.position.y - 5) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 3  else False
+                        self.robot.position.y + 7 > checkpoint.y > self.robot.position.y - 7) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 5  else False
         elif checkpoint.checkpoint_type == CheckpointType.BALL:
             if self.calculate_dist_to_checkpoint(checkpoint) < 115 and abs(self.previous_move.radians) < 0.1:
                 return True
@@ -174,8 +174,10 @@ class Robot(BaseModel):
     @classmethod
     def create_robot(cls, position: Position, width: int, height: int, radians: float,
                      suction_width: int, suction_height: int, previous_checkpoint: Checkpoint,
+
                      suction_offset_x: int = 0,
                      suction_offset_y: int = 0, checkpoints=[], mode=RobotMode.SAFE,
+                     closest_obstacle: str = "",
                      line=LineObject(start_pos=Position(x=0, y=0), end_pos=Position(x=0, y=0))):
         if not 0 <= radians <= 2 * math.pi:
             raise Exception("Number must be within range 0 to 2 * pi")
@@ -206,7 +208,7 @@ class Robot(BaseModel):
         return cls(robot=robot, suction=suction, collected_balls=collected_balls,
                    obstacles_hit_list=obstacles_hit_list, obstacles_hit=obstacles_hit,
                    previous_path=previous_path, start_position=robot.position, checkpoints=checkpoints, line=line,
-                   prev_checkpoint=previous_checkpoint, mode=mode)
+                   prev_checkpoint=previous_checkpoint, mode=mode, closest_obstacle=closest_obstacle)
 
     def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
         """

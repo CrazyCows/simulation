@@ -1,4 +1,4 @@
-src/image_recognizition/models/medium.pt
+src/image_recognizition/models_old/medium_semi_new.pt
 
 venv
 /.venv/

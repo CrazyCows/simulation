@@ -44,7 +44,7 @@ def app(connect_to_robot: bool = False):
         goal = wp.pick_hole()
         """
         wall_squares = [wp.pick_west_wall(), wp.pick_north_wall(),  wp.pick_east_wall(), wp.pick_south_wall()]
-
+        
         walls = []
         left = Wall.create(wall_squares[0], WallPlacement.LEFT, danger_zone_size=5)
         walls.append(left)
@@ -67,7 +67,8 @@ def app(connect_to_robot: bool = False):
         "width=" + str(bot.width) + ", height=" + str(bot.height) + ", radians=" + str(bot.radians) + ")")
 
 
-    
+        """
+        """
         walls.append(Wall.create(
             SquareObject(position=Position(x=155.0, y=366.75), width=672, height=16, radians=4.737681204935092,
                          vertices=[(154.5001599156308, 30.655147079146616), (138.50527721581045, 31.059779528397996),
@@ -133,13 +134,19 @@ def app(connect_to_robot: bool = False):
                 focused_ball = temp_focused_ball
             else:
                 focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
-
-
-
+        """
+        ball_to_remove = None
+        for ball in balls:
+            if ball.position.x == goal.position.x and ball.position.y == goal.position.y:
+                ball_to_remove = ball
+        
+        if ball_to_remove is not None:
+            balls.remove(ball_to_remove)
+        """
         if len(balls) > 0 and first_iteration:
             first_iteration = False
             focused_ball = balls[0]
-        if balls == [] and robot.mode != RobotMode.DANGER_REVERSE and robot.mode != RobotMode.STOP_DANGER and robot.mode != RobotMode.DANGER:
+        if balls == []: #and robot.mode != RobotMode.DANGER_REVERSE and robot.mode != RobotMode.STOP_DANGER and robot.mode != RobotMode.DANGER:
             focused_ball = goal
             robot.mode = RobotMode.ENDPHASE
         elif robot.mode == RobotMode.ENDPHASE:

@@ -54,21 +54,23 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
     if len(robot.checkpoints) > 1:
         next_checkpoint = robot.checkpoints[1]
 
-    if (check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path)):
-        additional_path, additional_checkpoints = recalculate_path(cross, robot.robot.position, temp_ball.position,
+    if check_if_cross_is_touched(cross, temp_path) or check_if_wall_is_touched(walls, temp_path):
+        additional_path, pos = recalculate_path(cross, robot.robot.position, temp_ball.position,
                                                                    robot)
-        if robot.mode != RobotMode.DANGER and robot.prev_checkpoint.checkpoint_type != CheckpointType.BALL:
+        additional_path, additional_checkpoints = additional_path
+        if (robot.mode != RobotMode.DANGER and robot.prev_checkpoint.checkpoint_type != CheckpointType.BALL) or robot.mode == RobotMode.SAFE or robot.mode == RobotMode.DANGER_REVERSE:
             if len(additional_checkpoints) > 1:
                     path.append(create_temp_path(temp_ball.position, additional_checkpoints[1]))
             else:
-                    path.append(create_temp_path(robot.robot.position, additional_checkpoints[0]))
+                    path.insert(0, create_temp_path(robot.robot.position, additional_checkpoints[0]))
                     path.append(create_temp_path(temp_ball.position, additional_checkpoints[0]))
             path.extend(additional_path)
             checkpoints.extend(additional_checkpoints)
             if b:
                 checkpoints.append(
-                    Checkpoint(x=additional_checkpoints[-1].x, y=additional_checkpoints[-1].y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
+                        Checkpoint(x=pos.x, y=pos.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
                 checkpoints.pop(-2)
+                print("ABCD")
         else:
             if Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                           checkpoint_type=CheckpointType.BALL) not in checkpoints:
@@ -80,6 +82,8 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
             path.append(create_temp_path(robot.robot.position, p))
             path.append(create_temp_path(temp_ball.position, p))
             if robot.mode != RobotMode.ENDPHASE:
+
+                checkpoints.append()
                 checkpoints.append(
                     Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
                 checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
@@ -121,8 +125,7 @@ def check_if_wall_is_touched(walls: List[SquareObject], current_path: SquareObje
         return False
 
 
-def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, robot: Robot) -> Tuple[
-    List[SquareObject], List[Checkpoint]]:
+def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, robot: Robot):
     # Find the closest safe zones to the current and goal positions
     closest_safezone_to_current_pos = min(cross.safe_zones, key=lambda safe_zone: math.dist((safe_zone.x, safe_zone.y),
                                                                                             (current_pos.x,
@@ -143,7 +146,7 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
             y=closest_safezone_to_current_pos.y,
             checkpoint_type=CheckpointType.SAFE_CHECKPOINT
         ))
-        return [], checkpoints
+        return [[], checkpoints], closest_safezone_to_goal_pos
 
     total_zones = len(cross.safe_zones)
 
@@ -188,7 +191,7 @@ def recalculate_path(cross: Cross, current_pos: Position, goal_pos: Position, ro
         print("Cross is touched at the last segment of the path.")
     # print("Checkpoints:", checkpoints)
 
-    return path, checkpoints
+    return [path, checkpoints], closest_safezone_to_goal_pos
 
 
 def create_temp_path(pos_1: Position, pos_2: Position) -> SquareObject:

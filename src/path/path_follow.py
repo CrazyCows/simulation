@@ -73,7 +73,7 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
         robot.mode = RobotMode.DANGER_REVERSE
     #elif robot.mode == RobotMode.STOP:
     #    robot.mode = RobotMode.SAFE
-    elif robot.self_reached_checkpoint(robot.checkpoints[0]):
+    elif robot.self_reached_checkpoint(robot.checkpoints[0]) :
         print("Previous checkpoint before being updated: ", robot.prev_checkpoint)
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:

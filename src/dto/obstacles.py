@@ -69,7 +69,8 @@ class Cross(BaseModel):
         ]
 
         safe_zones = []
-        
+        multiplier = 10.3
+        distance = 0
         for i, direction in enumerate(directions):
             direction_x, direction_y = direction
 
@@ -78,31 +79,30 @@ class Cross(BaseModel):
             for wall in walls:
                 for vertex in wall.vertices:
                     wall_vertex_pos = Position(x=vertex[0], y=vertex[1])
-                    distance_x = (wall_vertex_pos.x - cross_center.x) / direction_x if direction_x != 0 else float('inf')
-                    distance_y = (wall_vertex_pos.y - cross_center.y) / direction_y if direction_y != 0 else float('inf')
-                    distance = min(abs(distance_x), abs(distance_y)) - safe_distance
-                    max_distance = min(max_distance, distance)
+                    distance_x = safe_distance
+                    distance_y = safe_distance
+                    distance = min(abs(distance_x), abs(distance_y))
             
             # Left and right point
             if i == 0 or i == 4:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.5
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.5
+                safe_zone_x = cross_center.x + direction_x * distance * multiplier
+                safe_zone_y = cross_center.y + direction_y * distance * multiplier
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             # Up and down point
             if i == 2 or i == 6:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.6
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.6
+                safe_zone_x = cross_center.x + direction_x * distance * multiplier
+                safe_zone_y = cross_center.y + direction_y * distance * multiplier
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             if i == 3 or i == 7:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.67
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.6
+                safe_zone_x = cross_center.x + direction_x * distance * multiplier
+                safe_zone_y = cross_center.y + direction_y * distance * multiplier
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             if i== 1 or i == 5:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.67
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.6
+                safe_zone_x = cross_center.x + direction_x * distance * multiplier
+                safe_zone_y = cross_center.y + direction_y * distance * multiplier
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
         
