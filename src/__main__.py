@@ -42,6 +42,7 @@ def app(connect_to_robot: bool = False):
     if (connect_to_robot):
         wp = WallPicker()
         goal = wp.pick_hole()
+        """
         wall_squares = [wp.pick_west_wall(), wp.pick_north_wall(),  wp.pick_east_wall(), wp.pick_south_wall()]
 
         walls = []
@@ -53,6 +54,7 @@ def app(connect_to_robot: bool = False):
         walls.append(right)
         bot = Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=5)
         walls.append(bot)
+        
 
         #Print til at indsætte i init. DO NOT DELETE OK THANK YOU
         print("left_wall_square = SquareObject.create_square(position=Position(x=" + str(left.position.x) + ", y=" + str(left.position.y) + "),\n" +
@@ -65,7 +67,8 @@ def app(connect_to_robot: bool = False):
         "width=" + str(bot.width) + ", height=" + str(bot.height) + ", radians=" + str(bot.radians) + ")")
 
 
-        """walls.append(Wall.create(
+    
+        walls.append(Wall.create(
             SquareObject(position=Position(x=155.0, y=366.75), width=672, height=16, radians=4.737681204935092,
                          vertices=[(154.5001599156308, 30.655147079146616), (138.50527721581045, 31.059779528397996),
                                    (155.4998400843692, 702.8448529208533), (171.49472278418955, 702.4402204716021)],
@@ -116,9 +119,10 @@ def app(connect_to_robot: bool = False):
                     radians = rv.orientation
                     mode = robot.mode
                     previous_checkpoint = robot.prev_checkpoint
+                    closest_obstacle = robot.closest_obstacle
                     robot = robot.create_robot(position=Position(x=robot_position.x, y=robot_position.y),
                                             width=130, height=130, radians=radians, suction_height=30, suction_width=30,
-                                            suction_offset_y=80, previous_checkpoint=previous_checkpoint, mode=mode)
+                                            suction_offset_y=80, previous_checkpoint=previous_checkpoint, mode=mode, closest_obstacle=closest_obstacle)
                 except Exception as e:
                     print(str(e))
                 finally:
@@ -170,9 +174,6 @@ def app(connect_to_robot: bool = False):
         #print("3   robot radians says:", robot.robot.radians, "and path_follow says:", path_follow.calculate_radians_to_turn(robot))
         #print("4   yet_another_calculate_radians_to_turn", path_follow.yet_another_calculate_radians_to_turn(robot), "another_calculate_radians_to_turn", path_follow.another_calculate_radians_to_turn(robot))
         #print("5   THE MOVE IS:", move)
-        if robot.mode == RobotMode.STOP or robot.mode == RobotMode.STOP_DANGER:
-            #sleep(3)
-            pass
         if connect_to_robot:
             transmission.send_command(move, robot.mode)
         print("Current mode: ", robot.mode)

@@ -14,6 +14,7 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
     
     # screen.fill("purple")
 
+
     for obstacle in obstacles:
         pass
         #pygame.draw.polygon(screen, "orange", obstacle.danger_zone.vertices)

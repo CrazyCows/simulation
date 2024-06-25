@@ -85,24 +85,24 @@ class Cross(BaseModel):
             
             # Left and right point
             if i == 0 or i == 4:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.55
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.55
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.5
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.5
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             # Up and down point
             if i == 2 or i == 6:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.7
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.7
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.6
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.6
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             if i == 3 or i == 7:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.72
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.67
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.67
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.6
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
             if i== 1 or i == 5:
-                safe_zone_x = cross_center.x + direction_x * max_distance * 0.72
-                safe_zone_y = cross_center.y + direction_y * max_distance * 0.67
+                safe_zone_x = cross_center.x + direction_x * max_distance * 0.67
+                safe_zone_y = cross_center.y + direction_y * max_distance * 0.6
                 safe_zones.append(Position(x=safe_zone_x, y=safe_zone_y))
             
         

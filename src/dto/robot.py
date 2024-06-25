@@ -62,12 +62,17 @@ class Robot(BaseModel):
     start_position: Position
     line: LineObject
     mode: RobotMode
+    closest_obstacle: str = ""
     distance_to_wall_left: float = 0
     distance_to_wall_right: float = 0
     distance_to_wall_top: float = 0
     distance_to_wall_bot: float = 0
     distance_to_cross: float = 0
     front_distance_to_cross: float = 0
+    front_distance_to_left: float = 0
+    front_distance_to_right: float = 0
+    front_distance_to_top: float = 0
+    front_distance_to_bot: float = 0
     ignore_danger_in_corner: bool = False
     previous_move: Move = Move(speed=0, radians=0, suck=False, latch=False)
 
@@ -234,6 +239,7 @@ class Robot(BaseModel):
         for wall in walls:
             min_distance = float('inf')
             if wall.placement == WallPlacement.LEFT:
+                front_min_distance = float('inf')
                 v1 = wall.vertices[2]
                 v2 = wall.vertices[3]
                 for j in range(len(self.robot.vertices)):
@@ -245,9 +251,13 @@ class Robot(BaseModel):
                                                                 v2,
                                                                 self.robot.vertices[j],
                                                                 self.robot.vertices[next_vertex_j])
+                    if j == 1 or j == 2:
+                        front_min_distance = min(front_min_distance, distance)
                     min_distance = min(min_distance, distance)
+                self.front_distance_to_left = front_min_distance
                 self.distance_to_wall_left = min_distance
             elif wall.placement == WallPlacement.RIGHT:
+                front_min_distance = float('inf')
                 v1 = wall.vertices[0]
                 v2 = wall.vertices[1]
                 for j in range(len(self.robot.vertices)):
@@ -259,9 +269,13 @@ class Robot(BaseModel):
                                                                 v2,
                                                                 self.robot.vertices[j],
                                                                 self.robot.vertices[next_vertex_j])
+                    if j == 1 and next_vertex_j ==2:
+                        front_min_distance = min(front_min_distance, distance)
                     min_distance = min(min_distance, distance)
+                self.front_distance_to_right = front_min_distance
                 self.distance_to_wall_right = min_distance
             elif wall.placement == WallPlacement.TOP:
+                front_min_distance = float('inf')
                 v1 = wall.vertices[1]
                 v2 = wall.vertices[2]
                 for j in range(len(self.robot.vertices)):
@@ -273,9 +287,13 @@ class Robot(BaseModel):
                                                                 v2,
                                                                 self.robot.vertices[j],
                                                                 self.robot.vertices[next_vertex_j])
+                    if j == 1 and next_vertex_j ==2:
+                        front_min_distance = min(front_min_distance, distance)
                     min_distance = min(min_distance, distance)
+                self.front_distance_to_top = front_min_distance
                 self.distance_to_wall_top = min_distance
             elif wall.placement == WallPlacement.BOT:
+                front_min_distance = float('inf')
                 v1 = wall.vertices[0]
                 v2 = wall.vertices[3]
                 for j in range(len(self.robot.vertices)):
@@ -287,7 +305,10 @@ class Robot(BaseModel):
                                                                 v2,
                                                                 self.robot.vertices[j],
                                                                 self.robot.vertices[next_vertex_j])
+                    if j == 1 and next_vertex_j ==2:
+                        front_min_distance = min(front_min_distance, distance)
                     min_distance = min(min_distance, distance)
+                self.front_distance_to_bot = front_min_distance
                 self.distance_to_wall_bot = min_distance
 
         num_vertices = len(cross.square_1.vertices)
@@ -305,7 +326,7 @@ class Robot(BaseModel):
                 distance = self.segment_to_segment_distance(cross.square_1.vertices[i],
                                                             cross.square_1.vertices[next_vertex_i],
                                                             self.robot.vertices[j], self.robot.vertices[next_vertex_j])
-                if j == 1 or j == 2:
+                if j == 1 and next_vertex_j ==2:
                     front_min_distance = min(front_min_distance, distance)
                 min_distance = min(min_distance, distance)
             self.front_distance_to_cross = front_min_distance
@@ -323,7 +344,7 @@ class Robot(BaseModel):
                 distance = self.segment_to_segment_distance(cross.square_2.vertices[i],
                                                             cross.square_2.vertices[next_vertex_i],
                                                             self.robot.vertices[j], self.robot.vertices[next_vertex_j])
-                if j == 1 or j == 2:
+                if j == 1 and next_vertex_j ==2:
                     front_min_distance = min(front_min_distance, distance)
                 min_distance = min(min_distance, distance)
             self.front_distance_to_cross = front_min_distance

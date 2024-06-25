@@ -508,7 +508,7 @@ class RoboVision():
     def detect_with_yolo(self, thing_type: str) -> List[CircleObject]:
         self.commonSetup()
         ret, frame = self._vs.read()
-        results = self.model.predict(frame, conf=0.3, iou=0.3)
+        results = self.model.predict(frame, conf=0.2, iou=0.3)
         detected_objects = []
         for result in results:
             for box in result.boxes:

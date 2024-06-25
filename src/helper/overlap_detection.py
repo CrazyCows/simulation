@@ -115,55 +115,26 @@ def calculate_coordinates_for_line(direction, start_x, start_y, length=1200):
 
 
 
-
-"""Line to wall detection"""
-
-def distance(point1: Position, point2: Position) -> float:
-    """Calculate the Euclidean distance between two points."""
-    return math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2)
-
-def line_intersection(p1: Position, p2: Position, p3: Position, p4: Position) -> Optional[Position]:
-    """Find the intersection point of two lines (p1, p2) and (p3, p4) if it exists."""
-    denominator = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y)
-    if denominator == 0:
-        return None  # Lines are parallel
-
-    ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denominator
-    ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denominator
-
-    if 0 <= ua <= 1 and 0 <= ub <= 1:
-        intersection_x = p1.x + ua * (p2.x - p1.x)
-        intersection_y = p1.y + ua * (p2.y - p1.y)
-        return Position(x=intersection_x, y=intersection_y)
-
-    return None
-
-def distance_to_wall(player: LineObject, wall: SquareObject) -> Optional[float]:
-    """Calculate the distance from the player to the intersection of the player's line with the wall."""
-    player_start = player.start_pos
-    player_end = player.end_pos
-    wall_vertices = [Position(x=v[0], y=v[1]) for v in wall.vertices]
-
+"""
+def distance_to_wall_from_straight_line(robot, wall_squares: List[SquareObject]):
     min_distance = float('inf')
-    intersection_point = None
-
-    for i in range(len(wall_vertices)):
-        p3 = wall_vertices[i]
-        p4 = wall_vertices[(i + 1) % len(wall_vertices)]
-        intersection = line_intersection(player_start, player_end, p3, p4)
-        if intersection:
-            current_distance = distance(player_start, intersection)
-            if current_distance < min_distance:
-                min_distance = current_distance
-                intersection_point = intersection
-
-    return min_distance if intersection_point else None
+    for wall in wall_squares:
+        for j in range(len(wall.vertices)):
+            next_vertex_j = j + 1
+            if next_vertex_j == 4:
+                next_vertex_j = 0
+            length = point_to_segment_distance((wall.vertices[j][0],wall.vertices[j][1]),
+                                               (wall.vertices[next_vertex_j][0],wall.vertices[next_vertex_j][1]),
+                                                        (robot.robot.position.x, robot.robot.position.y))
+            min_distance = min(min_distance, length)
+    return min_distance
 
 
+def point_to_segment_distance(px, py, x1, y1, x2, y2):
+    segment_length = distance((x1, y1), (x2, y2))
+    if segment_length == 0:
+        return distance((px, py), (x1, y1))
 
-def distance_to_wall_from_straight_line(line: LineObject, wall_squares: List[SquareObject]):
-
-    for wall_square in wall_squares:
-        distance_is = distance_to_wall(line, wall_square)
-        if distance_is:
-            return distance_is
+def distance(p1, p2):
+    return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
+"""

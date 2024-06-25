@@ -51,9 +51,6 @@ def create_move(robot: Robot) -> Move:
         speed = 0
         radians = 0
         latch = True
-    if robot.mode == RobotMode.STOP_DANGER or robot.mode == RobotMode.STOP:
-        speed = 0
-        radians = 0
 
     suck = False if robot.mode == RobotMode.DEPOSIT else suck_if_small(robot)
     move = Move(speed=speed, radians=radians, suck=suck, latch=latch)
@@ -72,25 +69,19 @@ def move_robot(move: Move, robot: Robot, walls: List[Wall], balls: List[CircleOb
         if balls == []:
             return
             exit()
-    if robot.mode == RobotMode.DANGER and overlap_detection.distance_to_wall_from_straight_line(robot.line, walls)  < 80:
+    if robot.mode == RobotMode.DANGER and if_distance_to_obstacle(robot, 13):
         robot.mode = RobotMode.DANGER_REVERSE
-    elif robot.mode == RobotMode.STOP:
-        robot.mode = RobotMode.SAFE
+    #elif robot.mode == RobotMode.STOP:
+    #    robot.mode = RobotMode.SAFE
     elif robot.self_reached_checkpoint(robot.checkpoints[0]):
         print("Previous checkpoint before being updated: ", robot.prev_checkpoint)
         robot.prev_checkpoint = robot.checkpoints[0]
         if robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT and robot.mode == RobotMode.SAFE:
             robot.mode = RobotMode.DANGER
-        elif robot.prev_checkpoint.checkpoint_type == CheckpointType.BALL:
-            if robot.mode == RobotMode.SAFE:
-                robot.mode = RobotMode.STOP
-            elif robot.mode == RobotMode.DANGER:
-                robot.mode = RobotMode.STOP_DANGER
-                robot.ignore_danger_in_corner = False
         elif robot.prev_checkpoint.checkpoint_type == CheckpointType.GOAL:
             if robot.mode == RobotMode.ENDPHASE or robot.mode == RobotMode.DEPOSIT:
                 robot.mode = RobotMode.DEPOSIT
-    if overlap_detection.distance_to_wall_from_straight_line(robot.line, walls) > 120 and robot.mode == RobotMode.DANGER_REVERSE:
+    if is_distance_to_obstacle(robot, 30) and robot.mode == RobotMode.DANGER_REVERSE:
         robot.ignore_danger_in_corner = False
         robot.mode = RobotMode.SAFE
 
@@ -297,3 +288,41 @@ def suck_if_small(robot: Robot) -> bool:
         suck = True
 
     return suck
+
+
+def if_distance_to_obstacle(robot: Robot,value:float):
+    if robot.front_distance_to_cross < value:
+        robot.closest_obstacle = "cross"
+        return True
+    elif robot.front_distance_to_bot < value:
+        robot.closest_obstacle = "bot"
+        return True
+    elif robot.front_distance_to_top < value:
+        robot.closest_obstacle = "top"
+        return True
+    elif robot.front_distance_to_left < value:
+        robot.closest_obstacle = "left"
+        return True
+    elif robot.front_distance_to_right < value:
+        robot.closest_obstacle = "right"
+        return True
+    return False
+
+def is_distance_to_obstacle(robot: Robot,value:float):
+    print("front_distance_to_cross",robot.front_distance_to_cross, "front_distance_to_bot", robot.front_distance_to_bot, "front_distance_to_top", robot.front_distance_to_top, "front_distance_to_left", robot.front_distance_to_left, "front_distance_to_right", robot.front_distance_to_right)
+    if robot.front_distance_to_cross > value and robot.closest_obstacle == "cross":
+        robot.closest_obstacle = ""
+        return True
+    elif robot.front_distance_to_bot > value and robot.closest_obstacle == "bot":
+        robot.closest_obstacle = ""
+        return True
+    elif robot.front_distance_to_top > value and robot.closest_obstacle == "top":
+        robot.closest_obstacle = ""
+        return True
+    elif robot.front_distance_to_left > value and robot.closest_obstacle == "left":
+        robot.closest_obstacle = ""
+        return True
+    elif robot.front_distance_to_right > value and robot.closest_obstacle == "right":
+        robot.closest_obstacle = ""
+        return True
+    return False
