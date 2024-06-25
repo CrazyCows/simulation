@@ -6,6 +6,7 @@ from path import path_creation, path_follow
 from dto.robot import Move, Checkpoint, RobotMode, CheckpointType
 from dto.shapes import Position, CircleObject, Goal, SquareObject
 from dto.obstacles import Cross, Wall, WallPlacement
+import helper.overlap_detection as od
 from image_recognizition.object_detection import RoboVision
 from image_recognizition.wall_picker import WallPicker
 import pygame
@@ -43,6 +44,9 @@ def app(connect_to_robot: bool = False):
 
     dead_balls = []
     dead_ball_tick_counter = 0
+    ignoring_cross = False
+    removal_zone: SquareObject = None
+
     #goal = Goal(radius=1, position=Position(x=256, y=screen.get_height()/2))
     if connect_to_robot:
         transmission.connect()
@@ -61,6 +65,12 @@ def app(connect_to_robot: bool = False):
         walls.append(right)
         bot = Wall.create(wall_squares[3], WallPlacement.BOT, danger_zone_size=5)
         walls.append(bot)
+
+        if ignoring_cross:
+            removal_zone = wp.pick_ignore_area()
+
+
+
 
         #Print til at indsætte i init. DO NOT DELETE OK THANK YOU
         print("left_wall_square = SquareObject.create_square(position=Position(x=" + str(left.position.x) + ", y=" + str(left.position.y) + "),\n" +
@@ -131,6 +141,15 @@ def app(connect_to_robot: bool = False):
                     print(str(e))
                 finally:
                     found_robot_init = True
+
+        #Removes things inside blocking area (usually cross)
+        if (ignoring_cross):
+            abstract_ball_removal_ai_dependency_injection_factory_with_crypto_final = balls #A list of balls
+            for ball in abstract_ball_removal_ai_dependency_injection_factory_with_crypto_final:
+                if od.circle_square_touch(circle=ball, square=removal_zone):
+                    balls.remove(ball)
+
+        #Removes balls that are in positions considered dead
         if previous_checkpoint is not None:
             abstract_ball_removal_ai_dependency_injection_factory_with_crypto_final = balls #A list of balls
             for ball in abstract_ball_removal_ai_dependency_injection_factory_with_crypto_final:

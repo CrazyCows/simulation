@@ -165,6 +165,10 @@ class WallPicker:
 
         return goalball
 
+    def pick_ignore_area(self):
+        print("Pick the ignore area")
+        return self._pick_four_points("Ignore area", 4)
+
     def pick_cross(self):
         cross_part_one: SquareObject = self._click_cross_one()
         cross_part_two: SquareObject = deepcopy(cross_part_one)
