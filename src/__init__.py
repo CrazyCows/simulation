@@ -50,8 +50,9 @@ balls = [
          #CircleObject(radius=5, position=Position(x=300, y=300)),
          #CircleObject(radius=5, position=Position(x=250, y=240)),
          #CircleObject(radius=5, position=Position(x=250, y=90))
-         CircleObject(radius=5, position=Position(x=350, y=200)),
-         CircleObject(radius=5, position=Position(x=620, y=360))]
+         CircleObject(radius=5, position=Position(x=360, y=70)),
+         #CircleObject(radius=5, position=Position(x=620, y=360)),
+         ]
          # CircleObject(radius=5, position=Position(x=750, y=300))]
 
 """balls = [CircleObject(radius=5, position=Position(x=124, y=534)),
@@ -66,5 +67,5 @@ balls = [
          #CircleObject(radius=5, position=Position(x=robot.suction.position.x + robot.suction.offset_x, y=robot.suction.position.y + robot.suction.offset_y)),]
 """
 robot = Robot.create_robot(position=Position(x=screen.get_width() / 3, y=500),
-                width=40, height=40, radians=3.14, suction_height=15, suction_width=15, suction_offset_y=35,
+                width=120, height=120, radians=3.14, suction_height=40, suction_width=40, suction_offset_y=80,
                            previous_checkpoint=Checkpoint(x=screen.get_width() / 3, y=500, checkpoint_type=CheckpointType.SAFE_CHECKPOINT))

@@ -12,12 +12,12 @@ def game(screen: pygame.Surface, robot: Robot, obstacles: List[Wall], balls: Lis
         if event.type == pygame.QUIT:
             return False
     
-    # screen.fill("purple")
+    screen.fill("purple")
 
 
     for obstacle in obstacles:
         pass
-        #pygame.draw.polygon(screen, "orange", obstacle.danger_zone.vertices)
+        pygame.draw.polygon(screen, "orange", obstacle.danger_zone.vertices)
     for obstacle in obstacles:
         pygame.draw.polygon(screen, "red", obstacle.vertices)
         pass
