@@ -35,14 +35,14 @@ def app(connect_to_robot: bool = False):
     balls = __init__.balls
     walls = __init__.walls
     clock = __init__.clock
-    #cross = __init__.cross
+    cross = __init__.cross
     running = True
     first_iteration = True
     #goal = Goal(radius=1, position=Position(x=256, y=screen.get_height()/2))
-    if connect_to_robot:
-        transmission.connect()
     focused_ball: CircleObject = None
     if (connect_to_robot):
+        
+        transmission.connect()
         wp = WallPicker()
         goal = wp.pick_hole()
 
@@ -71,54 +71,21 @@ def app(connect_to_robot: bool = False):
 
 
 
-        
-        """walls.append(Wall.create(
-            SquareObject(position=Position(x=155.0, y=366.75), width=672, height=16, radians=4.737681204935092,
-                         vertices=[(154.5001599156308, 30.655147079146616), (138.50527721581045, 31.059779528397996),
-                                   (155.4998400843692, 702.8448529208533), (171.49472278418955, 702.4402204716021)],
-                         offset_x=0, offset_y=0), placement=WallPlacement.LEFT, danger_zone_size=5))
-        walls.append(Wall.create(
-            SquareObject(position=Position(x=606.5, y=28.5),
-                         width=914, height=17, radians=0.006564457128618842,
-                        vertices=[(149.45404902404266, 23.000118502842287), (149.56564399374827, 39.999752221329764), (1063.5459509759573, 33.999881497157716), (1063.4343560062516, 17.000247778670236)], offset_x=0, offset_y=0), placement=WallPlacement.RIGHT, danger_zone_size=5))
-        walls.append(Wall.create(
-            SquareObject(position=Position(x=1069.25, y=360.75), width=660, height=15, radians=4.726024498886192,
-                         vertices=[(1072.249721113274, 30.678414320101467), (1057.2511155469047, 30.88294075964285), (1066.250278886726, 690.8215856798986), (1081.2488844530953, 690.6170592403571)], offset_x=0, offset_y=0), placement=WallPlacement.TOP, danger_zone_size=5))
-        walls.append(Wall.create(
-            SquareObject(position=Position(x=618.25, y=696.75), width=911, height=17, radians=6.2798922345608545, vertices=[(162.78046085997272, 686.7500542215874), (162.72447872663582, 703.7499620448889), (1073.7195391400273, 706.7499457784126), (1073.7755212733641, 689.7500379551111)], offset_x=0, offset_y=0), placement=WallPlacement.BOT, danger_zone_size=5))"""
-
-
-
         rv = RoboVision(walls=walls, ai=True,
                         power=2)  # power: how strong the model should be (light(1), medium(2), heavy(3))
         cross_squares = wp.pick_cross()
         cross = Cross.create_cross_with_safe_zones(square_1=cross_squares[0], square_2=cross_squares[1], walls=walls,
                                                    safe_distance=20)
-        #goal = wp.pick_hole()
-        """cross = Cross.create_cross_with_safe_zones(square_1=SquareObject(position=Position(x=278.0, y=149.25), width=23, height=102, radians=5.588447030982883, vertices=[(301.81485966751865, 102.70859414439232), (236.51605090174172, 181.06716466332466), (254.18514033248135, 195.79140585560768), (319.4839490982583, 117.43283533667535)], offset_x=0, offset_y=0),
-                                                   square_2=SquareObject(position=Position(x=278.0, y=149.25), width=23, height=102, radians=0.8760580505981936, vertices=[231.46, 125.44]),
-                                                   walls=walls)"""
-        #for cross in cross_squares:
-        #    print(cross)
-        #print("Here")
-        print("Cross")
+
     while running:
         path = []
-        ai: bool = True
         i = 1
         found_robot_init = False
         if connect_to_robot:
-            print("heeere")
             #if ai:
             while i < 100 and not found_robot_init:
                 try:
                     balls, robot_square_object = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="all_balls")
-                    """else:
-                        balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="orange_ball")
-                        if balls == []:
-                            balls = rv.get_any_thing(min_count=0, max_count=20, tries=100, thing_to_get="white_ball")
-                        robot_square_object: SquareObject = rv.get_any_thing(min_count=1, max_count=1, tries=200, thing_to_get="robot")"""
-
                     robot_position: Position = robot_square_object.position
                     radians = rv.orientation
                     mode = robot.mode
@@ -137,54 +104,25 @@ def app(connect_to_robot: bool = False):
                 focused_ball = temp_focused_ball
             else:
                 focused_ball = sorted(balls, key=lambda ball: robot.calculate_speed_to_ball(ball))[0]
-        """
-        ball_to_remove = None
-        for ball in balls:
-            if ball.position.x == goal.position.x and ball.position.y == goal.position.y:
-                ball_to_remove = ball
-        
-        if ball_to_remove is not None:
-            balls.remove(ball_to_remove)
-        """
+
         if len(balls) > 0 and first_iteration:
             first_iteration = False
             focused_ball = balls[0]
-        if balls == []: #and robot.mode != RobotMode.DANGER_REVERSE and robot.mode != RobotMode.STOP_DANGER and robot.mode != RobotMode.DANGER:
+        if balls == []:
             focused_ball = goal
             robot.mode = RobotMode.ENDPHASE
         elif robot.mode == RobotMode.ENDPHASE:
             robot.mode = RobotMode.SAFE
-        def calculate_speed_to_ball(ball_start: CircleObject, ball_end: CircleObject):
-            return dist((ball_start.position.x, ball_start.position.y), (ball_end.position.x, ball_end.position.y))
-
-        #if robot.mode != RobotMode.DANGER and robot.mode != RobotMode.DANGER_REVERSE:
-        #    balls.sort(key=lambda ball: robot.calculate_speed_to_ball(ball))
-        #    if len(balls) > 0:
-        #        focused_ball = balls[0]
-        # Temp solution, just redrawing balls all da time
 
         if robot.prev_checkpoint.checkpoint_type != CheckpointType.GOAL:
             path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
             robot.checkpoints = checkpoints
         try:
             move: Move = path_follow.create_move(robot)
-
             path_follow.move_robot(move, robot, walls, balls, cross, connect_to_robot)
-        except Exception as e:
+        except Exception:
             continue
-        #print("Left: ", robot.distance_to_wall_left)
-        #print("Right: ", robot.distance_to_wall_right)
-        #print("Top: ", robot.distance_to_wall_top)
-        #print("Bot: ", robot.distance_to_wall_bot)
-        #print("Cross: ", robot.distance_to_cross)
-        #print("Suck: ", move.suck)
-        #print("Latch: ", move.latch)
-        #print("Robot Mode:", robot.mode)
-        #print("1   Previous CheckpointType:", robot.prev_checkpoint.checkpoint_type, "Next CheckpointType:", robot.checkpoints[0].checkpoint_type, "mode:", robot.mode)
-        #print("2   dist to checkpoint: ", int(robot.calculate_dist_to_checkpoint(robot.checkpoints[0])))
-        #print("3   robot radians says:", robot.robot.radians, "and path_follow says:", path_follow.calculate_radians_to_turn(robot))
-        #print("4   yet_another_calculate_radians_to_turn", path_follow.yet_another_calculate_radians_to_turn(robot), "another_calculate_radians_to_turn", path_follow.another_calculate_radians_to_turn(robot))
-        #print("5   THE MOVE IS:", move)
+
         if connect_to_robot:
             transmission.send_command(move, robot.mode)
         print("Current mode: ", robot.mode)
@@ -193,11 +131,14 @@ def app(connect_to_robot: bool = False):
         print("Move: ", move)
         print("Robotposition: x=", robot.robot.position.x, "y= ", robot.robot.position.y)
 
-        # NOTE: Updates the visual representation
-        frame = rv.get_flipped_frame()
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame = pygame.surfarray.make_surface(np.rot90(frame))
-        screen.blit(frame, (0,0))
+        # Inserts a camera overlay instead of a background
+        if connect_to_robot:
+            frame = rv.get_flipped_frame()
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = pygame.surfarray.make_surface(np.rot90(frame))
+            screen.blit(frame, (0,0))
+
+        # Update the games visual representation
         visualization.game(screen, robot, walls, balls, path, cross)
 
         # Tickrate, frames/sec.
@@ -213,12 +154,6 @@ def app(connect_to_robot: bool = False):
 
 
 if __name__ == '__main__':
-    # test_antons_code()
-    # pygame.init()
-    # try:
-    #     transmission.exit_functions()
-    # except Exception as e:
-    #     logging.error(e)
-    app(True)
+    app(False)
     pygame.quit()
 

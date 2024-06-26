@@ -26,9 +26,9 @@ bot_wall = Wall.create(bot_wall_square, WallPlacement.BOT, 100)
 walls = [left_wall, right_wall, top_wall, bot_wall]
 
 cross = Cross.create_cross_with_safe_zones(
-    SquareObject.create_square(position=Position(x=-200, y=-200), 
+    SquareObject.create_square(position=Position(x=640, y=360), 
                     width=45, height=5, radians=0.785398),
-    SquareObject.create_square(position=Position(x=-200, y=-200), 
+    SquareObject.create_square(position=Position(x=640, y=360), 
                     width=45, height=5, radians=2.35619),
                     walls,
                     150            
