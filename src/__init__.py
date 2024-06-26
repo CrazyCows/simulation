@@ -3,20 +3,20 @@ from dto.shapes import SquareObject, CircleObject, Position
 from dto.obstacles import Cross, Wall, WallPlacement
 from dto.robot import Robot, Checkpoint, CheckpointType
 import image_recognizition.object_detection
-
+import math
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
 dt = 0
 
-left_wall_square = SquareObject.create_square(position=Position(x=227.25, y=323.0),
-width=595, height=22, radians=4.678788185968696)
-right_wall_square = SquareObject.create_square(position=Position(x=1031.75, y=316.5),
-width=596, height=21, radians=4.719100289016012)
-top_wall_square = SquareObject.create_square(position=Position(x=634.0, y=29.75),
-width=798, height=25, radians=-0.0)
-bot_wall_square = SquareObject.create_square(position=Position(x=626.0, y=616.0),
-width=803, height=18, radians=3.156535501450186)
+left_wall_square = SquareObject.create_square(position=Position(x=200, y=340),
+width=600, height=22, radians=math.pi/2)
+right_wall_square = SquareObject.create_square(position=Position(x=1040, y=340),
+width=600, height=21, radians=math.pi/2)
+top_wall_square = SquareObject.create_square(position=Position(x=640, y=30),
+width=900, height=25, radians=0)
+bot_wall_square = SquareObject.create_square(position=Position(x=640, y=620),
+width=900, height=18, radians=0)
 left_wall = Wall.create(left_wall_square, WallPlacement.LEFT, 100)
 right_wall = Wall.create(right_wall_square, WallPlacement.RIGHT, 100)
 top_wall = Wall.create(top_wall_square, WallPlacement.TOP, 100)

@@ -124,8 +124,8 @@ class Robot(BaseModel):
         robot_dx = self.robot.position.x + dx
         robot_dy = self.robot.position.y + dy
         self.previous_path.append(self.robot.position)
-        #self.robot.update_square(Position(x=robot_dx, y=robot_dy), radians)
-        #self.suction.update_square(Position(x=robot_dx, y=robot_dy), radians)
+        #self.robot.update_square(Position(x=robot_dx, y=robot_dy), -radians * 0.001)
+        # self.suction.update_square(Position(x=robot_dx, y=robot_dy), -radians * 0.001)
         self.self_to_wall_distance(obstacles, cross)
         if suck:
             self.suck(balls=balls)
