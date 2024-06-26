@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="sex">
+    <list default="true" id="d14e9409-f597-44c7-8de6-1781a20ee4f0" name="Changes" comment="After competition">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dto/robot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/dto/robot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/image_recognizition/models/medium.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/path/path_creation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/path/path_creation.py" afterDir="false" />
     </list>
     <list id="6fbd98cb-98d0-4bd4-871e-88d1677aea6c" name="Changes by ansi1" comment="" />
     <list id="b2de9b0d-24db-42d1-a4a0-88f15ccf0420" name="Changes by ChristofferFoldager" comment="" />
@@ -170,6 +166,7 @@
       <workItem from="1719141934749" duration="53000" />
       <workItem from="1719142000086" duration="6342000" />
       <workItem from="1719156700872" duration="7587000" />
+      <workItem from="1719399498256" duration="616000" />
     </task>
     <task id="LOCAL-00001" summary="Added yolo as an option for object detection">
       <option name="closed" value="true" />
@@ -299,7 +296,15 @@
       <option name="project" value="LOCAL" />
       <updated>1719308819684</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="After competition">
+      <option name="closed" value="true" />
+      <created>1719399740280</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1719399740280</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -343,7 +348,8 @@
     <MESSAGE value="gitignore" />
     <MESSAGE value="cross checkpoints improved" />
     <MESSAGE value="sex" />
-    <option name="LAST_COMMIT_MESSAGE" value="sex" />
+    <MESSAGE value="After competition" />
+    <option name="LAST_COMMIT_MESSAGE" value="After competition" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
