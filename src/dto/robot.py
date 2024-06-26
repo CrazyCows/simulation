@@ -149,18 +149,21 @@ class Robot(BaseModel):
                     self.robot.position.x + size > checkpoint.x > self.robot.position.x - size and
                     self.robot.position.y + size > checkpoint.y > self.robot.position.y - size) else False
         elif checkpoint.checkpoint_type == CheckpointType.SAFE_CHECKPOINT:
+            print("point_to_segment_distance",
+                  self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x,
+                                                 self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y))
             return True if (
                     self.robot.position.x + size2 > checkpoint.x > self.robot.position.x - size2 and
                     self.robot.position.y + size2 > checkpoint.y > self.robot.position.y - size2) else False
         elif checkpoint.checkpoint_type == CheckpointType.GOAL:
             if self.distance_to_wall_left < self.distance_to_wall_right:
                 return True if (
-                        self.robot.position.x - 110 < checkpoint.x < self.robot.position.x - 95 and
-                        self.robot.position.y + 7 > checkpoint.y > self.robot.position.y - 7) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 5  else False
+                        self.robot.position.x - 200 < checkpoint.x < self.robot.position.x - 95 and
+                        self.robot.position.y + 12 > checkpoint.y > self.robot.position.y - 12) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 7  else False
             else:
                 return True if (
-                        self.robot.position.x + 110 > checkpoint.x > self.robot.position.x + 95 and
-                        self.robot.position.y + 7 > checkpoint.y > self.robot.position.y - 7) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 5  else False
+                        self.robot.position.x + 200 > checkpoint.x > self.robot.position.x + 95 and
+                        self.robot.position.y + 12 > checkpoint.y > self.robot.position.y - 12) and self.point_to_segment_distance(checkpoint.x, checkpoint.y, self.line.start_pos.x, self.line.start_pos.y, self.line.end_pos.x, self.line.end_pos.y) < 7  else False
         elif checkpoint.checkpoint_type == CheckpointType.BALL:
             if self.calculate_dist_to_checkpoint(checkpoint) < 115 and abs(self.previous_move.radians) < 0.1:
                 return True
@@ -253,7 +256,7 @@ class Robot(BaseModel):
                                                                 v2,
                                                                 self.robot.vertices[j],
                                                                 self.robot.vertices[next_vertex_j])
-                    if j == 1 or j == 2:
+                    if j == 1 and next_vertex_j == 2:
                         front_min_distance = min(front_min_distance, distance)
                     min_distance = min(min_distance, distance)
                 self.front_distance_to_left = front_min_distance

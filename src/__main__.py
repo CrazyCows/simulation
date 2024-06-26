@@ -27,6 +27,9 @@ def euclidean_distance(point1: Tuple[float, float], point2: Tuple[float, float])
     # Unpack the points
     return math.dist(point1, point2)
 def app(connect_to_robot: bool = False):
+
+    tick_count = 0
+
     screen = __init__.screen
     robot = __init__.robot
     balls = __init__.balls
@@ -42,7 +45,7 @@ def app(connect_to_robot: bool = False):
     if (connect_to_robot):
         wp = WallPicker()
         goal = wp.pick_hole()
-        """
+
         wall_squares = [wp.pick_west_wall(), wp.pick_north_wall(),  wp.pick_east_wall(), wp.pick_south_wall()]
         
         walls = []
@@ -67,9 +70,9 @@ def app(connect_to_robot: bool = False):
         "width=" + str(bot.width) + ", height=" + str(bot.height) + ", radians=" + str(bot.radians) + ")")
 
 
-        """
-        """
-        walls.append(Wall.create(
+
+        
+        """walls.append(Wall.create(
             SquareObject(position=Position(x=155.0, y=366.75), width=672, height=16, radians=4.737681204935092,
                          vertices=[(154.5001599156308, 30.655147079146616), (138.50527721581045, 31.059779528397996),
                                    (155.4998400843692, 702.8448529208533), (171.49472278418955, 702.4402204716021)],
@@ -159,6 +162,7 @@ def app(connect_to_robot: bool = False):
         #    if len(balls) > 0:
         #        focused_ball = balls[0]
         # Temp solution, just redrawing balls all da time
+
         if robot.prev_checkpoint.checkpoint_type != CheckpointType.GOAL:
             path, checkpoints = path_creation.create_path(focused_ball, robot, walls, cross)
             robot.checkpoints = checkpoints
@@ -199,10 +203,13 @@ def app(connect_to_robot: bool = False):
         # Tickrate, frames/sec.
         clock.tick(30) / 1000
 
+
         # Hello
         for event in pygame.event.get():
             if event.type == pygame.QUIT or move.latch == True:
                 running = False
+
+        print("balls: ", balls)
 
 
 if __name__ == '__main__':

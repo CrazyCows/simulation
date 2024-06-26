@@ -67,11 +67,12 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
             path.extend(additional_path)
             checkpoints.extend(additional_checkpoints)
             if b:
-                checkpoints.append(
+                if robot.mode != RobotMode.ENDPHASE:
+                    checkpoints.append(
                         Checkpoint(x=pos.x, y=pos.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
-                checkpoints.pop(-2)
-                print("ABCD")
-        else:
+                    checkpoints.pop(-2)
+                    print("ABCD")
+        elif robot.mode != RobotMode.ENDPHASE:
             if Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
                                           checkpoint_type=CheckpointType.BALL) not in checkpoints:
                 checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
@@ -82,8 +83,6 @@ def create_path(temp_ball: CircleObject, robot: Robot, walls: List[Wall], cross:
             path.append(create_temp_path(robot.robot.position, p))
             path.append(create_temp_path(temp_ball.position, p))
             if robot.mode != RobotMode.ENDPHASE:
-
-                checkpoints.append()
                 checkpoints.append(
                     Checkpoint(x=p.x, y=p.y, checkpoint_type=CheckpointType.DANGER_CHECKPOINT))
                 checkpoints.append(Checkpoint(x=temp_ball.position.x, y=temp_ball.position.y,
