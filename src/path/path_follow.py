@@ -7,7 +7,6 @@ import math
 import numpy as np
 
 
-# TODO: Move this somewhere else. Idk where, but somewhere!
 def create_move(robot: Robot) -> Move:
     """
     Moves the robot closer to the first checkpoint in the robots list of checkpoints.
@@ -16,8 +15,6 @@ def create_move(robot: Robot) -> Move:
 
     speed = 0
     latch = False
-    #print("rad_________________________________________________", radians)
-    #print("my checkpOINTS:", robot.checkpoints)
     if robot.mode == RobotMode.DANGER or robot.mode == RobotMode.ENDPHASE:
         if radians != 0.0 and (
                 robot.prev_checkpoint.checkpoint_type == CheckpointType.DANGER_CHECKPOINT or
@@ -90,10 +87,6 @@ def calculate_radians_to_turn(robot: Robot) -> float:
     Auto-correcting algorithm which (hopefully) always keeps the robot looking
     towards the checkpoint.
     """
-    # if robot.checkpoints != []:
-    #    return robot
-    # Convert the inputs to numpy arrays for easier manipulation
-
 
     length = 1200
     start_x = robot.robot.position.x

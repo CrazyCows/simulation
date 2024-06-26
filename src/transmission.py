@@ -7,7 +7,7 @@ import atexit
 import sys
 import numpy as np
 
-server_ip = '192.168.78.77'  # Erstat med IP-adressen til din EV3
+server_ip = '192.168.78.77'
 port = 5000
 client_socket = socket.socket # Modified to not crash program on launch... Can't instantiate if no robot.
 
